@@ -122,11 +122,12 @@ namespace fgl
 			QMatrix4x4 model;
 			model.rotate(100.0f * frame_ / screen()->refreshRate(), 0, 1, 0);
 
-			camera.position.setY((float)frame_ / 100);
-			
+			camera.position.setZ(camera.position.z() - 0.005f);
+			 
 			program_->setUniformValue(program_->uniformLocation("model"), model);
 			program_->setUniformValue(program_->uniformLocation("view"), camera.getViewMatrix());
 			program_->setUniformValue(program_->uniformLocation("projection"), camera.getProjectionMatrix());
+			program_->setUniformValue(program_->uniformLocation("cameraPos"), camera.position);
 			
 			glDrawArrays(GL_TRIANGLES, 0, points.size()/6);
 			
