@@ -26,6 +26,7 @@ public:
 		inst.deltaMouse.setY(-inst.deltaMouse.y());
 		inst.mousePos = _mousePos;
 	}
+	
 	static void reset()
 	{
 		instance().deltaMouse = { 0,0 };

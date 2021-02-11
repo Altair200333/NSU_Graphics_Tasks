@@ -61,9 +61,20 @@ namespace fgl
 			Input::releaseKey(e->key());
 			GLWindow::keyReleaseEvent(e);
 		}
+		
 		void mouseMoveEvent(QMouseEvent* e) override
 		{
 			MouseInput::mouseCallback(e->pos());
+		}
+		void mousePressEvent(QMouseEvent* e) override
+		{
+			Input::pressKey(e->button());
+			GLWindow::mousePressEvent(e);
+		}
+		void mouseReleaseEvent(QMouseEvent* e) override
+		{
+			Input::releaseKey(e->button());
+			GLWindow::mouseReleaseEvent(e);
 		}
 		void moveCamera()
 		{
@@ -82,7 +93,8 @@ namespace fgl
 					camera.translate(dir * 0.1f);
 				}
 			}
-			camera.look(MouseInput::delta().x()*0.5f, MouseInput::delta().y() * 0.5f);
+			if(Input::keyPressed(Qt::LeftButton))
+				camera.look(MouseInput::delta().x()*0.5f, MouseInput::delta().y() * 0.5f);
 		}
 	private:		
 		// Frame counter for animation.
