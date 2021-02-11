@@ -7,6 +7,7 @@ int main(int argc, char** argv) {
     QSurfaceFormat format;
     format.setSamples(16);
     format.setVersion(3, 3);
+    format.setProfile(QSurfaceFormat::CoreProfile);
 	
     fgl::TriangleWindow window;
     window.setFormat(format);

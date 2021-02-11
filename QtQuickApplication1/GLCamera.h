@@ -19,7 +19,6 @@ public:
 	{
 		QMatrix4x4 projection;
 		projection.perspective(FOV, 4.0f / 3.0f, 0.1f, 100.0f);
-		//matrix.rotate(100.0f * frame_ / screen()->refreshRate(), 0, 1, 0);
 		return projection;
 	}
 	QMatrix4x4 getViewMatrix()

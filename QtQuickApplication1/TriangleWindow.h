@@ -10,6 +10,7 @@
 #include <array>
 #include <QOpenGLBuffer>
 #include <QOpenGLShaderProgram>
+#include <QKeyEvent>
 
 
 #include "GLCamera.h"
@@ -72,9 +73,12 @@ namespace fgl
 		QOpenGLVertexArrayObject* m_vao = nullptr;
 		QOpenGLBuffer* m_vbo = nullptr;
 		QOpenGLBuffer m_vertexBuffer;
-
+		GLuint VAO;
+		QOpenGLExtraFunctions f;
 		void init() override
 		{
+			f = QOpenGLExtraFunctions(context_.get());
+			
 			program_ = std::make_unique<QOpenGLShaderProgram>(this);
 			program_->addShaderFromSourceFile(QOpenGLShader::Vertex,
 				"Shaders/triangle.vs");
@@ -84,11 +88,8 @@ namespace fgl
 			auto s = program_->log();
 			program_->link();
 			
-			GLuint VAO;
-			PglGenVertexArrays glGenVertexArrays = reinterpret_cast<PglGenVertexArrays>(context_->getProcAddress("glGenVertexArrays"));
-			PglBindVertexArray glBindVertexArray = reinterpret_cast<PglBindVertexArray>(context_->getProcAddress("glBindVertexArray"));
-			glGenVertexArrays(1, &VAO);
-			glBindVertexArray(VAO);
+			f.glGenVertexArrays(1, &VAO);
+			f.glBindVertexArray(VAO);
 
 			m_vertexBuffer.create();
 			m_vertexBuffer.setUsagePattern(QOpenGLBuffer::StaticDraw);
@@ -121,21 +122,28 @@ namespace fgl
 
 			QMatrix4x4 model;
 			model.rotate(100.0f * frame_ / screen()->refreshRate(), 0, 1, 0);
-
-			camera.position.setZ(camera.position.z() - 0.005f);
 			 
 			program_->setUniformValue(program_->uniformLocation("model"), model);
 			program_->setUniformValue(program_->uniformLocation("view"), camera.getViewMatrix());
 			program_->setUniformValue(program_->uniformLocation("projection"), camera.getProjectionMatrix());
 			program_->setUniformValue(program_->uniformLocation("cameraPos"), camera.position);
-			
+
+			f.glBindVertexArray(VAO);
 			glDrawArrays(GL_TRIANGLES, 0, points.size()/6);
-			
+			f.glBindVertexArray(0);
+
 			program_->release();
 
 			++frame_;
 		}
-
+		
+		void keyPressEvent(QKeyEvent* event) override
+		{
+			if (event->key() == Qt::Key_W)
+			{
+				camera.position.setY(camera.position.y() + 0.01);
+			}
+		}
 	private:
 		// Shader program handler.
 		std::unique_ptr<QOpenGLShaderProgram> program_ = nullptr;
