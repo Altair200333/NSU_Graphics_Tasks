@@ -14,5 +14,5 @@ void main()
    vec3 norm = normalize(Normal);
    float angle = abs(dot(dirToFrag, norm));
    
-   fragColor = vec4(angle, angle, 1, 1.0f);
+   fragColor = vec4(col*angle, 1.0f);
 }

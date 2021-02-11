@@ -20,50 +20,65 @@
 
 namespace
 {
-	struct Triangle
+	struct Vertex
 	{
 		std::array<float, 3> vertex;
 		std::array<float, 3> normal;
 		std::array<float, 3> color;
 	};
-	std::vector<Triangle> points = {
+	std::vector<Vertex> points = {
 		 //position           normal               color
-		{{-0.5f, -0.5f, -0.5f},  {0.0f,  0.0f, -1.0f},  {0.0f,  0.0f,  1.0f}},
-		{{ 0.5f, -0.5f, -0.5f},  {0.0f,  0.0f, -1.0f},  {0.0f,  0.0f,  1.0f}},
-		{{ 0.5f,  0.5f, -0.5f},  {0.0f,  0.0f, -1.0f},  {0.0f,  0.0f,  1.0f}},
-		{{ 0.5f,  0.5f, -0.5f},  {0.0f,  0.0f, -1.0f},  {0.0f,  0.0f,  1.0f}},
-		{{-0.5f,  0.5f, -0.5f},  {0.0f,  0.0f, -1.0f},  {0.0f,  0.0f,  1.0f}},
-		{{-0.5f, -0.5f, -0.5f},  {0.0f,  0.0f, -1.0f},  {0.0f,  0.0f,  1.0f}},										   
-		{{-0.5f, -0.5f,  0.5f},  {0.0f,  0.0f,  1.0f},  {0.0f,  0.0f,  1.0f}},
-		{{ 0.5f, -0.5f,  0.5f},  {0.0f,  0.0f,  1.0f},  {0.0f,  0.0f,  1.0f}},
-		{{ 0.5f,  0.5f,  0.5f},  {0.0f,  0.0f,  1.0f},  {0.0f,  0.0f,  1.0f}},
-		{{ 0.5f,  0.5f,  0.5f},  {0.0f,  0.0f,  1.0f},  {0.0f,  0.0f,  1.0f}},
-		{{-0.5f,  0.5f,  0.5f},  {0.0f,  0.0f,  1.0f},  {0.0f,  0.0f,  1.0f}},
-		{{-0.5f, -0.5f,  0.5f},  {0.0f,  0.0f,  1.0f},  {0.0f,  0.0f,  1.0f}},									   
-		{{-0.5f,  0.5f,  0.5f},  {-1.0f,  0.0f,  0.0f},  {1.0f,  0.0f,  0.0f}},
-		{{-0.5f,  0.5f, -0.5f},  {-1.0f,  0.0f,  0.0f},  {1.0f,  0.0f,  0.0f}},
-		{{-0.5f, -0.5f, -0.5f},  {-1.0f,  0.0f,  0.0f},  {1.0f,  0.0f,  0.0f}},
-		{{-0.5f, -0.5f, -0.5f},  {-1.0f,  0.0f,  0.0f},  {1.0f,  0.0f,  0.0f}},
-		{{-0.5f, -0.5f,  0.5f},  {-1.0f,  0.0f,  0.0f},  {1.0f,  0.0f,  0.0f}},
-		{{-0.5f,  0.5f,  0.5f},  {-1.0f,  0.0f,  0.0f},  {1.0f,  0.0f,  0.0f}},									   
-		{{ 0.5f,  0.5f,  0.5f},  {1.0f,  0.0f,  0.0f},  {1.0f,  0.0f,  0.0f}},
-		{{ 0.5f,  0.5f, -0.5f},  {1.0f,  0.0f,  0.0f},  {1.0f,  0.0f,  0.0f}},
-		{{ 0.5f, -0.5f, -0.5f},  {1.0f,  0.0f,  0.0f},  {1.0f,  0.0f,  0.0f}},
-		{{ 0.5f, -0.5f, -0.5f},  {1.0f,  0.0f,  0.0f},  {1.0f,  0.0f,  0.0f}},
-		{{ 0.5f, -0.5f,  0.5f},  {1.0f,  0.0f,  0.0f},  {1.0f,  0.0f,  0.0f}},
-		{{ 0.5f,  0.5f,  0.5f},  {1.0f,  0.0f,  0.0f},  {1.0f,  0.0f,  0.0f}},									   
-		{{-0.5f, -0.5f, -0.5f},  {0.0f, -1.0f,  0.0f},  {0.0f, 1.0f,   0.0f}},
-		{{ 0.5f, -0.5f, -0.5f},  {0.0f, -1.0f,  0.0f},  {0.0f, 1.0f,   0.0f}},
-		{{ 0.5f, -0.5f,  0.5f},  {0.0f, -1.0f,  0.0f},  {0.0f, 1.0f,   0.0f}},
-		{{ 0.5f, -0.5f,  0.5f},  {0.0f, -1.0f,  0.0f},  {0.0f, 1.0f,   0.0f}},
-		{{-0.5f, -0.5f,  0.5f},  {0.0f, -1.0f,  0.0f},  {0.0f, 1.0f,   0.0f}},
-		{{-0.5f, -0.5f, -0.5f},  {0.0f, -1.0f,  0.0f},  {0.0f, 1.0f,   0.0f}},									   
-		{{-0.5f,  0.5f, -0.5f},  {0.0f,  1.0f,  0.0f},  {0.0f,  1.0f,  0.0f}},
-		{{ 0.5f,  0.5f, -0.5f},  {0.0f,  1.0f,  0.0f},  {0.0f,  1.0f,  0.0f}},
-		{{ 0.5f,  0.5f,  0.5f},  {0.0f,  1.0f,  0.0f},  {0.0f,  1.0f,  0.0f}},
-		{{ 0.5f,  0.5f,  0.5f},  {0.0f,  1.0f,  0.0f},  {0.0f,  1.0f,  0.0f}},
-		{{-0.5f,  0.5f,  0.5f},  {0.0f,  1.0f,  0.0f},  {0.0f,  1.0f,  0.0f}},
-		{{-0.5f,  0.5f, -0.5f},  {0.0f,  1.0f,  0.0f},  {0.0f,  1.0f,  0.0f}} };
+		{{-1.0, -1.0,  1.0},   {0.0f,  1.0f, 0.0f},  {0.0f,  0.0f,  1.0f}},//0
+		{{ 1.0, -1.0,  1.0},   {0.0f,  1.0f, 0.0f},  {0.0f,  0.0f,  1.0f}},//1
+		{{ 1.0,  1.0,  1.0},   {0.0f,  1.0f, 0.0f},  {1.0f,  0.0f,  0.0f}},//2
+		{{ -1.0,  1.0,  1.0},  {0.0f,  1.0f, 0.0f},  {0.0f,  0.0f,  1.0f}},//3
+		{{-1.0, -1.0, -1.0,},  {0.0f,  0.0f, -1.0f},  {0.0f,  1.0f,  0.0f}},//4
+		{{1.0, -1.0, -1.0},  {0.0f,  0.0f, -1.0f},  {1.0f,  0.0f,  1.0f}},//5
+		{{1.0,  1.0, -1.0},  {0.0f,  0.0f,  1.0f},  {0.4f,  0.0f,  1.0f}},//6
+		{{ -1.0,  1.0, -1.0},  {0.0f,  0.0f,  1.0f},  {0.0f,  0.0f,  1.0f}}//7
+	};
+
+	std::vector<Vertex> points2 = {
+		//position           normal               color
+	    {{-1.0, -1.0,  1.0},   {0.0f,  1.0f, 0.0f},  {0.0f,  0.0f,  1.0f}},//0
+		{{ 1.0, -1.0,  1.0},   {0.0f,  1.0f, 0.0f},  {0.0f,  0.0f,  1.0f}},//1
+		{{ 1.0,  1.0,  1.0},   {0.0f,  1.0f, 0.0f},  {1.0f,  0.0f,  0.0f}},//2
+		{{ -1.0,  1.0,  1.0},  {0.0f,  1.0f, 0.0f},  {0.0f,  0.0f,  1.0f}},//3
+
+		{{ 1.0, -1.0,  1.0},   {0.0f,  1.0f, 0.0f},  {0.0f,  0.0f,  1.0f}},//1
+		{{1.0, -1.0, -1.0},  {0.0f,  0.0f, -1.0f},  {1.0f,  0.0f,  1.0f}},//5
+		{{1.0,  1.0, -1.0},  {0.0f,  0.0f,  1.0f},  {0.4f,  0.0f,  1.0f}},//6
+		{{ 1.0,  1.0,  1.0},   {0.0f,  1.0f, 0.0f},  {1.0f,  0.0f,  0.0f}},//2
+
+		{{1.0, -1.0, -1.0},  {0.0f,  0.0f, -1.0f},  {1.0f,  0.0f,  1.0f}},//5
+		{{1.0,  1.0, -1.0},  {0.0f,  0.0f,  1.0f},  {0.4f,  0.0f,  1.0f}},//6
+		{{ -1.0,  1.0, -1.0},  {0.0f,  0.0f,  1.0f},  {0.0f,  0.0f,  1.0f}},//7
+		{ {-1.0, -1.0, -1.0,},  {0.0f,  0.0f, -1.0f},  {0.0f,  1.0f,  0.0f}},//4
+
+		{{-1.0, -1.0, -1.0,},  {0.0f,  0.0f, -1.0f},  {0.0f,  1.0f,  0.0f}},//4
+		{{-1.0, -1.0,  1.0},   {0.0f,  1.0f, 0.0f},  {0.0f,  0.0f,  1.0f}},//0
+		{{ -1.0,  1.0,  1.0},  {0.0f,  1.0f, 0.0f},  {0.0f,  0.0f,  1.0f}},//3
+	};
+
+	std::vector<unsigned int> indices = {
+		// front
+		0, 1, 2,
+		2, 3, 0,
+		// right
+		1, 5, 6,
+		6, 2, 1,
+		// back
+		7, 6, 5,
+		5, 4, 7,
+		// left
+		4, 0, 3,
+		3, 7, 4,
+		// bottom
+		4, 5, 1,
+		1, 0, 4,
+		// top
+		3, 2, 6,
+		6, 7, 3 };
 }
 
 namespace fgl
@@ -75,10 +90,9 @@ namespace fgl
 		typedef void (*PglBindVertexArray) (GLuint array);
 	public:
 		GLCamera camera;
-		QOpenGLVertexArrayObject* m_vao = nullptr;
-		QOpenGLBuffer* m_vbo = nullptr;
-		QOpenGLBuffer m_vertexBuffer;
-		GLuint VAO;
+		QOpenGLBuffer m_vertexBuffer = QOpenGLBuffer(QOpenGLBuffer::VertexBuffer);
+		QOpenGLBuffer m_indexBuffer = QOpenGLBuffer(QOpenGLBuffer::IndexBuffer);
+		QOpenGLVertexArrayObject VAO = QOpenGLVertexArrayObject();
 		QOpenGLExtraFunctions f;
 		void init() override
 		{
@@ -93,8 +107,8 @@ namespace fgl
 			auto s = program_->log();
 			program_->link();
 			
-			f.glGenVertexArrays(1, &VAO);
-			f.glBindVertexArray(VAO);
+			VAO.create();
+			VAO.bind();
 
 			m_vertexBuffer.create();
 			m_vertexBuffer.setUsagePattern(QOpenGLBuffer::StaticDraw);
@@ -103,8 +117,13 @@ namespace fgl
 				qWarning() << "Could not bind vertex buffer to the context";
 				return;
 			}
-			m_vertexBuffer.allocate(points.data(), points.size() * sizeof(Triangle));
+			m_vertexBuffer.allocate(points.data(), points.size() * sizeof(Vertex));
 
+			m_indexBuffer.create();
+			m_indexBuffer.bind();
+			m_indexBuffer.setUsagePattern(QOpenGLBuffer::StaticDraw);
+			m_indexBuffer.allocate(indices.data(), indices.size() * sizeof(GLuint));
+			
 			program_->setAttributeBuffer("posAttr", GL_FLOAT, 0, 3, 9 * sizeof(float));
 			program_->setAttributeBuffer("normalAttr", GL_FLOAT, 3 * sizeof(float), 3, 9 * sizeof(float));
 			program_->setAttributeBuffer("colAttr", GL_FLOAT, 6 * sizeof(float), 3, 9 * sizeof(float));
@@ -112,7 +131,8 @@ namespace fgl
 			program_->enableAttributeArray("posAttr");
 			program_->enableAttributeArray("colAttr");
 			program_->enableAttributeArray("normalAttr");
-
+			
+			VAO.release();
 		}
 
 		void render() override
@@ -133,9 +153,9 @@ namespace fgl
 			program_->setUniformValue(program_->uniformLocation("projection"), camera.getProjectionMatrix());
 			program_->setUniformValue(program_->uniformLocation("cameraPos"), camera.position);
 
-			f.glBindVertexArray(VAO);
-			glDrawArrays(GL_TRIANGLES, 0, points.size());
-			f.glBindVertexArray(0);
+			VAO.bind();
+			glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+			VAO.release();
 
 			program_->release();
 
