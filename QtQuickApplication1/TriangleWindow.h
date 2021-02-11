@@ -14,6 +14,7 @@
 
 
 #include "GLCamera.h"
+#include <QWindow>
 
 namespace
 {
@@ -135,19 +136,47 @@ namespace fgl
 			program_->release();
 
 			++frame_;
+			moveCamera();
 		}
-		
-		void keyPressEvent(QKeyEvent* event) override
+		void keyPressEvent(QKeyEvent* e) override
 		{
-			if (event->key() == Qt::Key_W)
+			keys[e->key()] = true;
+			GLWindow::keyPressEvent(e);
+		}
+
+		void keyReleaseEvent(QKeyEvent* e) override
+		{
+			keys[e->key()] = false;
+			GLWindow::keyReleaseEvent(e);
+		}
+		void mouseMoveEvent(QMouseEvent* e) override {
+			_mousePos = e->pos();
+		}
+		void moveCamera()
+		{
+			std::map<int, QVector3D> contolls = {
+				{Qt::Key_W, {0,0,1}},
+				{Qt::Key_S, {0,0,-1}},
+				{Qt::Key_A, {1,0,0}},
+				{Qt::Key_D, {-1,0,0}},
+				{Qt::Key_E, {0,1,0}},
+				{Qt::Key_Q, {0,-1,0}}};
+			
+			for(auto& [key, dir]: contolls)
 			{
-				camera.position.setY(camera.position.y() + 0.01);
+				if (keys[key])
+				{
+					camera.translate(dir * 0.1f);
+				}
 			}
 		}
 	private:
 		// Shader program handler.
 		std::unique_ptr<QOpenGLShaderProgram> program_ = nullptr;
 		
+		QMap<int, bool> keys;
+		QPoint _mousePos;
+
 		// Frame counter for animation.
 		int frame_ = 0;
 	};

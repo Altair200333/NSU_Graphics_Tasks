@@ -39,4 +39,10 @@ public:
 		right = QVector3D::crossProduct(forward, QVector3D( 0, 0, 1 )).normalized();
 		up = QVector3D::crossProduct(right, front).normalized();
 	}
+	void translate(QVector3D mult)
+	{
+		position += front * mult.z();
+		position += right * mult.x();
+		position += up * mult.y();
+	}
 };
