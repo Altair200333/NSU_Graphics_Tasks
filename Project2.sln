@@ -3,15 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Project2", "Project2\Project2.vcxproj", "{79F8995A-01F3-44D3-BC56-E40FF1B79478}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QtApplication1", "QtApplication1\QtApplication1.vcxproj", "{8CEB96F7-20D2-4F64-936E-72F071B0DF20}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QtQuickApplication1", "QtQuickApplication1\QtQuickApplication1.vcxproj", "{69D8A941-7E1F-4FCD-9671-E1A8C6C7F6ED}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "coreProfileTask1", "coreProfileTask1\coreProfileTask1.vcxproj", "{2FDD1AE6-3B5C-4E0C-8D49-059AE1DAA8B0}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "qtvars", "coreProfileTask1\x64\Debug\qmake\temp\qtvars.vcxproj", "{C27F9AF1-3626-316E-BDA3-3D54B13FCDCE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,38 +13,12 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{79F8995A-01F3-44D3-BC56-E40FF1B79478}.Debug|x64.ActiveCfg = Debug|x64
-		{79F8995A-01F3-44D3-BC56-E40FF1B79478}.Debug|x64.Build.0 = Debug|x64
-		{79F8995A-01F3-44D3-BC56-E40FF1B79478}.Debug|x86.ActiveCfg = Debug|Win32
-		{79F8995A-01F3-44D3-BC56-E40FF1B79478}.Debug|x86.Build.0 = Debug|Win32
-		{79F8995A-01F3-44D3-BC56-E40FF1B79478}.Release|x64.ActiveCfg = Release|x64
-		{79F8995A-01F3-44D3-BC56-E40FF1B79478}.Release|x64.Build.0 = Release|x64
-		{79F8995A-01F3-44D3-BC56-E40FF1B79478}.Release|x86.ActiveCfg = Release|Win32
-		{79F8995A-01F3-44D3-BC56-E40FF1B79478}.Release|x86.Build.0 = Release|Win32
-		{8CEB96F7-20D2-4F64-936E-72F071B0DF20}.Debug|x64.ActiveCfg = Debug|x64
-		{8CEB96F7-20D2-4F64-936E-72F071B0DF20}.Debug|x64.Build.0 = Debug|x64
-		{8CEB96F7-20D2-4F64-936E-72F071B0DF20}.Debug|x86.ActiveCfg = Debug|x64
-		{8CEB96F7-20D2-4F64-936E-72F071B0DF20}.Release|x64.ActiveCfg = Release|x64
-		{8CEB96F7-20D2-4F64-936E-72F071B0DF20}.Release|x64.Build.0 = Release|x64
-		{8CEB96F7-20D2-4F64-936E-72F071B0DF20}.Release|x86.ActiveCfg = Release|x64
 		{69D8A941-7E1F-4FCD-9671-E1A8C6C7F6ED}.Debug|x64.ActiveCfg = Debug|x64
 		{69D8A941-7E1F-4FCD-9671-E1A8C6C7F6ED}.Debug|x64.Build.0 = Debug|x64
 		{69D8A941-7E1F-4FCD-9671-E1A8C6C7F6ED}.Debug|x86.ActiveCfg = Debug|x64
 		{69D8A941-7E1F-4FCD-9671-E1A8C6C7F6ED}.Release|x64.ActiveCfg = Release|x64
 		{69D8A941-7E1F-4FCD-9671-E1A8C6C7F6ED}.Release|x64.Build.0 = Release|x64
 		{69D8A941-7E1F-4FCD-9671-E1A8C6C7F6ED}.Release|x86.ActiveCfg = Release|x64
-		{2FDD1AE6-3B5C-4E0C-8D49-059AE1DAA8B0}.Debug|x64.ActiveCfg = Debug|x64
-		{2FDD1AE6-3B5C-4E0C-8D49-059AE1DAA8B0}.Debug|x64.Build.0 = Debug|x64
-		{2FDD1AE6-3B5C-4E0C-8D49-059AE1DAA8B0}.Debug|x86.ActiveCfg = Debug|x64
-		{2FDD1AE6-3B5C-4E0C-8D49-059AE1DAA8B0}.Release|x64.ActiveCfg = Release|x64
-		{2FDD1AE6-3B5C-4E0C-8D49-059AE1DAA8B0}.Release|x64.Build.0 = Release|x64
-		{2FDD1AE6-3B5C-4E0C-8D49-059AE1DAA8B0}.Release|x86.ActiveCfg = Release|x64
-		{C27F9AF1-3626-316E-BDA3-3D54B13FCDCE}.Debug|x64.ActiveCfg = Debug|x64
-		{C27F9AF1-3626-316E-BDA3-3D54B13FCDCE}.Debug|x64.Build.0 = Debug|x64
-		{C27F9AF1-3626-316E-BDA3-3D54B13FCDCE}.Debug|x86.ActiveCfg = Debug|x64
-		{C27F9AF1-3626-316E-BDA3-3D54B13FCDCE}.Release|x64.ActiveCfg = Release|x64
-		{C27F9AF1-3626-316E-BDA3-3D54B13FCDCE}.Release|x64.Build.0 = Release|x64
-		{C27F9AF1-3626-316E-BDA3-3D54B13FCDCE}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
