@@ -15,6 +15,7 @@
 
 #include "GLCamera.h"
 #include <QWindow>
+#include "Input.h"
 
 namespace
 {
@@ -140,13 +141,13 @@ namespace fgl
 		}
 		void keyPressEvent(QKeyEvent* e) override
 		{
-			keys[e->key()] = true;
+			Input::pressKey(e->key());
 			GLWindow::keyPressEvent(e);
 		}
 
 		void keyReleaseEvent(QKeyEvent* e) override
 		{
-			keys[e->key()] = false;
+			Input::releaseKey(e->key());
 			GLWindow::keyReleaseEvent(e);
 		}
 		void mouseMoveEvent(QMouseEvent* e) override {
@@ -164,7 +165,7 @@ namespace fgl
 			
 			for(auto& [key, dir]: contolls)
 			{
-				if (keys[key])
+				if (Input::keyPressed(key))
 				{
 					camera.translate(dir * 0.1f);
 				}
@@ -174,7 +175,6 @@ namespace fgl
 		// Shader program handler.
 		std::unique_ptr<QOpenGLShaderProgram> program_ = nullptr;
 		
-		QMap<int, bool> keys;
 		QPoint _mousePos;
 
 		// Frame counter for animation.
