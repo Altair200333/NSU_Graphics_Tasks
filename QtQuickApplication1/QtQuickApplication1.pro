@@ -8,6 +8,7 @@ DESTDIR = ../x64/Debug
 CONFIG += debug
 LIBS += -L"."
 DEPENDPATH += .
+LIBS += opengl32.lib
 MOC_DIR += .
 OBJECTS_DIR += debug
 UI_DIR += GeneratedFiles

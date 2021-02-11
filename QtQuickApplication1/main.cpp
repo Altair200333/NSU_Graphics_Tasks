@@ -1,5 +1,5 @@
 #include <QGuiApplication>
-#include "TriangleWindow.h"
+#include "DemoWindow.h"
 
 int main(int argc, char** argv) {
     QGuiApplication app(argc, argv);
@@ -9,9 +9,9 @@ int main(int argc, char** argv) {
     format.setVersion(3, 3);
     format.setProfile(QSurfaceFormat::CoreProfile);
 	
-    fgl::TriangleWindow window;
+    fgl::DemoWindow window;
     window.setFormat(format);
-    window.resize(640, 480);
+    window.resize(1000, 800);
     window.show();
 
     window.setAnimated(true);

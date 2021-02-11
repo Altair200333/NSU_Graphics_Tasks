@@ -12,7 +12,7 @@ public:
 
 	QVector3D front = { 0, 0, 1 };
 	QVector3D right = { 1, 0, 0 };
-	QVector3D up = { 0, 1, 0 };
+	QVector3D up =	  { 0, 1, 0 };
 	QVector3D position = {0,0, 3};
 	
 	GLCamera()

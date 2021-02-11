@@ -64,15 +64,15 @@ namespace fgl {
 			auto needsInitialize = false;
 
 			// Lazy init gl context.
-			if (!context_) {
-				context_ = std::make_unique<QOpenGLContext>(this);
-				context_->setFormat(requestedFormat());
-				context_->create();
+			if (!context) {
+				context = std::make_unique<QOpenGLContext>(this);
+				context->setFormat(requestedFormat());
+				context->create();
 
 				needsInitialize = true;
 			}
 
-			const bool contextBindSuccess = context_->makeCurrent(this);
+			const bool contextBindSuccess = context->makeCurrent(this);
 			if (!contextBindSuccess) {
 				return;
 			}
@@ -85,7 +85,7 @@ namespace fgl {
 			// Render now then swap buffers.
 			render();
 
-			context_->swapBuffers(this);
+			context->swapBuffers(this);
 
 			// Post message to redraw later if animating.
 			if (animating_) {
@@ -121,7 +121,7 @@ namespace fgl {
 
 	protected:
 		bool animating_ = false;
-		std::unique_ptr<QOpenGLContext> context_ = nullptr;
+		std::shared_ptr<QOpenGLContext> context = nullptr;
 		std::unique_ptr<QOpenGLPaintDevice> device_ = nullptr;
 	};
 
