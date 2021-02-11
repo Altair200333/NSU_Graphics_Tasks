@@ -16,56 +16,59 @@
 #include "GLCamera.h"
 #include <QWindow>
 #include "Input.h"
+#include "MouseInput.h"
 
 namespace
 {
-	std::vector<float> points = {
+	struct Triangle
+	{
+		std::array<float, 3> vertex;
+		std::array<float, 3> normal;
+		std::array<float, 3> color;
+	};
+	std::vector<Triangle> points = {
 		 //position           normal               color
-		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
-												   
-		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,
-												   
-		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
-		-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
-		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
-		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
-		-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
-		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
-												   
-		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
-		 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
-												   
-		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,  0.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,  0.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,  0.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,  0.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,  0.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,  0.0f,
-												   
-		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f };
+		{{-0.5f, -0.5f, -0.5f},  {0.0f,  0.0f, -1.0f},  {0.0f,  0.0f,  1.0f}},
+		{{ 0.5f, -0.5f, -0.5f},  {0.0f,  0.0f, -1.0f},  {0.0f,  0.0f,  1.0f}},
+		{{ 0.5f,  0.5f, -0.5f},  {0.0f,  0.0f, -1.0f},  {0.0f,  0.0f,  1.0f}},
+		{{ 0.5f,  0.5f, -0.5f},  {0.0f,  0.0f, -1.0f},  {0.0f,  0.0f,  1.0f}},
+		{{-0.5f,  0.5f, -0.5f},  {0.0f,  0.0f, -1.0f},  {0.0f,  0.0f,  1.0f}},
+		{{-0.5f, -0.5f, -0.5f},  {0.0f,  0.0f, -1.0f},  {0.0f,  0.0f,  1.0f}},										   
+		{{-0.5f, -0.5f,  0.5f},  {0.0f,  0.0f,  1.0f},  {0.0f,  0.0f,  1.0f}},
+		{{ 0.5f, -0.5f,  0.5f},  {0.0f,  0.0f,  1.0f},  {0.0f,  0.0f,  1.0f}},
+		{{ 0.5f,  0.5f,  0.5f},  {0.0f,  0.0f,  1.0f},  {0.0f,  0.0f,  1.0f}},
+		{{ 0.5f,  0.5f,  0.5f},  {0.0f,  0.0f,  1.0f},  {0.0f,  0.0f,  1.0f}},
+		{{-0.5f,  0.5f,  0.5f},  {0.0f,  0.0f,  1.0f},  {0.0f,  0.0f,  1.0f}},
+		{{-0.5f, -0.5f,  0.5f},  {0.0f,  0.0f,  1.0f},  {0.0f,  0.0f,  1.0f}},									   
+		{{-0.5f,  0.5f,  0.5f},  {-1.0f,  0.0f,  0.0f},  {1.0f,  0.0f,  0.0f}},
+		{{-0.5f,  0.5f, -0.5f},  {-1.0f,  0.0f,  0.0f},  {1.0f,  0.0f,  0.0f}},
+		{{-0.5f, -0.5f, -0.5f},  {-1.0f,  0.0f,  0.0f},  {1.0f,  0.0f,  0.0f}},
+		{{-0.5f, -0.5f, -0.5f},  {-1.0f,  0.0f,  0.0f},  {1.0f,  0.0f,  0.0f}},
+		{{-0.5f, -0.5f,  0.5f},  {-1.0f,  0.0f,  0.0f},  {1.0f,  0.0f,  0.0f}},
+		{{-0.5f,  0.5f,  0.5f},  {-1.0f,  0.0f,  0.0f},  {1.0f,  0.0f,  0.0f}},									   
+		{{ 0.5f,  0.5f,  0.5f},  {1.0f,  0.0f,  0.0f},  {1.0f,  0.0f,  0.0f}},
+		{{ 0.5f,  0.5f, -0.5f},  {1.0f,  0.0f,  0.0f},  {1.0f,  0.0f,  0.0f}},
+		{{ 0.5f, -0.5f, -0.5f},  {1.0f,  0.0f,  0.0f},  {1.0f,  0.0f,  0.0f}},
+		{{ 0.5f, -0.5f, -0.5f},  {1.0f,  0.0f,  0.0f},  {1.0f,  0.0f,  0.0f}},
+		{{ 0.5f, -0.5f,  0.5f},  {1.0f,  0.0f,  0.0f},  {1.0f,  0.0f,  0.0f}},
+		{{ 0.5f,  0.5f,  0.5f},  {1.0f,  0.0f,  0.0f},  {1.0f,  0.0f,  0.0f}},									   
+		{{-0.5f, -0.5f, -0.5f},  {0.0f, -1.0f,  0.0f},  {0.0f, 1.0f,   0.0f}},
+		{{ 0.5f, -0.5f, -0.5f},  {0.0f, -1.0f,  0.0f},  {0.0f, 1.0f,   0.0f}},
+		{{ 0.5f, -0.5f,  0.5f},  {0.0f, -1.0f,  0.0f},  {0.0f, 1.0f,   0.0f}},
+		{{ 0.5f, -0.5f,  0.5f},  {0.0f, -1.0f,  0.0f},  {0.0f, 1.0f,   0.0f}},
+		{{-0.5f, -0.5f,  0.5f},  {0.0f, -1.0f,  0.0f},  {0.0f, 1.0f,   0.0f}},
+		{{-0.5f, -0.5f, -0.5f},  {0.0f, -1.0f,  0.0f},  {0.0f, 1.0f,   0.0f}},									   
+		{{-0.5f,  0.5f, -0.5f},  {0.0f,  1.0f,  0.0f},  {0.0f,  1.0f,  0.0f}},
+		{{ 0.5f,  0.5f, -0.5f},  {0.0f,  1.0f,  0.0f},  {0.0f,  1.0f,  0.0f}},
+		{{ 0.5f,  0.5f,  0.5f},  {0.0f,  1.0f,  0.0f},  {0.0f,  1.0f,  0.0f}},
+		{{ 0.5f,  0.5f,  0.5f},  {0.0f,  1.0f,  0.0f},  {0.0f,  1.0f,  0.0f}},
+		{{-0.5f,  0.5f,  0.5f},  {0.0f,  1.0f,  0.0f},  {0.0f,  1.0f,  0.0f}},
+		{{-0.5f,  0.5f, -0.5f},  {0.0f,  1.0f,  0.0f},  {0.0f,  1.0f,  0.0f}} };
 }
 
 namespace fgl
 {
+	
 	class TriangleWindow final : public GLWindow
 	{
 		typedef void (*PglGenVertexArrays) (GLsizei n, GLuint* arrays);
@@ -100,7 +103,7 @@ namespace fgl
 				qWarning() << "Could not bind vertex buffer to the context";
 				return;
 			}
-			m_vertexBuffer.allocate(points.data(), points.size() * sizeof(float));
+			m_vertexBuffer.allocate(points.data(), points.size() * sizeof(Triangle));
 
 			program_->setAttributeBuffer("posAttr", GL_FLOAT, 0, 3, 9 * sizeof(float));
 			program_->setAttributeBuffer("normalAttr", GL_FLOAT, 3 * sizeof(float), 3, 9 * sizeof(float));
@@ -131,13 +134,14 @@ namespace fgl
 			program_->setUniformValue(program_->uniformLocation("cameraPos"), camera.position);
 
 			f.glBindVertexArray(VAO);
-			glDrawArrays(GL_TRIANGLES, 0, points.size()/6);
+			glDrawArrays(GL_TRIANGLES, 0, points.size());
 			f.glBindVertexArray(0);
 
 			program_->release();
 
 			++frame_;
 			moveCamera();
+			MouseInput::reset();
 		}
 		void keyPressEvent(QKeyEvent* e) override
 		{
@@ -150,33 +154,33 @@ namespace fgl
 			Input::releaseKey(e->key());
 			GLWindow::keyReleaseEvent(e);
 		}
-		void mouseMoveEvent(QMouseEvent* e) override {
-			_mousePos = e->pos();
+		void mouseMoveEvent(QMouseEvent* e) override
+		{
+			MouseInput::mouseCallback(e->pos());
 		}
 		void moveCamera()
 		{
-			std::map<int, QVector3D> contolls = {
+			std::map<int, QVector3D> controls = {
 				{Qt::Key_W, {0,0,1}},
 				{Qt::Key_S, {0,0,-1}},
-				{Qt::Key_A, {1,0,0}},
-				{Qt::Key_D, {-1,0,0}},
+				{Qt::Key_A, {-1,0,0}},
+				{Qt::Key_D, {1,0,0}},
 				{Qt::Key_E, {0,1,0}},
 				{Qt::Key_Q, {0,-1,0}}};
 			
-			for(auto& [key, dir]: contolls)
+			for(auto& [key, dir]: controls)
 			{
 				if (Input::keyPressed(key))
 				{
 					camera.translate(dir * 0.1f);
 				}
 			}
+			camera.look(MouseInput::delta().x()*0.5f, MouseInput::delta().y() * 0.5f);
 		}
 	private:
 		// Shader program handler.
 		std::unique_ptr<QOpenGLShaderProgram> program_ = nullptr;
 		
-		QPoint _mousePos;
-
 		// Frame counter for animation.
 		int frame_ = 0;
 	};
