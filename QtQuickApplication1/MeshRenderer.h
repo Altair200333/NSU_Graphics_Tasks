@@ -5,20 +5,36 @@
 #include <QOpenGLFunctions>
 #include "Mesh.h"
 #include "GLCamera.h"
+#include "Transform.h"
+
 class MeshRenderer final
 {
 public:
-	QOpenGLBuffer* vbo = new QOpenGLBuffer(QOpenGLBuffer::VertexBuffer);
-	QOpenGLBuffer* ibo = new QOpenGLBuffer(QOpenGLBuffer::IndexBuffer);
-	QOpenGLVertexArrayObject* vao = new QOpenGLVertexArrayObject();
+	QOpenGLBuffer* vbo;
+	QOpenGLBuffer* ibo;
+	QOpenGLVertexArrayObject* vao;
 	std::shared_ptr<QOpenGLShaderProgram> shader = nullptr;
+	Transform* transform;
 	Mesh* mesh = nullptr;
 
 	MeshRenderer() = default;
-	
-	MeshRenderer(QObject* parent, Mesh* _mesh, const std::string& fragment = "Shaders/triangle.fs", const std::string& vertex = "Shaders/triangle.vs"):
-		mesh(_mesh)
+
+	void enableAttributes()
 	{
+		shader->enableAttributeArray("posAttr");
+		shader->setAttributeBuffer("posAttr", GL_FLOAT, 0, 3, 9 * sizeof(float));
+
+		shader->enableAttributeArray("normalAttr");
+		shader->setAttributeBuffer("normalAttr", GL_FLOAT, 3 * sizeof(float), 3, 9 * sizeof(float));
+		
+		shader->enableAttributeArray("colAttr");
+		shader->setAttributeBuffer("colAttr", GL_FLOAT, 6 * sizeof(float), 3, 9 * sizeof(float));
+	}
+
+	MeshRenderer(QObject* parent, Transform* _transform, Mesh* _mesh, const std::string& fragment = "Shaders/triangle.fs", const std::string& vertex = "Shaders/triangle.vs"):
+		mesh(_mesh), transform(_transform)
+	{
+		
 		shader = std::make_shared<QOpenGLShaderProgram>(parent);
 		shader->addShaderFromSourceFile(QOpenGLShader::Vertex,
 			"Shaders/triangle.vs");
@@ -27,10 +43,12 @@ public:
 
 		auto s = shader->log();
 		shader->link();
-
+		
+		vao = new QOpenGLVertexArrayObject(parent);
 		vao->create();
 		vao->bind();
 
+		vbo = new QOpenGLBuffer(QOpenGLBuffer::VertexBuffer);
 		vbo->create();
 		vbo->setUsagePattern(QOpenGLBuffer::StaticDraw);
 		if (!vbo->bind())
@@ -40,20 +58,16 @@ public:
 		}
 		vbo->allocate(mesh->vertices.data(), mesh->vertices.size() * sizeof(Vertex));
 
+		ibo = new QOpenGLBuffer(QOpenGLBuffer::IndexBuffer);
 		ibo->create();
 		ibo->bind();
 		ibo->setUsagePattern(QOpenGLBuffer::StaticDraw);
 		ibo->allocate(mesh->indices.data(), mesh->indices.size() * sizeof(GLuint));
 
-		shader->setAttributeBuffer("posAttr", GL_FLOAT, 0, 3, 9 * sizeof(float));
-		shader->setAttributeBuffer("normalAttr", GL_FLOAT, 3 * sizeof(float), 3, 9 * sizeof(float));
-		shader->setAttributeBuffer("colAttr", GL_FLOAT, 6 * sizeof(float), 3, 9 * sizeof(float));
-
-		shader->enableAttributeArray("posAttr");
-		shader->enableAttributeArray("colAttr");
-		shader->enableAttributeArray("normalAttr");
+		enableAttributes();
 
 		vao->release();
+		shader->release();
 	}
 	int frame_ = 0;
 	
@@ -61,10 +75,7 @@ public:
 	{
 		shader->bind();
 
-		QMatrix4x4 model;
-		model.rotate(1.0f * frame_, 0, 1, 0);
-
-		shader->setUniformValue(shader->uniformLocation("model"), model);
+		shader->setUniformValue(shader->uniformLocation("model"), transform->transform);
 		shader->setUniformValue(shader->uniformLocation("view"), camera.getViewMatrix());
 		shader->setUniformValue(shader->uniformLocation("projection"), camera.getProjectionMatrix());
 		shader->setUniformValue(shader->uniformLocation("cameraPos"), camera.position);

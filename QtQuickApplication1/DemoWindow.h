@@ -21,6 +21,8 @@
 #include "Vertex.h"
 #include "Mesh.h"
 #include "MeshRenderer.h"
+#include "Object.h"
+
 namespace fgl
 {
 	
@@ -30,12 +32,16 @@ namespace fgl
 		typedef void (*PglBindVertexArray) (GLuint array);
 	public:
 		GLCamera camera;
-		Mesh m;
-		MeshRenderer mr;
+		std::vector<Object> obj;
 		void init() override
-		{			
-			m = Mesh(Cube::points, Cube::indices);
-			mr = MeshRenderer(this, &m);
+		{
+			for(int i =0;i<1;++i)
+			{
+				obj.push_back(Object());
+				obj[i].mesh = Mesh(Cube::vertices, Cube::indices);
+				obj[i].initRenderer(this);
+				//obj[i].transform.translate({ i * 2.0f,0,0 });
+			}
 		}
 
 		void render() override
@@ -45,8 +51,13 @@ namespace fgl
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glEnable(GL_DEPTH_TEST);
+			obj[0].renderer.render(camera);
+
+			//for (int i = 0; i < obj.size(); ++i)
+			//{
+			//	obj[1].renderer.render(camera);
+			//}
 			
-			mr.render(camera);
 			moveCamera();
 			MouseInput::reset();
 		}

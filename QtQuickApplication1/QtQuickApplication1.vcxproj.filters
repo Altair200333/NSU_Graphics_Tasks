@@ -74,6 +74,12 @@
     <ClInclude Include="Vertex.h">
       <Filter>Object</Filter>
     </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
