@@ -52,6 +52,7 @@ public:
 		scene.onRender();
 
 		MouseInput::reset();
+		Input::reset();
 	}
 
 	void keyPressEvent(QKeyEvent* e) override

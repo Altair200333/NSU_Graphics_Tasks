@@ -4,6 +4,7 @@
 class Input final
 {
 	QMap<int, bool> keys;
+	QMap<int, bool> pressedKeys;
 	static Input& instance()
 	{
 		static Input input;
@@ -13,6 +14,7 @@ public:
 	static void pressKey(int keyCode)
 	{
 		instance().keys[keyCode] = true;
+		instance().pressedKeys[keyCode] = true;
 	}
 	static void releaseKey(int keyCode)
 	{
@@ -21,5 +23,13 @@ public:
 	static bool keyPressed(int keyCode)
 	{
 		return instance().keys[keyCode];
+	}
+	static bool keyJustPressed(int keyCode)
+	{
+		return instance().pressedKeys[keyCode];
+	}
+	static void reset()
+	{
+		instance().pressedKeys.clear();
 	}
 };

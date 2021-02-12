@@ -36,6 +36,9 @@ public:
 	std::vector<std::shared_ptr<Object>> objects;
 	GLCamera camera;
 
+	bool cullFront = false;
+	bool useVertexColor = false;
+	
 	Scene() = default;
 	
 	Scene(QObject* _parent): parent(_parent)
@@ -65,17 +68,31 @@ public:
 	void onUpdate()
 	{
 		moveCamera();
-		if(Input::keyPressed(Qt::Key_1))
+		if(Input::keyJustPressed(Qt::Key_1))
 		{
-			setMode(Material::vertexColor);
+			if(useVertexColor)
+				setMode(Material::materialColor);
+			else
+				setMode(Material::vertexColor);
+			useVertexColor = !useVertexColor;
 		}
-		else if (Input::keyPressed(Qt::Key_2))
+		if (Input::keyJustPressed(Qt::Key_2))
 		{
-			setMode(Material::materialColor);
+			cullFront = !cullFront;
 		}
+		
 	}
 	void onRender()
 	{
+		if (cullFront)
+		{
+			glEnable(GL_CULL_FACE);
+			glCullFace(GL_FRONT);
+		}
+		else
+		{
+			glDisable(GL_CULL_FACE);
+		}
 		for (size_t i = 0; i < objects.size(); ++i)
 		{
 			objects[i]->transform.rotate(1.0f - (i % 2) * 2, { 1,1,0 });
