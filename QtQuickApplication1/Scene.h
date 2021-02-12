@@ -37,6 +37,7 @@ public:
 	GLCamera camera;
 
 	Scene() = default;
+	
 	Scene(QObject* _parent): parent(_parent)
 	{
 		for (int i = 0; i < 11; ++i)
@@ -47,10 +48,31 @@ public:
 			objects[i]->transform.translate({ i * 3.5f - 5,0,0 });
 		}
 	}
-
+	void setColor(const QColor& color)
+	{
+		for(auto& obj: objects)
+		{
+			obj->material.color = color;
+		}
+	}
+	void setMode(Material::Mode mode)
+	{
+		for (auto& obj : objects)
+		{
+			obj->material.mode = mode;
+		}
+	}
 	void onUpdate()
 	{
 		moveCamera();
+		if(Input::keyPressed(Qt::Key_1))
+		{
+			setMode(Material::vertexColor);
+		}
+		else if (Input::keyPressed(Qt::Key_2))
+		{
+			setMode(Material::materialColor);
+		}
 	}
 	void onRender()
 	{

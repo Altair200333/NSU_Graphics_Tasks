@@ -5,6 +5,7 @@
 #include <QOpenGLFunctions>
 #include "Mesh.h"
 #include "GLCamera.h"
+#include "Material.h"
 #include "Transform.h"
 
 class MeshRenderer final
@@ -13,10 +14,11 @@ public:
 	QOpenGLBuffer* vbo;
 	QOpenGLBuffer* ibo;
 	QOpenGLVertexArrayObject* vao;
-	std::shared_ptr<QOpenGLShaderProgram> shader = nullptr;
+	std::shared_ptr<QOpenGLShaderProgram> shader;
 	Transform* transform;
-	Mesh* mesh = nullptr;
-
+	Mesh* mesh;
+	Material* material;
+	
 	MeshRenderer() = default;
 
 	void enableAttributes()
@@ -68,8 +70,8 @@ public:
 		ibo->allocate(mesh->indices.data(), mesh->indices.size() * sizeof(GLuint));
 	}
 
-	MeshRenderer(QObject* parent, Transform* _transform, Mesh* _mesh, const std::string& fragment = "Shaders/triangle.fs", const std::string& vertex = "Shaders/triangle.vs"):
-		mesh(_mesh), transform(_transform)
+	MeshRenderer(QObject* parent, Transform* _transform, Mesh* _mesh, Material* _material, const std::string& fragment = "Shaders/triangle.fs", const std::string& vertex = "Shaders/triangle.vs"):
+		mesh(_mesh), transform(_transform), material(_material)
 	{
 		createShader(parent, fragment, vertex);
 
@@ -93,6 +95,7 @@ public:
 	{
 		shader->bind();
 
+		material->uploadToShader(shader);
 		shader->setUniformValue(shader->uniformLocation("model"), transform->transform);
 		shader->setUniformValue(shader->uniformLocation("view"), camera.getViewMatrix());
 		shader->setUniformValue(shader->uniformLocation("projection"), camera.getProjectionMatrix());

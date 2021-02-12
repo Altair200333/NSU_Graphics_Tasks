@@ -46,7 +46,7 @@ public:
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
 
-		auto color = colorDialog.currentColor();
+		scene.setColor(colorDialog.currentColor());
 		
 		scene.onUpdate();
 		scene.onRender();
