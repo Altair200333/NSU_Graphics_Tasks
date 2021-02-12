@@ -22,13 +22,13 @@ public:
 	void enableAttributes()
 	{
 		shader->enableAttributeArray("posAttr");
-		shader->setAttributeBuffer("posAttr", GL_FLOAT, 0, 3, 9 * sizeof(float));
+		shader->setAttributeBuffer("posAttr", GL_FLOAT, 0, 3, sizeof(Vertex));
 
 		shader->enableAttributeArray("normalAttr");
-		shader->setAttributeBuffer("normalAttr", GL_FLOAT, 3 * sizeof(float), 3, 9 * sizeof(float));
+		shader->setAttributeBuffer("normalAttr", GL_FLOAT, 3 * sizeof(float), 3, sizeof(Vertex));
 		
 		shader->enableAttributeArray("colAttr");
-		shader->setAttributeBuffer("colAttr", GL_FLOAT, 6 * sizeof(float), 3, 9 * sizeof(float));
+		shader->setAttributeBuffer("colAttr", GL_FLOAT, 6 * sizeof(float), 3, sizeof(Vertex));
 	}
 
 	MeshRenderer(QObject* parent, Transform* _transform, Mesh* _mesh, const std::string& fragment = "Shaders/triangle.fs", const std::string& vertex = "Shaders/triangle.vs"):
@@ -60,8 +60,8 @@ public:
 
 		ibo = new QOpenGLBuffer(QOpenGLBuffer::IndexBuffer);
 		ibo->create();
-		ibo->bind();
 		ibo->setUsagePattern(QOpenGLBuffer::StaticDraw);
+		ibo->bind();
 		ibo->allocate(mesh->indices.data(), mesh->indices.size() * sizeof(GLuint));
 
 		enableAttributes();

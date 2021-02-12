@@ -28,19 +28,18 @@ namespace fgl
 	
 	class DemoWindow final : public GLWindow
 	{
-		typedef void (*PglGenVertexArrays) (GLsizei n, GLuint* arrays);
-		typedef void (*PglBindVertexArray) (GLuint array);
 	public:
 		GLCamera camera;
-		std::vector<Object> obj;
+		std::vector<std::shared_ptr<Object>> objects;
+	
 		void init() override
 		{
-			for(int i =0;i<1;++i)
+			for(int i=0;i<4;++i)
 			{
-				obj.push_back(Object());
-				obj[i].mesh = Mesh(Cube::vertices, Cube::indices);
-				obj[i].initRenderer(this);
-				//obj[i].transform.translate({ i * 2.0f,0,0 });
+				objects.push_back(std::make_shared<Object>());
+				objects[i]->mesh = Mesh(Cube::vertices, Cube::indices);
+				objects[i]->initRenderer(this);
+				objects[i]->transform.translate({ i*3.5f - 5,0,0 });
 			}
 		}
 
@@ -51,12 +50,12 @@ namespace fgl
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glEnable(GL_DEPTH_TEST);
-			obj[0].renderer.render(camera);
-
-			//for (int i = 0; i < obj.size(); ++i)
-			//{
-			//	obj[1].renderer.render(camera);
-			//}
+			
+			for (size_t i = 0; i < objects.size(); ++i)
+			{
+				objects[i]->transform.rotate(1.0f-(i%2)*2, { 1,1,0 });
+				objects[i]->renderer.render(camera);
+			}
 			
 			moveCamera();
 			MouseInput::reset();

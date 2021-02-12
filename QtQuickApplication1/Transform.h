@@ -14,8 +14,6 @@ public:
 	}
 	void rotate(float angle, const QVector3D& axis)
 	{
-		transform.translate(-position);
 		transform.rotate(angle, axis);
-		transform.translate(position);
 	}
 };
