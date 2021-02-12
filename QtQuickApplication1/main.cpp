@@ -1,20 +1,20 @@
 #include <QGuiApplication>
+#include <QApplication>
 #include "DemoWindow.h"
-
+#include <QLabel>
+#include "QColorDialog"
 int main(int argc, char** argv) {
-    QGuiApplication app(argc, argv);
+    QApplication app(argc, argv);
 
     QSurfaceFormat format;
     format.setSamples(16);
     format.setVersion(3, 3);
     format.setProfile(QSurfaceFormat::CoreProfile);
-	
-    fgl::DemoWindow window;
+
+    DemoWindow window;
     window.setFormat(format);
-    window.resize(1000, 800);
+    window.resize(1200, 800);
     window.show();
-
-    window.setAnimated(true);
-
+  
     return app.exec();
 }

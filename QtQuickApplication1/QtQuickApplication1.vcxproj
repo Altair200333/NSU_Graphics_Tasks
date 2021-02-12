@@ -224,6 +224,7 @@
     <ClInclude Include="MeshRenderer.h" />
     <ClInclude Include="MouseInput.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="Scene.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Vertex.h" />
     <QtMoc Include="GLWindow.h" />

@@ -31,23 +31,22 @@ public:
 		shader->setAttributeBuffer("colAttr", GL_FLOAT, 6 * sizeof(float), 3, sizeof(Vertex));
 	}
 
-	MeshRenderer(QObject* parent, Transform* _transform, Mesh* _mesh, const std::string& fragment = "Shaders/triangle.fs", const std::string& vertex = "Shaders/triangle.vs"):
-		mesh(_mesh), transform(_transform)
+	void createShader(QObject* parent, const std::string& fragment, const std::string& vertex)
 	{
-		
 		shader = std::make_shared<QOpenGLShaderProgram>(parent);
-		shader->addShaderFromSourceFile(QOpenGLShader::Vertex,
-			"Shaders/triangle.vs");
-		shader->addShaderFromSourceFile(QOpenGLShader::Fragment,
-			"Shaders/triangle.fs");
+		shader->addShaderFromSourceFile(QOpenGLShader::Vertex, vertex.c_str());
+		shader->addShaderFromSourceFile(QOpenGLShader::Fragment, fragment.c_str());
+	}
 
-		auto s = shader->log();
-		shader->link();
-		
+	void createVao(QObject* parent)
+	{
 		vao = new QOpenGLVertexArrayObject(parent);
 		vao->create();
 		vao->bind();
+	}
 
+	void createVbo()
+	{
 		vbo = new QOpenGLBuffer(QOpenGLBuffer::VertexBuffer);
 		vbo->create();
 		vbo->setUsagePattern(QOpenGLBuffer::StaticDraw);
@@ -57,12 +56,31 @@ public:
 			return;
 		}
 		vbo->allocate(mesh->vertices.data(), mesh->vertices.size() * sizeof(Vertex));
+		return;
+	}
 
+	void createIbo()
+	{
 		ibo = new QOpenGLBuffer(QOpenGLBuffer::IndexBuffer);
 		ibo->create();
 		ibo->setUsagePattern(QOpenGLBuffer::StaticDraw);
 		ibo->bind();
 		ibo->allocate(mesh->indices.data(), mesh->indices.size() * sizeof(GLuint));
+	}
+
+	MeshRenderer(QObject* parent, Transform* _transform, Mesh* _mesh, const std::string& fragment = "Shaders/triangle.fs", const std::string& vertex = "Shaders/triangle.vs"):
+		mesh(_mesh), transform(_transform)
+	{
+		createShader(parent, fragment, vertex);
+
+		auto s = shader->log();
+		shader->link();
+		
+		createVao(parent);
+
+		createVbo();
+
+		createIbo();
 
 		enableAttributes();
 

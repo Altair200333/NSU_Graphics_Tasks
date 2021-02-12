@@ -8,6 +8,8 @@ in vec3 Normal;
 
 uniform vec3 cameraPos;
 
+uniform vec3 color;
+
 void main() 
 {
    vec3 dirToFrag = normalize(FragPos - cameraPos);
