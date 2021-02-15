@@ -9,6 +9,8 @@
 #include "Object.h"
 #include <QTransform>
 
+#include "CubeGenerator.h"
+
 class Scene final
 {
 	QObject* parent;
@@ -69,7 +71,7 @@ public:
 		createLightSourceBlock();
 		
 		lights.push_back(std::make_shared<LightSource>(QVector3D{0, 0, 7}));
-		lights.push_back(std::make_shared<LightSource>(QVector3D{40, 2, 9}, QColor{200, 100, 10}));
+		lights.push_back(std::make_shared<LightSource>(QVector3D{40, 9, -7}, QColor{200, 100, 10}));
 	}
 	void setColor(const QColor& color)
 	{
@@ -114,12 +116,12 @@ public:
 		
 		for (size_t i = 0; i < objects.size(); ++i)
 		{
-			objects[i]->transform.rotate(1.0f - (i % 2) * 2, rotationAxis);
+			objects[i]->transform.rotate((1.0f - (i % 2) * 2)*0.3f, rotationAxis);
 		}
 
 		for (auto& light : lights)
 		{
-			light->position = QQuaternion::fromAxisAndAngle({1,0.2f,0}, 1) * light->position;
+			light->position = QQuaternion::fromAxisAndAngle({1,0,0}, 0.2f) * light->position;
 		}
 	}
 

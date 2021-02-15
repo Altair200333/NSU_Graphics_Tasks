@@ -40,7 +40,7 @@ vec3 getLighting()
       vec3 dirToLight = lights[i].position - FragPos;
       dirToLight = normalize(dirToLight);
       vec3 mColor = vec3(baseColor.x * lights[i].color.x, baseColor.y * lights[i].color.y, baseColor.z * lights[i].color.z);
-      result = result + mColor * max(dot(dirToLight, norm), 0);
+      result = result + mColor * max(dot(dirToLight, norm), 0.05f);
    }
    return result;
 }

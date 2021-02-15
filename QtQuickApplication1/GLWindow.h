@@ -81,6 +81,7 @@ public:
 		Input::releaseKey(e->button());
 		QWindow::mouseReleaseEvent(e);
 	}
+
 public slots:
 	void renderNow()
 	{
@@ -123,6 +124,7 @@ public slots:
 	}
 
 protected:
+	virtual void onClose(){}
 	bool event(QEvent* event) override
 	{
 		assert(event);
@@ -132,6 +134,9 @@ protected:
 			// In case someone requested update we render inplace.
 			renderNow();
 			return true;
+		case QEvent::Close:
+			onClose();
+			return QWindow::event(event);
 		default:
 			return QWindow::event(event);
 		}

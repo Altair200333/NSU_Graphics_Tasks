@@ -217,6 +217,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CubeData.h" />
+    <ClInclude Include="CubeGenerator.h" />
     <ClInclude Include="DemoWindow.h" />
     <ClInclude Include="GLCamera.h" />
     <ClInclude Include="Input.h" />

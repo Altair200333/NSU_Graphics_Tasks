@@ -52,5 +52,9 @@ public:
 		MouseInput::reset();
 		Input::reset();
 	}
-
+protected:
+	void onClose() override
+	{
+		colorDialog.close();
+	}
 };
