@@ -46,7 +46,6 @@ public:
 	bool depthTest = true;
 	bool useVertexColor = false;
 
-	QVector3D rotationAxis = { 0,1,0 };
 	Scene() = default;
 
 	void createLightSourceBlock()
@@ -107,18 +106,15 @@ public:
 		}
 		if(Input::keyPressed(Qt::RightButton))
 		{
-			rotationAxis = QQuaternion::fromAxisAndAngle(camera.front, MouseInput::delta().x()) * rotationAxis;
-			rotationAxis = QQuaternion::fromAxisAndAngle(camera.right, -MouseInput::delta().y()) * rotationAxis;
-			rotationAxis.normalize();
+			for (size_t i = 0; i < objects.size(); ++i)
+			{
+				objects[i]->transform.rotate(QQuaternion::fromAxisAndAngle(camera.up, MouseInput::delta().x()).normalized());
+				objects[i]->transform.rotate(QQuaternion::fromAxisAndAngle(camera.right ,-MouseInput::delta().y()).normalized());
+			}
 		}
 
 		moveCamera();
 		
-		for (size_t i = 0; i < objects.size(); ++i)
-		{
-			objects[i]->transform.rotate((1.0f - (i % 2) * 2)*0.3f, rotationAxis);
-		}
-
 		for (auto& light : lights)
 		{
 			light->position = QQuaternion::fromAxisAndAngle({1,0,0}, 0.2f) * light->position;

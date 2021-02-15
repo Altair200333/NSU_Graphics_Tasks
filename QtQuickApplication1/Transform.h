@@ -16,6 +16,15 @@ public:
 	{
 		transform.rotate(angle, axis);
 	}
+	void rotate(const QQuaternion& quaternion)
+	{
+		QMatrix4x4 m;
+		m.translate(position);
+		m.rotate(quaternion);
+		m.translate(-position);
+
+		transform = m * transform;
+	}
 	void reset()
 	{
 		position = QVector3D(0, 0, 0);
