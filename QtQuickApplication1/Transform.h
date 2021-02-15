@@ -16,4 +16,9 @@ public:
 	{
 		transform.rotate(angle, axis);
 	}
+	void reset()
+	{
+		position = QVector3D(0, 0, 0);
+		transform.setToIdentity();
+	}
 };

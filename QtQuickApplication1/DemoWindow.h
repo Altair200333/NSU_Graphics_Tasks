@@ -11,8 +11,6 @@
 #include <QColorDialog>
 #include <QOpenGLBuffer>
 #include <QOpenGLShaderProgram>
-#include <QKeyEvent>
-
 
 #include "GLCamera.h"
 #include <QWindow>
@@ -55,32 +53,4 @@ public:
 		Input::reset();
 	}
 
-	void keyPressEvent(QKeyEvent* e) override
-	{
-		Input::pressKey(e->key());
-		GLWindow::keyPressEvent(e);
-	}
-
-	void keyReleaseEvent(QKeyEvent* e) override
-	{
-		Input::releaseKey(e->key());
-		GLWindow::keyReleaseEvent(e);
-	}
-
-	void mouseMoveEvent(QMouseEvent* e) override
-	{
-		MouseInput::mouseCallback(e->pos());
-	}
-
-	void mousePressEvent(QMouseEvent* e) override
-	{
-		Input::pressKey(e->button());
-		GLWindow::mousePressEvent(e);
-	}
-
-	void mouseReleaseEvent(QMouseEvent* e) override
-	{
-		Input::releaseKey(e->button());
-		GLWindow::mouseReleaseEvent(e);
-	}
 };

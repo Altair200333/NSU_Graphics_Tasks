@@ -7,6 +7,7 @@
 #include "Input.h"
 #include "MouseInput.h"
 #include "Object.h"
+#include <QTransform>
 
 class Scene final
 {
@@ -34,13 +35,27 @@ class Scene final
 	}
 public:
 	std::vector<std::shared_ptr<Object>> objects;
+	std::vector<std::shared_ptr<LightSource>> lights;
+
+	std::shared_ptr<Object> lightSourceBlock;
 	GLCamera camera;
 
 	bool cullFront = false;
+	bool depthTest = true;
 	bool useVertexColor = false;
-	
+
+	QVector3D rotationAxis = { 0,1,0 };
 	Scene() = default;
-	
+
+	void createLightSourceBlock()
+	{
+		lightSourceBlock = std::make_shared<Object>();
+		lightSourceBlock->mesh = Mesh(Cube::vertices, Cube::indices);
+		lightSourceBlock->initRenderer(parent);
+		lightSourceBlock->material.shadingMode = Material::materialColor;
+		lightSourceBlock->transform.transform.scale(0.5f);
+	}
+
 	Scene(QObject* _parent): parent(_parent)
 	{
 		for (int i = 0; i < 11; ++i)
@@ -48,8 +63,13 @@ public:
 			objects.push_back(std::make_shared<Object>());
 			objects[i]->mesh = Mesh(Cube::vertices, Cube::indices);
 			objects[i]->initRenderer(parent);
-			objects[i]->transform.translate({ i * 3.5f - 5,0,0 });
+			objects[i]->transform.translate({ i * 3.5f - 5,0,-0.5});
 		}
+	
+		createLightSourceBlock();
+		
+		lights.push_back(std::make_shared<LightSource>(QVector3D{0, 0, 7}));
+		lights.push_back(std::make_shared<LightSource>(QVector3D{40, 2, 9}, QColor{200, 100, 10}));
 	}
 	void setColor(const QColor& color)
 	{
@@ -58,31 +78,64 @@ public:
 			obj->material.color = color;
 		}
 	}
-	void setMode(Material::Mode mode)
+	void setShadingMode(Material::ShadingMode mode)
 	{
 		for (auto& obj : objects)
 		{
-			obj->material.mode = mode;
+			obj->material.shadingMode = mode;
 		}
 	}
 	void onUpdate()
 	{
-		moveCamera();
 		if(Input::keyJustPressed(Qt::Key_1))
 		{
 			if(useVertexColor)
-				setMode(Material::materialColor);
+				setShadingMode(Material::materialColor);
 			else
-				setMode(Material::vertexColor);
+				setShadingMode(Material::vertexColor);
 			useVertexColor = !useVertexColor;
 		}
 		if (Input::keyJustPressed(Qt::Key_2))
 		{
 			cullFront = !cullFront;
 		}
+		if (Input::keyJustPressed(Qt::Key_3))
+		{
+			depthTest = !depthTest;
+		}
+		if(Input::keyPressed(Qt::RightButton))
+		{
+			rotationAxis = QQuaternion::fromAxisAndAngle(camera.front, MouseInput::delta().x()) * rotationAxis;
+			rotationAxis = QQuaternion::fromAxisAndAngle(camera.right, -MouseInput::delta().y()) * rotationAxis;
+			rotationAxis.normalize();
+		}
+
+		moveCamera();
 		
+		for (size_t i = 0; i < objects.size(); ++i)
+		{
+			objects[i]->transform.rotate(1.0f - (i % 2) * 2, rotationAxis);
+		}
+
+		for (auto& light : lights)
+		{
+			light->position = QQuaternion::fromAxisAndAngle({1,0.2f,0}, 1) * light->position;
+		}
 	}
-	void onRender()
+
+	void renderLights()
+	{
+		for(auto& light: lights)
+		{
+			lightSourceBlock->transform.translate(-lightSourceBlock->transform.position);
+			lightSourceBlock->transform.translate(light->position);
+			lightSourceBlock->material.shadingMode = Material::materialColor;
+			lightSourceBlock->material.color = light->color;
+			lightSourceBlock->renderer.render(camera, lights, true);
+		}
+	}
+
+	void enableParams()
 	{
 		if (cullFront)
 		{
@@ -93,10 +146,21 @@ public:
 		{
 			glDisable(GL_CULL_FACE);
 		}
-		for (size_t i = 0; i < objects.size(); ++i)
+		if (depthTest)
+			glEnable(GL_DEPTH_TEST);
+		else
+			glDisable(GL_DEPTH_TEST);
+	}
+
+	void onRender()
+	{
+		enableParams();
+		
+		for(size_t i = 0; i < objects.size(); ++i)
 		{
-			objects[i]->transform.rotate(1.0f - (i % 2) * 2, { 1,1,0 });
-			objects[i]->renderer.render(camera);
+			objects[i]->renderer.render(camera, lights);
 		}
+		
+		renderLights();
 	}
 };

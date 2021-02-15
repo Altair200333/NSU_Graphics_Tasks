@@ -7,18 +7,18 @@ class Material final
 public:
 	QColor color = QColor(255, 149, 100);
 
-	enum Mode : int
+	enum ShadingMode : int
 	{
 		vertexColor = 1,
 		materialColor = 2
 	};
-	Mode mode = materialColor;
+	ShadingMode shadingMode = materialColor;
 	
 	void uploadToShader(std::shared_ptr<QOpenGLShaderProgram>& shader)
 	{
-		shader->setUniformValue("mode", mode);
+		shader->setUniformValue("mode", shadingMode);
 
-		if(mode == materialColor)
+		if(shadingMode == materialColor)
 		{
 			shader->setUniformValue("color", color);
 		}

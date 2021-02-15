@@ -4,7 +4,7 @@
 #include "MeshRenderer.h"
 #include "Transform.h"
 
-class Object final
+class Object
 {
 public:
 	Transform transform;
@@ -16,4 +16,5 @@ public:
 	{
 		renderer = MeshRenderer(parent, &transform, &mesh, &material);
 	}
+	virtual ~Object() = default;
 };

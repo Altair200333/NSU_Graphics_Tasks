@@ -8,8 +8,9 @@
 #include <QOpenGLPaintDevice>
 #include <QPainter>
 
-class QEvent;
-class QExposeEvent;
+#include "Input.h"
+#include "MouseInput.h"
+#include <QKeyEvent>
 
 class GLWindow : public QWindow, public QOpenGLFunctions
 {
@@ -50,6 +51,36 @@ public:
 	{
 	}
 
+	//bunch of callbacks for input
+	void keyPressEvent(QKeyEvent* e) override
+	{
+		Input::pressKey(e->key());
+		QWindow::keyPressEvent(e);
+	}
+
+	void keyReleaseEvent(QKeyEvent* e) override
+	{
+		Input::releaseKey(e->key());
+		QWindow::keyReleaseEvent(e);
+	}
+
+	void mouseMoveEvent(QMouseEvent* e) override
+	{
+		MouseInput::mouseCallback(e->pos());
+		QWindow::mouseMoveEvent(e);
+	}
+
+	void mousePressEvent(QMouseEvent* e) override
+	{
+		Input::pressKey(e->button());
+		QWindow::mousePressEvent(e);
+	}
+
+	void mouseReleaseEvent(QMouseEvent* e) override
+	{
+		Input::releaseKey(e->button());
+		QWindow::mouseReleaseEvent(e);
+	}
 public slots:
 	void renderNow()
 	{
