@@ -6,7 +6,7 @@ class Material final
 {
 public:
 	QColor color = QColor(255, 149, 100);
-
+	bool isLightSource = false;
 	enum ShadingMode : int
 	{
 		vertexColor = 1,

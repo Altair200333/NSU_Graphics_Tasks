@@ -48,6 +48,8 @@ public:
 	bool useMultiSapling = true;
 	bool drawWireframe = false;
 
+	QVector2D torgue = {0,0};
+	
 	Scene() = default;
 
 	void createLightSourceBlock()
@@ -72,7 +74,7 @@ public:
 		createLightSourceBlock();
 		
 		lights.push_back(std::make_shared<LightSource>(QVector3D{0, 0, 7}));
-		lights.push_back(std::make_shared<LightSource>(QVector3D{40, 9, -7}, QColor{200, 100, 10}));
+		lights.push_back(std::make_shared<LightSource>(QVector3D{40, 9, -7}, QColor{20, 20, 200}));
 	}
 	void setColor(const QColor& color)
 	{
@@ -120,14 +122,16 @@ public:
 	void onUpdate()
 	{
 		switchParams();
-		
+
+		torgue *= 0.99f;
+		for (size_t i = 0; i < objects.size(); ++i)
+		{
+			objects[i]->transform.rotate(QQuaternion::fromAxisAndAngle(camera.right, -torgue.y()).normalized());
+			objects[i]->transform.rotate(QQuaternion::fromAxisAndAngle(camera.up, torgue.x()).normalized());
+		}
 		if(Input::keyPressed(Qt::RightButton))
 		{
-			for (size_t i = 0; i < objects.size(); ++i)
-			{
-				objects[i]->transform.rotate(QQuaternion::fromAxisAndAngle(camera.up, MouseInput::delta().x()).normalized());
-				objects[i]->transform.rotate(QQuaternion::fromAxisAndAngle(camera.right ,-MouseInput::delta().y()).normalized());
-			}
+			torgue += QVector2D(MouseInput::delta())*0.1f;
 		}
 
 		moveCamera();
@@ -146,7 +150,8 @@ public:
 			lightSourceBlock->transform.translate(light->position);
 			lightSourceBlock->material.shadingMode = Material::materialColor;
 			lightSourceBlock->material.color = light->color;
-			lightSourceBlock->renderer.render(camera, lights, true);
+			lightSourceBlock->material.isLightSource = true;
+			lightSourceBlock->renderer.render(camera, lights);
 		}
 	}
 
@@ -159,7 +164,9 @@ public:
 		}
 		else
 		{
-			glDisable(GL_CULL_FACE);
+			glEnable(GL_CULL_FACE);
+			glCullFace(GL_BACK);
+
 		}
 		if (depthTest)
 			glEnable(GL_DEPTH_TEST);

@@ -112,14 +112,14 @@ public:
 		}
 	}
 
-	void render(GLCamera& camera, std::vector<std::shared_ptr<LightSource>>& lights, bool isLightSouce = false)
+	void render(GLCamera& camera, std::vector<std::shared_ptr<LightSource>>& lights)
 	{
 		shader->bind();
 
 		material->uploadToShader(shader);
 		uploadCameraDetails(camera);
 		uploadLights(lights);
-		shader->setUniformValue("isLightSource", isLightSouce);
+		shader->setUniformValue("isLightSource", material->isLightSource);
 		
 		vao->bind();
 		glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0);
