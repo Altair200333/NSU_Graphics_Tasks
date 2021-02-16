@@ -14,7 +14,7 @@ public:
 	}
 	void rotate(float angle, const QVector3D& axis)
 	{
-		transform.rotate(angle, axis);
+		transform.rotate(QQuaternion::fromAxisAndAngle(axis, angle));
 	}
 	void rotate(const QQuaternion& quaternion)
 	{

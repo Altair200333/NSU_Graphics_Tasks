@@ -45,6 +45,8 @@ public:
 	bool cullFront = false;
 	bool depthTest = true;
 	bool useVertexColor = false;
+	bool useMultiSapling = true;
+	bool drawWireframe = false;
 
 	Scene() = default;
 
@@ -86,7 +88,8 @@ public:
 			obj->material.shadingMode = mode;
 		}
 	}
-	void onUpdate()
+
+	void switchParams()
 	{
 		if(Input::keyJustPressed(Qt::Key_1))
 		{
@@ -104,6 +107,20 @@ public:
 		{
 			depthTest = !depthTest;
 		}
+		if (Input::keyJustPressed(Qt::Key_4))
+		{
+			useMultiSapling = !useMultiSapling;
+		}
+		if (Input::keyJustPressed(Qt::Key_Z))
+		{
+			drawWireframe = !drawWireframe;
+		}
+	}
+
+	void onUpdate()
+	{
+		switchParams();
+		
 		if(Input::keyPressed(Qt::RightButton))
 		{
 			for (size_t i = 0; i < objects.size(); ++i)
@@ -148,6 +165,12 @@ public:
 			glEnable(GL_DEPTH_TEST);
 		else
 			glDisable(GL_DEPTH_TEST);
+		if (useMultiSapling)
+			glEnable(GL_MULTISAMPLE);
+		else
+			glDisable(GL_MULTISAMPLE);
+
+		glPolygonMode(GL_FRONT_AND_BACK, drawWireframe ? GL_LINE : GL_FILL);
 	}
 
 	void onRender()
