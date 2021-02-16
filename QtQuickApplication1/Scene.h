@@ -61,29 +61,34 @@ public:
 		lightSourceBlock->material.shadingMode = Material::materialColor;
 		lightSourceBlock->transform.transform.scale(0.5f);
 	}
-
+	void addModel(const std::vector<MeshLoader::LoadedModel>& models, const QVector3D& pos)
+	{
+		for (size_t i = 0; i<models.size(); ++i)
+		{
+			auto object = std::make_shared<Object>();
+			object->mesh = models[i].mesh;
+			object->material = models[i].material;
+			object->initRenderer(parent);
+			object->transform.translate(pos);
+			objects.push_back(object);
+		}
+		
+	}
 	Scene(QObject* _parent): parent(_parent)
 	{
 		auto cubeModel = MeshLoader().loadModel("Assets/Models/cube.obj");
 		auto suzModel = MeshLoader().loadModel("Assets/Models/suz.obj");
 		for (int i = 0; i < 4; ++i)
 		{
-			auto object = std::make_shared<Object>();
-			object->mesh = cubeModel[0].mesh;
-			object->material = cubeModel[0].material;
-			object->initRenderer(parent);
-			object->transform.translate({  i * 3.5f, 0,0 });
-			objects.push_back(object);
+			addModel(cubeModel, { i * 3.5f, 0,0 });
 		}
 		for (int i = 0; i < 4; ++i)
 		{
-			auto object = std::make_shared<Object>();
-			object->mesh = suzModel[0].mesh;
-			object->material = suzModel[0].material;
-			object->initRenderer(parent);
-			object->transform.translate({ 17.0f + i * 3.5f, 0,0 });
-			objects.push_back(object);
+			addModel(suzModel, { 17.0f + i * 3.5f, 0,0 });
 		}
+		
+		addModel(MeshLoader().loadModel("Assets/Models/cont.obj"), { 5, 7,-4 });
+
 		createLightSourceBlock();
 		
 		lights.push_back(std::make_shared<LightSource>(QVector3D{0, 0, 7}));
