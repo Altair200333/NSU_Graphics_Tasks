@@ -16,6 +16,7 @@ struct LightSource
    vec3 position;
    vec4 color;
 };
+
 uniform LightSource lights[10];
 uniform int lightsCount;
 uniform bool isLightSource;
@@ -25,6 +26,10 @@ vec3 getBaseColor()
    if(mode == 1)
       return col;
    return color.xyz;
+}
+float attenuation(float dist)
+{
+   return 1.0f / (1.0f + 0.1f * dist + 0.85f * dist*dist);
 }
 vec3 getLighting()
 {
@@ -39,8 +44,8 @@ vec3 getLighting()
    {
       vec3 dirToLight = lights[i].position - FragPos;
       dirToLight = normalize(dirToLight);
-      vec3 mColor = vec3(baseColor.x * lights[i].color.x, baseColor.y * lights[i].color.y, baseColor.z * lights[i].color.z);
-      result = result + mColor * max(dot(dirToLight, norm), 0.05f);
+      vec3 mColor = baseColor * vec3(lights[i].color);
+      result = result + mColor * max(dot(dirToLight, norm), 0.05f) * attenuation(length(dirToLight));
    }
    return result;
 }

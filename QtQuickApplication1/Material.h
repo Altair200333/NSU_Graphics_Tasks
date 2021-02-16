@@ -5,7 +5,7 @@
 class Material final
 {
 public:
-	QColor color = QColor(255, 149, 100);
+	QColor color;
 	bool isLightSource = false;
 	enum ShadingMode : int
 	{
@@ -13,7 +13,9 @@ public:
 		materialColor = 2
 	};
 	ShadingMode shadingMode = materialColor;
-	
+
+	Material(QColor _color = QColor(255, 149, 100)):color(_color)
+	{}
 	void uploadToShader(std::shared_ptr<QOpenGLShaderProgram>& shader)
 	{
 		shader->setUniformValue("mode", shadingMode);

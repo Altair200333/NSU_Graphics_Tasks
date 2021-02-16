@@ -10,6 +10,7 @@
 #include <QTransform>
 
 #include "CubeGenerator.h"
+#include "MeshLoader.h"
 
 class Scene final
 {
@@ -63,18 +64,30 @@ public:
 
 	Scene(QObject* _parent): parent(_parent)
 	{
-		for (int i = 0; i < 11; ++i)
+		auto cubeModel = MeshLoader().loadModel("Assets/Models/cube.obj");
+		auto suzModel = MeshLoader().loadModel("Assets/Models/suz.obj");
+		for (int i = 0; i < 4; ++i)
 		{
-			objects.push_back(std::make_shared<Object>());
-			objects[i]->mesh = Mesh(Cube::vertices, Cube::indices);
-			objects[i]->initRenderer(parent);
-			objects[i]->transform.translate({ i * 3.5f - 5,0,-0.5});
+			auto object = std::make_shared<Object>();
+			object->mesh = cubeModel[0].mesh;
+			object->material = cubeModel[0].material;
+			object->initRenderer(parent);
+			object->transform.translate({  i * 3.5f, 0,0 });
+			objects.push_back(object);
 		}
-	
+		for (int i = 0; i < 4; ++i)
+		{
+			auto object = std::make_shared<Object>();
+			object->mesh = suzModel[0].mesh;
+			object->material = suzModel[0].material;
+			object->initRenderer(parent);
+			object->transform.translate({ 17.0f + i * 3.5f, 0,0 });
+			objects.push_back(object);
+		}
 		createLightSourceBlock();
 		
 		lights.push_back(std::make_shared<LightSource>(QVector3D{0, 0, 7}));
-		lights.push_back(std::make_shared<LightSource>(QVector3D{40, 9, -7}, QColor{20, 20, 200}));
+		lights.push_back(std::make_shared<LightSource>(QVector3D{50, 9, -7}, QColor{20, 20, 200}));
 	}
 	void setColor(const QColor& color)
 	{
@@ -123,11 +136,11 @@ public:
 	{
 		switchParams();
 
-		torgue *= 0.99f;
-		for (size_t i = 0; i < objects.size(); ++i)
+		torgue *= 0.98f;
+		for (auto& object : objects)
 		{
-			objects[i]->transform.rotate(QQuaternion::fromAxisAndAngle(camera.right, -torgue.y()).normalized());
-			objects[i]->transform.rotate(QQuaternion::fromAxisAndAngle(camera.up, torgue.x()).normalized());
+			object->transform.rotate(QQuaternion::fromAxisAndAngle(camera.right, -torgue.y()).normalized());
+			object->transform.rotate(QQuaternion::fromAxisAndAngle(camera.up, torgue.x()).normalized());
 		}
 		if(Input::keyPressed(Qt::RightButton))
 		{

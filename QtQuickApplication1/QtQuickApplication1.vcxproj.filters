@@ -9,10 +9,6 @@
       <UniqueIdentifier>{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;moc;h;def;odl;idl;res;</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
       <Extensions>qrc;*</Extensions>
@@ -35,6 +31,9 @@
     </Filter>
     <Filter Include="Object">
       <UniqueIdentifier>{f454b3ec-d8b3-4150-b4a7-7f7e6d036a1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Components">
+      <UniqueIdentifier>{22650892-27d7-4492-81fc-f2149a68e3f8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -65,29 +64,32 @@
     <ClInclude Include="Input.h">
       <Filter>Window\Input</Filter>
     </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>Object</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshRenderer.h">
-      <Filter>Object</Filter>
-    </ClInclude>
     <ClInclude Include="Vertex.h">
-      <Filter>Object</Filter>
-    </ClInclude>
-    <ClInclude Include="Transform.h">
       <Filter>Object</Filter>
     </ClInclude>
     <ClInclude Include="Object.h">
       <Filter>Object</Filter>
     </ClInclude>
     <ClInclude Include="Scene.h" />
-    <ClInclude Include="Material.h">
-      <Filter>Object</Filter>
-    </ClInclude>
     <ClInclude Include="LightSource.h">
       <Filter>Object</Filter>
     </ClInclude>
     <ClInclude Include="CubeGenerator.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Object\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Object\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshRenderer.h">
+      <Filter>Object\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>Object\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshLoader.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
