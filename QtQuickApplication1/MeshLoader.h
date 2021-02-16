@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <random>
 #include <vector>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -11,7 +12,6 @@
 class MeshLoader final
 {
     std::string directory;
-
 public:
     struct LoadedModel
     {
@@ -82,7 +82,9 @@ public:
             }
             else
             {
-                vertex.color = {0.8f, 0.8f, 0.8f };
+                std::uniform_real_distribution<float> dist(0.0, 1.0);
+                std::default_random_engine  rd(mesh->mVertices[i].x+ mesh->mVertices[i].y+ mesh->mVertices[i].z);
+                vertex.color = {dist(rd), dist(rd), dist(rd) };
             }
             vertices.push_back(vertex);
         }
