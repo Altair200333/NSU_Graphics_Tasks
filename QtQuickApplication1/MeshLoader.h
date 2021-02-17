@@ -83,7 +83,7 @@ public:
             else
             {
                 std::uniform_real_distribution<float> dist(0.0, 1.0);
-                std::default_random_engine  rd(mesh->mVertices[i].x+ mesh->mVertices[i].y+ mesh->mVertices[i].z);
+                std::default_random_engine  rd(mesh->mVertices[i].x*10+ mesh->mVertices[i].y * 10 + mesh->mVertices[i].z * 10);
                 vertex.color = {dist(rd), dist(rd), dist(rd) };
             }
             vertices.push_back(vertex);

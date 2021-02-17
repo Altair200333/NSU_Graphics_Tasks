@@ -54,13 +54,13 @@ public:
 	//bunch of callbacks for input
 	void keyPressEvent(QKeyEvent* e) override
 	{
-		Input::pressKey(e->key());
+		Input::pressKey(e->nativeVirtualKey());
 		QWindow::keyPressEvent(e);
 	}
 
 	void keyReleaseEvent(QKeyEvent* e) override
 	{
-		Input::releaseKey(e->key());
+		Input::releaseKey(e->nativeVirtualKey());
 		QWindow::keyReleaseEvent(e);
 	}
 
