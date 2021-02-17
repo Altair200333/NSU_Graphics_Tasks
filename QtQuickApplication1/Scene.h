@@ -57,17 +57,19 @@ public:
 	{
 		lightSourceBlock = std::make_shared<Object>();
 		lightSourceBlock->mesh = Mesh(Cube::vertices, Cube::indices);
+		lightSourceBlock->renderer = std::make_shared<SimpleMeshRenderer>();
 		lightSourceBlock->initRenderer(parent);
 		lightSourceBlock->material.shadingMode = Material::materialColor;
 		lightSourceBlock->transform.transform.scale(0.5f);
 	}
 	void addModel(const std::vector<MeshLoader::LoadedModel>& models, const QVector3D& pos)
 	{
-		for (size_t i = 0; i<models.size(); ++i)
+		for(const auto& model : models)
 		{
 			auto object = std::make_shared<Object>();
-			object->mesh = models[i].mesh;
-			object->material = models[i].material;
+			object->mesh = model.mesh;
+			object->material = model.material;
+			object->renderer = std::make_shared<SimpleMeshRenderer>();
 			object->initRenderer(parent);
 			object->transform.translate(pos);
 			objects.push_back(object);
@@ -169,7 +171,7 @@ public:
 			lightSourceBlock->material.shadingMode = Material::materialColor;
 			lightSourceBlock->material.color = light->color;
 			lightSourceBlock->material.isLightSource = true;
-			lightSourceBlock->renderer.render(camera, lights);
+			lightSourceBlock->renderer->render(camera, lights);
 		}
 	}
 
@@ -204,7 +206,7 @@ public:
 		
 		for(size_t i = 0; i < objects.size(); ++i)
 		{
-			objects[i]->renderer.render(camera, lights);
+			objects[i]->renderer->render(camera, lights);
 		}
 		
 		renderLights();

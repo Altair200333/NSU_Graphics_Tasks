@@ -9,7 +9,7 @@
 #include "Material.h"
 #include "Transform.h"
 
-class MeshRenderer final
+class MeshRenderer
 {
 public:
 	QOpenGLBuffer* vbo;
@@ -69,12 +69,14 @@ public:
 		ibo->bind();
 		ibo->allocate(mesh->indices.data(), mesh->indices.size() * sizeof(GLuint));
 	}
-
-	MeshRenderer(QObject* parent, Transform* _transform, Mesh* _mesh, Material* _material,
-	             const std::string& fragment = "Shaders/triangle.fs",
-	             const std::string& vertex = "Shaders/triangle.vs"):
-		mesh(_mesh), transform(_transform), material(_material)
+	void init(QObject* parent, Transform* _transform, Mesh* _mesh, Material* _material,
+		const std::string& fragment = "Shaders/triangle.fs",
+		const std::string& vertex = "Shaders/triangle.vs")
 	{
+		mesh = _mesh;
+		transform = _transform;
+		material = _material;
+
 		createShader(parent, fragment, vertex);
 
 		auto s = shader->log();
@@ -91,10 +93,8 @@ public:
 		vao->release();
 		shader->release();
 	}
-
-	int frame_ = 0;
-
-	void uploadCameraDetails(GLCamera& camera)
+	
+	void uploadCameraDetails(GLCamera& camera) const
 	{
 		shader->setUniformValue(shader->uniformLocation("model"), transform->transform);
 		shader->setUniformValue(shader->uniformLocation("view"), camera.getViewMatrix());
@@ -102,31 +102,5 @@ public:
 		shader->setUniformValue(shader->uniformLocation("cameraPos"), camera.position);
 	}
 
-	void uploadLights(std::vector<std::shared_ptr<LightSource>>& lights)
-	{
-		shader->setUniformValue("lightsCount", static_cast<int>(lights.size()));
-		for (int i = 0; i < lights.size(); ++i)
-		{
-			shader->setUniformValue(("lights[" + std::to_string(i) + "].position").c_str(), lights[i]->position);
-			shader->setUniformValue(("lights[" + std::to_string(i) + "].color").c_str(), lights[i]->color);
-		}
-	}
-
-	void render(GLCamera& camera, std::vector<std::shared_ptr<LightSource>>& lights)
-	{
-		shader->bind();
-
-		material->uploadToShader(shader);
-		uploadCameraDetails(camera);
-		uploadLights(lights);
-		shader->setUniformValue("isLightSource", material->isLightSource);
-		
-		vao->bind();
-		glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0);
-		vao->release();
-
-		shader->release();
-
-		++frame_;
-	}
+	virtual void render(GLCamera& camera, const std::vector<std::shared_ptr<LightSource>>& lights = std::vector<std::shared_ptr<LightSource>>{}) = 0;
 };

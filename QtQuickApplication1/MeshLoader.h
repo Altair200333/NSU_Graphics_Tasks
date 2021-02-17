@@ -100,7 +100,7 @@ public:
         aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
         aiColor3D color(0.f, 0.f, 0.f);
         material->Get(AI_MATKEY_COLOR_DIFFUSE, color);
-        QColor albedo = { static_cast<int>(color.r), static_cast<int>(color.g), static_cast<int>(color.b)};
+        const QColor albedo = { static_cast<int>(color.r), static_cast<int>(color.g), static_cast<int>(color.b)};
         
         return { Mesh(vertices, indices), Material(albedo) };
     }

@@ -2,6 +2,7 @@
 #include "Material.h"
 #include "Mesh.h"
 #include "MeshRenderer.h"
+#include "SimpleMeshRenderer.h"
 #include "Transform.h"
 
 class Object
@@ -9,12 +10,12 @@ class Object
 public:
 	Transform transform;
 	Mesh mesh;
-	MeshRenderer renderer;
+	std::shared_ptr<MeshRenderer> renderer;
 	Material material;
 	
 	void initRenderer(QObject* parent, const std::string& fragment = "Shaders/triangle.fs", const std::string& vertex = "Shaders/triangle.vs")
 	{
-		renderer = MeshRenderer(parent, &transform, &mesh, &material);
+		renderer->init(parent, &transform, &mesh, &material);
 	}
 	virtual ~Object() = default;
 };
