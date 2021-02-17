@@ -11,15 +11,19 @@
 #include "Input.h"
 #include "MouseInput.h"
 #include <QKeyEvent>
+#include <QOpenGLWidget>
+#include <QBasicTimer>
 
-class GLWindow : public QWindow, public QOpenGLFunctions
+class GLWindow : public QOpenGLWidget, public QOpenGLFunctions
 {
 Q_OBJECT
 public:
-	explicit GLWindow(QWindow* parent = nullptr) : QWindow{parent}
+	QBasicTimer timer;
+
+	explicit GLWindow(QOpenGLWidget* parent = nullptr) : QOpenGLWidget{parent}
 	{
 		// This one inits OpenGL functions.
-		setSurfaceType(QWindow::OpenGLSurface);
+		//setSurfaceType(QWindow::OpenGLSurface);
 	}
 
 	virtual void init()
@@ -55,74 +59,53 @@ public:
 	void keyPressEvent(QKeyEvent* e) override
 	{
 		Input::pressKey(e->nativeVirtualKey());
-		QWindow::keyPressEvent(e);
+		QOpenGLWidget::keyPressEvent(e);
 	}
 
 	void keyReleaseEvent(QKeyEvent* e) override
 	{
 		Input::releaseKey(e->nativeVirtualKey());
-		QWindow::keyReleaseEvent(e);
+		QOpenGLWidget::keyReleaseEvent(e);
 	}
 
 	void mouseMoveEvent(QMouseEvent* e) override
 	{
 		MouseInput::mouseCallback(e->pos());
-		QWindow::mouseMoveEvent(e);
+		QOpenGLWidget::mouseMoveEvent(e);
 	}
 
 	void mousePressEvent(QMouseEvent* e) override
 	{
 		Input::pressKey(e->button());
-		QWindow::mousePressEvent(e);
+		QOpenGLWidget::mousePressEvent(e);
 	}
 
 	void mouseReleaseEvent(QMouseEvent* e) override
 	{
 		Input::releaseKey(e->button());
-		QWindow::mouseReleaseEvent(e);
+		QOpenGLWidget::mouseReleaseEvent(e);
 	}
-
-public slots:
-	void renderNow()
+	void initializeGL() override
 	{
-		// If not exposed yet then skip render.
-		if (!isExposed())
-		{
-			return;
-		}
-
-		auto needsInitialize = false;
-
-		// Lazy init gl context.
-		if (!context)
-		{
-			context = std::make_unique<QOpenGLContext>(this);
-			context->setFormat(requestedFormat());
-			context->create();
-
-			needsInitialize = true;
-		}
-
-		const bool contextBindSuccess = context->makeCurrent(this);
-		if (!contextBindSuccess)
-		{
-			return;
-		}
-
-		if (needsInitialize)
-		{
-			initializeOpenGLFunctions();
-			init();
-		}
-
-		// Render now then swap buffers.
-		render();
-
-		context->swapBuffers(this);
-
-		requestUpdate();
+		initializeOpenGLFunctions();
+		//makeCurrent();
+		context = std::make_unique<QOpenGLContext>(this);
+		context->create();
+		
+		init();
+		timer.start(12, this);
 	}
-
+	void paintGL() override
+	{
+		render();
+		
+		MouseInput::reset();
+		Input::reset();
+	}
+	void timerEvent(QTimerEvent* event) override
+	{
+		update();
+	}
 protected:
 	virtual void onClose(){}
 	bool event(QEvent* event) override
@@ -131,22 +114,13 @@ protected:
 		switch (event->type())
 		{
 		case QEvent::UpdateRequest:
-			// In case someone requested update we render inplace.
-			renderNow();
-			return true;
+			update();
+			return QOpenGLWidget::event(event);
 		case QEvent::Close:
 			onClose();
-			return QWindow::event(event);
+			return QOpenGLWidget::event(event);
 		default:
-			return QWindow::event(event);
-		}
-	}
-
-	void exposeEvent(QExposeEvent* event) override
-	{
-		if (isExposed())
-		{
-			renderNow();
+			return QOpenGLWidget::event(event);
 		}
 	}
 

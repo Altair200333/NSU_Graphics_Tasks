@@ -3,7 +3,8 @@
 #include "DemoWindow.h"
 #include <QLabel>
 #include "QColorDialog"
-int main(int argc, char** argv) {
+int main(int argc, char** argv)
+{
     QApplication app(argc, argv);
 
     QSurfaceFormat format;

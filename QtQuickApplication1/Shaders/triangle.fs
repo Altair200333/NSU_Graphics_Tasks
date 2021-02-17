@@ -29,7 +29,7 @@ vec3 getBaseColor()
 }
 float attenuation(float dist)
 {
-   return 1.0f / (1.0f + 0.1f * dist + 0.45f * dist*dist);
+   return 1.0f / (1.0f + 0.1f * dist + 0.35f * dist*dist);
 }
 vec3 getLighting()
 {

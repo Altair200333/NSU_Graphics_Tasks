@@ -22,6 +22,8 @@
 #include "MeshRenderer.h"
 #include "Object.h"
 #include "Scene.h"
+#include <QMenuBar>
+#include <QHBoxLayout>
 
 class DemoWindow final : public GLWindow
 {
@@ -50,9 +52,6 @@ public:
 		
 		scene.onUpdate();
 		scene.onRender();
-
-		MouseInput::reset();
-		Input::reset();
 	}
 protected:
 	void onClose() override

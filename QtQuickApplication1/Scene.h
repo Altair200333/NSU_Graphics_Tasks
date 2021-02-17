@@ -36,6 +36,29 @@ class Scene final
 		if (Input::keyPressed(Qt::LeftButton))
 			camera.look(MouseInput::delta().x() * 0.5f, MouseInput::delta().y() * 0.5f);
 	}
+	void createLightSourceBlock()
+	{
+		lightSourceBlock = std::make_shared<Object>();
+		lightSourceBlock->mesh = Mesh(Cube::vertices, Cube::indices);
+		lightSourceBlock->renderer = std::make_shared<SimpleMeshRenderer>();
+		lightSourceBlock->initRenderer(parent);
+		lightSourceBlock->material.shadingMode = Material::materialColor;
+		lightSourceBlock->transform.transform.scale(0.5f);
+	}
+	void addModel(const std::vector<MeshLoader::LoadedModel>& models, const QVector3D& pos)
+	{
+		for (const auto& model : models)
+		{
+			auto object = std::make_shared<Object>();
+			object->mesh = model.mesh;
+			object->material = model.material;
+			object->renderer = std::make_shared<SimpleMeshRenderer>();
+			object->initRenderer(parent);
+			object->transform.translate(pos);
+			objects.push_back(object);
+		}
+
+	}
 public:
 	std::vector<std::shared_ptr<Object>> objects;
 	std::vector<std::shared_ptr<LightSource>> lights;
@@ -49,37 +72,15 @@ public:
 	bool useMultiSapling = true;
 	bool drawWireframe = false;
 
-	QVector2D torgue = {0,0};
+	QVector2D angularVelocity = {0,0};
 	
 	Scene() = default;
 
-	void createLightSourceBlock()
-	{
-		lightSourceBlock = std::make_shared<Object>();
-		lightSourceBlock->mesh = Mesh(Cube::vertices, Cube::indices);
-		lightSourceBlock->renderer = std::make_shared<SimpleMeshRenderer>();
-		lightSourceBlock->initRenderer(parent);
-		lightSourceBlock->material.shadingMode = Material::materialColor;
-		lightSourceBlock->transform.transform.scale(0.5f);
-	}
-	void addModel(const std::vector<MeshLoader::LoadedModel>& models, const QVector3D& pos)
-	{
-		for(const auto& model : models)
-		{
-			auto object = std::make_shared<Object>();
-			object->mesh = model.mesh;
-			object->material = model.material;
-			object->renderer = std::make_shared<SimpleMeshRenderer>();
-			object->initRenderer(parent);
-			object->transform.translate(pos);
-			objects.push_back(object);
-		}
-		
-	}
+	
 	Scene(QObject* _parent): parent(_parent)
 	{
-		auto cubeModel = MeshLoader().loadModel("Assets/Models/cube.obj");
-		auto suzModel = MeshLoader().loadModel("Assets/Models/suz.obj");
+		const auto cubeModel = MeshLoader().loadModel("Assets/Models/cube.obj");
+		const auto suzModel = MeshLoader().loadModel("Assets/Models/suz.obj");
 		for (int i = 0; i < 4; ++i)
 		{
 			addModel(cubeModel, { i * 3.5f, 0,0 });
@@ -143,15 +144,15 @@ public:
 	{
 		switchParams();
 
-		torgue *= 0.98f;
+		angularVelocity *= 0.987f;
 		for (auto& object : objects)
 		{
-			object->transform.rotate(QQuaternion::fromAxisAndAngle(camera.right, -torgue.y()).normalized());
-			object->transform.rotate(QQuaternion::fromAxisAndAngle(camera.up, torgue.x()).normalized());
+			object->transform.rotate(QQuaternion::fromAxisAndAngle(camera.right, -angularVelocity.y()).normalized());
+			object->transform.rotate(QQuaternion::fromAxisAndAngle(camera.up, angularVelocity.x()).normalized());
 		}
 		if(Input::keyPressed(Qt::RightButton))
 		{
-			torgue += QVector2D(MouseInput::delta())*0.1f;
+			angularVelocity += QVector2D(MouseInput::delta())*0.1f;
 		}
 
 		moveCamera();
