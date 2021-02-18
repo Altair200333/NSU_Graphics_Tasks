@@ -44,7 +44,7 @@ class Scene final
 		lightSourceBlock->material.shadingMode = Material::materialColor;
 		lightSourceBlock->transform.transform.scale(0.5f);
 	}
-	void addModel(const std::vector<MeshLoader::LoadedModel>& models, const QVector3D& pos)
+	void addModel(const std::vector<MeshLoader::LoadedModel>& models, const QVector3D& pos, bool useGeometry = false)
 	{
 		for (const auto& model : models)
 		{
@@ -52,7 +52,12 @@ class Scene final
 			object->mesh = model.mesh;
 			object->material = model.material;
 			object->renderer = std::make_shared<SimpleMeshRenderer>();
-			object->initRenderer(parent);
+			
+			if(useGeometry)
+				object->initRenderer(parent, "Shaders/triangleG.fs", "Shaders/triangleG.vs", "Shaders/triangleG.gs");
+			else
+				object->initRenderer(parent, "Shaders/triangle.fs", "Shaders/triangle.vs");
+			
 			object->transform.translate(pos);
 			objects.push_back(object);
 		}
@@ -81,13 +86,17 @@ public:
 		}
 		for (int i = 0; i < 2; ++i)
 		{
-			addModel(suzModel, { 17.0f + i * 3.5f, 0,0 });
+			addModel(suzModel, { 7.0f + i * 3.5f, 0,0 });
 		}
-		
+		for (int i = 0; i < 2; ++i)
+		{
+			addModel(suzModel, { 7.0f + i * 3.5f, -5,0 }, true);
+		}
+
 		createLightSourceBlock();
 		
-		lights.push_back(std::make_shared<LightSource>(QVector3D{0, 0, 7}));
-		lights.push_back(std::make_shared<LightSource>(QVector3D{50, 9, -7}, QColor{20, 20, 200}));
+		lights.push_back(std::make_shared<LightSource>(QVector3D{-5, 0, 7}));
+		lights.push_back(std::make_shared<LightSource>(QVector3D{30, 9, -7}, QColor{20, 20, 200}));
 	}
 
 	void onUpdate()

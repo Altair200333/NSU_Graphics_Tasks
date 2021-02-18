@@ -22,6 +22,14 @@ public:
 	{
 		layout = std::make_shared<QBoxLayout>(QBoxLayout::TopToBottom);
 		viewport = std::make_shared<GLWindow>(window);
+		
+		QSurfaceFormat format;
+		format.setSamples(16);
+		format.setVersion(3, 3);
+		format.setProfile(QSurfaceFormat::CoreProfile);
+
+		viewport->setFormat(format);
+		
 		slider = new QSlider(Qt::Horizontal);
 		slider->setRange(0, 100);
 		
