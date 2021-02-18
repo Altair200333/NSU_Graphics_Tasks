@@ -5,12 +5,14 @@
 #include <QBoxLayout>
 #include "GLWindow.h"
 #include "Window.h"
+#include <QSlider>
 
 class AloyApplication final: public OnUpdateSubscriber
 {
 public:
 	Scene scene;
-	
+	QSlider* slider;
+
 	std::shared_ptr<QBoxLayout> layout;
 	std::shared_ptr<GLWindow> viewport;
 
@@ -20,9 +22,12 @@ public:
 	{
 		layout = std::make_shared<QBoxLayout>(QBoxLayout::TopToBottom);
 		viewport = std::make_shared<GLWindow>(window);
-
+		slider = new QSlider(Qt::Horizontal);
+		slider->setRange(0, 100);
+		
 		layout->setContentsMargins(0, 0, 0, 0);
 		layout->addWidget(viewport.get());
+		layout->addWidget(slider);
 		
 		window->setLayout(layout.get());
 		
@@ -35,7 +40,13 @@ public:
 			init();
 			initialized = true;
 		}
-
+		
+		for(auto& obj: scene.objects)
+		{
+			obj->renderer->shader->bind();
+			obj->renderer->shader->setUniformValue("ratio", static_cast<float>(slider->value()) / 100.0f);
+		}
+		
 		scene.camera.aspectRatio = static_cast<float>(viewport->width()) / viewport->height();
 		render();
 	}

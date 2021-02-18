@@ -107,7 +107,6 @@
       <Filter>Window</Filter>
     </ClInclude>
     <ClInclude Include="MeshLoader.h" />
-    <ClInclude Include="CubeGenerator.h" />
     <ClInclude Include="AloyApplication.h" />
   </ItemGroup>
   <ItemGroup>

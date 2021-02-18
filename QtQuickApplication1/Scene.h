@@ -9,13 +9,12 @@
 #include "Object.h"
 #include <QTransform>
 
-#include "CubeGenerator.h"
 #include "MeshLoader.h"
 
 class Scene final
 {
 	std::shared_ptr<QObject> parent;
-
+	
 	void moveCamera()
 	{
 		std::map<int, QVector3D> controls = {
@@ -72,16 +71,15 @@ public:
 	
 	Scene() = default;
 
-	
 	Scene(std::shared_ptr<QObject> _parent): parent(std::move(_parent))
 	{
-		const auto cubeModel = MeshLoader().loadModel("Assets/Models/cube.obj");
+		const auto cubeModel = MeshLoader().loadModel("Assets/Models/hcube.obj");
 		const auto suzModel = MeshLoader().loadModel("Assets/Models/suz.obj");
-		for (int i = 0; i < 4; ++i)
+		for (int i = 0; i < 2; ++i)
 		{
 			addModel(cubeModel, { i * 3.5f, 0,0 });
 		}
-		for (int i = 0; i < 4; ++i)
+		for (int i = 0; i < 2; ++i)
 		{
 			addModel(suzModel, { 17.0f + i * 3.5f, 0,0 });
 		}

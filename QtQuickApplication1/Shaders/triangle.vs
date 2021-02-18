@@ -12,11 +12,18 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
-void main() {
+uniform float ratio;
+
+void main() 
+{
     col = colAttr;
 
-    FragPos = vec3(model * vec4(posAttr, 1.0));
-    Normal = mat3(transpose(inverse(model))) * normalAttr;  
+    vec3 dir = normalize(posAttr);
+    vec3 atr = posAttr*(1-ratio) + dir*ratio;
+    FragPos = vec3(model * vec4(atr, 1.0));
 
-    gl_Position =  projection * view * model * vec4(posAttr, 1.0f);
+    vec3 normal = normalAttr*(1-ratio)+dir*ratio;
+    Normal = mat3(transpose(inverse(model))) * normal;  
+    
+    gl_Position =  projection * view * model * vec4(atr, 1.0f);
 }
