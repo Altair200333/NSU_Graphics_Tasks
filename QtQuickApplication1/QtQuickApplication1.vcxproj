@@ -217,9 +217,13 @@
     </QtRcc>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AloyApplication.h" />
     <ClInclude Include="CubeData.h" />
     <ClInclude Include="CubeGenerator.h" />
-    <ClInclude Include="DemoWindow.h" />
+    <ClInclude Include="GLWindow.h" />
+    <ClInclude Include="Event.h" />
+    <ClInclude Include="EventDispatcher.h" />
+    <ClInclude Include="EventSubscriber.h" />
     <ClInclude Include="GLCamera.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="LightSource.h" />
@@ -229,11 +233,13 @@
     <ClInclude Include="MeshRenderer.h" />
     <ClInclude Include="MouseInput.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="OnUpdateEvent.h" />
+    <ClInclude Include="OnUpdateSubscriber.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SimpleMeshRenderer.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Vertex.h" />
-    <QtMoc Include="GLWindow.h" />
+    <QtMoc Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

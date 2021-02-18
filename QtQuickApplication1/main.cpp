@@ -1,7 +1,9 @@
 #include <QGuiApplication>
 #include <QApplication>
-#include "DemoWindow.h"
+#include "GLWindow.h"
 #include <QLabel>
+
+#include "AloyApplication.h"
 #include "QColorDialog"
 int main(int argc, char** argv)
 {
@@ -12,9 +14,10 @@ int main(int argc, char** argv)
     format.setVersion(3, 3);
     format.setProfile(QSurfaceFormat::CoreProfile);
 
-    DemoWindow window;
+    Window window;
     window.setFormat(format);
-    window.resize(1200, 800);
+    window.resize(1600, 800);
+    AloyApplication aloyApp(&window);
     window.show();
   
     return app.exec();

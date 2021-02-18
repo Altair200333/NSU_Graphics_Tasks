@@ -35,6 +35,9 @@
     <Filter Include="Object\Components">
       <UniqueIdentifier>{22650892-27d7-4492-81fc-f2149a68e3f8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Events">
+      <UniqueIdentifier>{1d2b3b5c-c8b9-414f-a395-9b16a6806923}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="debug\moc_predefs.h.cbt">
@@ -55,9 +58,6 @@
   <ItemGroup>
     <ClInclude Include="CubeData.h" />
     <ClInclude Include="GLCamera.h" />
-    <ClInclude Include="DemoWindow.h">
-      <Filter>Window</Filter>
-    </ClInclude>
     <ClInclude Include="MouseInput.h">
       <Filter>Window\Input</Filter>
     </ClInclude>
@@ -95,12 +95,33 @@
     <ClInclude Include="SimpleMeshRenderer.h">
       <Filter>Object\Components</Filter>
     </ClInclude>
+    <ClInclude Include="Event.h">
+      <Filter>Events</Filter>
+    </ClInclude>
+    <ClInclude Include="EventDispatcher.h">
+      <Filter>Events</Filter>
+    </ClInclude>
+    <ClInclude Include="EventSubscriber.h">
+      <Filter>Events</Filter>
+    </ClInclude>
+    <ClInclude Include="OnUpdateEvent.h">
+      <Filter>Events</Filter>
+    </ClInclude>
+    <ClInclude Include="OnUpdateSubscriber.h">
+      <Filter>Events</Filter>
+    </ClInclude>
+    <ClInclude Include="GLWindow.h">
+      <Filter>Window</Filter>
+    </ClInclude>
+    <ClInclude Include="AloyApplication.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="GLWindow.h">
+    <QtMoc Include="Window.h">
       <Filter>Window</Filter>
     </QtMoc>
   </ItemGroup>

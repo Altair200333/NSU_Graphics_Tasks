@@ -1,50 +1,55 @@
 #pragma once
+#include "Window.h"
+
 #include <memory>
 
-#include <QWindow>
-
-#include <QOpenGLContext>
+#include <QOpenGLVertexArrayObject>
 #include <QOpenGLFunctions>
-#include <QOpenGLPaintDevice>
-#include <QPainter>
+#include <QScreen>
+#include <QOpenGLExtraFunctions>
+#include <array>
+#include <QColorDialog>
+#include <QOpenGLBuffer>
+#include <QOpenGLShaderProgram>
 
+#include "GLCamera.h"
+#include <QWindow>
 #include "Input.h"
 #include "MouseInput.h"
-#include <QKeyEvent>
-#include <QOpenGLWidget>
-#include <QBasicTimer>
-#include <QMainWindow>
-#include <QColorDialog>
-#include <QTimer>
-class GLWindow : public QOpenGLWidget, public QOpenGLFunctions
+#include "CubeData.h"
+#include "Vertex.h"
+#include "Mesh.h"
+#include "MeshRenderer.h"
+#include "Object.h"
+#include "Scene.h"
+#include <QMenuBar>
+#include <QHBoxLayout>
+#include "EventDispatcher.h"
+#include "OnUpdateEvent.h"
+class GLWindow final : public QOpenGLWidget, public QOpenGLFunctions
 {
-Q_OBJECT
-protected:
-	std::shared_ptr<QOpenGLContext> context = nullptr;
 public:
 	QTimer* timer = nullptr;
-	virtual void init(){}
-	virtual void render(){}
-
-	GLWindow()
+	
+	GLWindow(QOpenGLWidget* parent = nullptr): QOpenGLWidget(parent)
 	{
 		timer = new QTimer(this);
 		connect(timer, SIGNAL(timeout()), this, SLOT(update()));
 		timer->start(10);
-		setMouseTracking(true);//without this command input goes insane if mouse pointer is outside the window
+		
+		setMouseTracking(true);   //without this command input goes insane if mouse pointer is outside the window
+		setFocusPolicy(Qt::ClickFocus);//allow widget to be focused
 	}
-	
+
 	void initializeGL() override
 	{
 		initializeOpenGLFunctions();
-		context = std::make_unique<QOpenGLContext>(this);
-
-		init();
 	}
 
 	void paintGL() override
 	{
-		render();
+		EventDispatcher::dispatch(OnUpdateEvent());
+		
 		Input::reset();
 		MouseInput::reset();
 	}
