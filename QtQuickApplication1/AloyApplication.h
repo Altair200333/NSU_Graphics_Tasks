@@ -36,7 +36,7 @@ public:
 		layout->setContentsMargins(0, 0, 0, 0);
 		layout->addWidget(viewport.get());
 		layout->addWidget(slider);
-		
+
 		window->setLayout(layout.get());
 		
 	}

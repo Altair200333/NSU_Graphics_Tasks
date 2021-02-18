@@ -235,6 +235,7 @@
     <ClInclude Include="OnUpdateSubscriber.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SimpleMeshRenderer.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Vertex.h" />
     <QtMoc Include="Window.h" />

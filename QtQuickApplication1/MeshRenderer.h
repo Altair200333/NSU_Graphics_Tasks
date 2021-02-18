@@ -29,10 +29,19 @@ public:
 		shader->setAttributeBuffer("posAttr", GL_FLOAT, 0, 3, sizeof(Vertex));
 
 		shader->enableAttributeArray("normalAttr");
-		shader->setAttributeBuffer("normalAttr", GL_FLOAT, 3 * sizeof(float), 3, sizeof(Vertex));
+		shader->setAttributeBuffer("normalAttr", GL_FLOAT, offsetof(Vertex, normal), 3, sizeof(Vertex));
 
 		shader->enableAttributeArray("colAttr");
-		shader->setAttributeBuffer("colAttr", GL_FLOAT, 6 * sizeof(float), 3, sizeof(Vertex));
+		shader->setAttributeBuffer("colAttr", GL_FLOAT, offsetof(Vertex, color), 3, sizeof(Vertex));
+
+		shader->enableAttributeArray("aTexCoords");
+		shader->setAttributeBuffer("aTexCoords", GL_FLOAT, offsetof(Vertex, TexCoords), 2, sizeof(Vertex));
+
+		shader->enableAttributeArray("aTangent");
+		shader->setAttributeBuffer("aTangent", GL_FLOAT, offsetof(Vertex, TexCoords), 3, sizeof(Vertex));
+
+		shader->enableAttributeArray("aBitangent");
+		shader->setAttributeBuffer("aBitangent", GL_FLOAT, offsetof(Vertex, TexCoords), 3, sizeof(Vertex));
 	}
 
 	void createShader(QObject* parent, const std::string& fragment, const std::string& vertex, const std::string& geometry)

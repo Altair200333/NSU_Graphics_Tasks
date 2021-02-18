@@ -12,9 +12,15 @@ public:
 		material->uploadToShader(shader);
 		uploadCameraDetails(camera);
 		uploadLights(lights);
-		
-		shader->setUniformValue("isLightSource", material->isLightSource);
 
+		shader->setUniformValue("albedoCount", static_cast<int>(material->diffuse.size()));
+		if(!material->diffuse.empty())
+		{
+			shader->setUniformValue("texture_diffuse", 0);
+			material->diffuse[0].texture->bind();
+		}
+		shader->setUniformValue("isLightSource", material->isLightSource);
+		
 		vao->bind();
 		glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0);
 		vao->release();

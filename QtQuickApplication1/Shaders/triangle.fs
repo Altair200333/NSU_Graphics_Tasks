@@ -5,6 +5,7 @@ in vec3 col;
 
 in vec3 FragPos;
 in vec3 Normal;
+in vec2 TexCoords;
 
 uniform vec3 cameraPos;
 
@@ -21,10 +22,17 @@ uniform LightSource lights[10];
 uniform int lightsCount;
 uniform bool isLightSource;
 
+uniform int albedoCount;
+uniform sampler2D texture_diffuse;
+
 vec3 getBaseColor()
 {
    if(mode == 1)
       return col;
+
+   if(albedoCount != 0)
+     return texture(texture_diffuse, TexCoords).xyz;
+
    return color.xyz;
 }
 float attenuation(float dist)

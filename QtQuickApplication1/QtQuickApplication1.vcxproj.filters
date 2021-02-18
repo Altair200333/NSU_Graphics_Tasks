@@ -108,6 +108,9 @@
     </ClInclude>
     <ClInclude Include="MeshLoader.h" />
     <ClInclude Include="AloyApplication.h" />
+    <ClInclude Include="Texture.h">
+      <Filter>Object\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

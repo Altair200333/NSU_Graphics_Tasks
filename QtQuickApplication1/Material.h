@@ -2,9 +2,14 @@
 #include <QColor>
 #include <QOpenGLShaderProgram>
 
+#include "Texture.h"
+
 class Material final
 {
 public:
+	std::vector<Texture> diffuse;
+	std::vector<Texture> normal;
+	
 	QColor color;
 	bool isLightSource = false;
 	

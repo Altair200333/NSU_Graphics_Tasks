@@ -92,6 +92,13 @@ public:
 		{
 			addModel(suzModel, { 7.0f + i * 3.5f, -5,0 }, true);
 		}
+		for (int i = 0; i < 2; ++i)
+		{
+			addModel(cubeModel, { i * 3.5f, -5,0 }, true);
+		}
+		
+		addModel(MeshLoader().loadModel("Assets/Models/sam.obj"), {3.5f, 5, 0}, false);
+		addModel(MeshLoader().loadModel("Assets/Models/sam2.obj"), {7.5f, 5, 0}, false);
 
 		createLightSourceBlock();
 		

@@ -19,6 +19,7 @@ public:
         Material material;
     };
     std::vector<LoadedModel> models;
+    std::vector<Texture> cachedTextures;
 
     std::vector<LoadedModel> loadModel(const std::string& path)
     {
@@ -57,6 +58,7 @@ public:
         // data to fill
         std::vector<Vertex> vertices;
         std::vector<unsigned int> indices;
+        std::vector<Texture> textures;
 
         // walk through each of the mesh's vertices
         for (unsigned int i = 0; i < mesh->mNumVertices; i++)
@@ -76,7 +78,22 @@ public:
                 vector.setZ(mesh->mNormals[i].z);
                 vertex.normal = { vector.x(), vector.y(), vector.z() };
             }
-            if(mesh->HasVertexColors(0))
+          
+            // texture coordinates
+            if (mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
+            {
+                QVector2D vec;
+                // a vertex can contain up to 8 different texture coordinates. We thus make the assumption that we won't 
+                // use models where a vertex can have multiple texture coordinates so we always take the first set (0).
+                vec.setX(mesh->mTextureCoords[0][i].x);
+                vec.setY(mesh->mTextureCoords[0][i].y);
+                vertex.TexCoords = { vec.x(), vec.y() };
+                // tangent
+                vertex.Tangent = { mesh->mTangents[i].x ,mesh->mTangents[i].y ,mesh->mTangents[i].z};
+                // bitangent
+                vertex.Bitangent = { mesh->mBitangents[i].x , mesh->mBitangents[i].y , mesh->mBitangents[i].z };
+            }
+            if (mesh->HasVertexColors(0))
             {
                 vertex.color = { mesh->mColors[0][i].r, mesh->mColors[0][i].g, mesh->mColors[0][i].b };
             }
@@ -101,8 +118,49 @@ public:
         aiColor3D color(0.f, 0.f, 0.f);
         material->Get(AI_MATKEY_COLOR_DIFFUSE, color);
         const QColor albedo = { static_cast<int>(color.r * 255), static_cast<int>(color.g * 255), static_cast<int>(color.b * 255)};
-        
-        return { Mesh(vertices, indices), Material(albedo) };
+
+        // 1. diffuse maps
+        std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+        // 2. specular maps
+        std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
+        // 3. normal maps
+        std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
+        // 4. height maps
+        std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
+
+        Material mat(albedo);
+        mat.diffuse = diffuseMaps;
+        mat.normal = normalMaps;
+        return { Mesh(vertices, indices), mat };
     }
-   
+    std::vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& typeName)
+    {
+        std::vector<Texture> textures;
+        for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
+        {
+            aiString str;
+            mat->GetTexture(type, i, &str);
+            // check if texture was loaded before and if so, continue to next iteration: skip loading a new texture
+            bool skip = false;
+            for (unsigned int j = 0; j < cachedTextures.size(); j++)
+            {
+                if (std::strcmp(cachedTextures[j].path.data(), str.C_Str()) == 0)
+                {
+                    textures.push_back(cachedTextures[j]);
+                    skip = true; // a texture with the same filepath has already been loaded, continue to next one. (optimization)
+                    break;
+                }
+            }
+            if (!skip)
+            {   // if texture hasn't been loaded already, load it
+                Texture texture;
+                texture.texture = new QOpenGLTexture(QImage(QString(str.C_Str())));
+                texture.type = typeName;
+                texture.path = str.C_Str();
+                textures.push_back(texture);
+                cachedTextures.push_back(texture);  // store it as texture loaded for entire model, to ensure we won't unnecesery load duplicate textures.
+            }
+        }
+        return textures;
+    }
 };
