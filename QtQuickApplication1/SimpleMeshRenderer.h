@@ -12,6 +12,7 @@ public:
 		material->uploadToShader(shader);
 		uploadCameraDetails(camera);
 		uploadLights(lights);
+		
 		shader->setUniformValue("isLightSource", material->isLightSource);
 
 		vao->bind();

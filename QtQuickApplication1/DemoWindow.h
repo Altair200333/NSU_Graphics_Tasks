@@ -37,6 +37,8 @@ public:
 
 		colorDialog.show();
 		colorDialog.setOption(QColorDialog::NoButtons);
+
+		glEnable(GL_DEPTH_TEST);
 	}
 
 	void render() override
@@ -46,7 +48,6 @@ public:
 		
 		glClearColor(0.08f, 0.08f, 0.08f, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glEnable(GL_DEPTH_TEST);
 		
 		scene.setColor(colorDialog.currentColor());
 		

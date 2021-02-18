@@ -19,8 +19,10 @@
 class GLWindow : public QOpenGLWidget, public QOpenGLFunctions
 {
 Q_OBJECT
+protected:
+	std::shared_ptr<QOpenGLContext> context = nullptr;
 public:
-	QTimer* timer;
+	QTimer* timer = nullptr;
 	virtual void init(){}
 	virtual void render(){}
 
@@ -29,8 +31,9 @@ public:
 		timer = new QTimer(this);
 		connect(timer, SIGNAL(timeout()), this, SLOT(update()));
 		timer->start(10);
-		setMouseTracking(true);
+		setMouseTracking(true);//without this command input goes insane if mouse pointer is outside the window
 	}
+	
 	void initializeGL() override
 	{
 		initializeOpenGLFunctions();
@@ -38,15 +41,27 @@ public:
 
 		init();
 	}
-	void resizeGL(int w, int h) override
-	{
-		
-	}
+
 	void paintGL() override
 	{
 		render();
 		Input::reset();
 		MouseInput::reset();
+	}
+
+protected:
+	virtual void onClose() {}
+	bool event(QEvent* event) override
+	{
+		assert(event);
+		switch (event->type())
+		{
+		case QEvent::Close:
+			onClose();
+			return QOpenGLWidget::event(event);
+		default:
+			return QOpenGLWidget::event(event);
+		}
 	}
 	//bunch of callbacks for input
 	void keyPressEvent(QKeyEvent* e) override
@@ -78,23 +93,4 @@ public:
 		Input::releaseKey(e->button());
 		QOpenGLWidget::mouseReleaseEvent(e);
 	}
-
-
-protected:
-	virtual void onClose() {}
-	bool event(QEvent* event) override
-	{
-		assert(event);
-		switch (event->type())
-		{
-		case QEvent::Close:
-			onClose();
-			return QOpenGLWidget::event(event);
-		default:
-			return QOpenGLWidget::event(event);
-		}
-	}
-
-protected:
-	std::shared_ptr<QOpenGLContext> context = nullptr;
 };

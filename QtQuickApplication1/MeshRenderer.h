@@ -12,17 +12,18 @@
 class MeshRenderer
 {
 public:
-	QOpenGLBuffer* vbo;
-	QOpenGLBuffer* ibo;
-	QOpenGLVertexArrayObject* vao;
-	std::shared_ptr<QOpenGLShaderProgram> shader;
-	Transform* transform;
-	Mesh* mesh;
-	Material* material;
+	virtual ~MeshRenderer() = default;
+	QOpenGLBuffer* vbo = nullptr;
+	QOpenGLBuffer* ibo = nullptr;
+	QOpenGLVertexArrayObject* vao = nullptr;
+	std::shared_ptr<QOpenGLShaderProgram> shader = nullptr;
+	Transform* transform = nullptr;
+	Mesh* mesh = nullptr;
+	Material* material = nullptr;
 
 	MeshRenderer() = default;
 
-	void enableAttributes()
+	void enableAttributes() const
 	{
 		shader->enableAttributeArray("posAttr");
 		shader->setAttributeBuffer("posAttr", GL_FLOAT, 0, 3, sizeof(Vertex));
@@ -69,6 +70,7 @@ public:
 		ibo->bind();
 		ibo->allocate(mesh->indices.data(), mesh->indices.size() * sizeof(GLuint));
 	}
+	
 	void init(QObject* parent, Transform* _transform, Mesh* _mesh, Material* _material,
 		const std::string& fragment = "Shaders/triangle.fs",
 		const std::string& vertex = "Shaders/triangle.vs")
