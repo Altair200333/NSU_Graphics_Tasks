@@ -13,7 +13,7 @@ public:
 	std::shared_ptr<MeshRenderer> renderer;
 	Material material;
 	
-	void initRenderer(QObject* parent, const std::string& fragment = "Shaders/triangle.fs", const std::string& vertex = "Shaders/triangle.vs")
+	void initRenderer(std::shared_ptr<QObject> parent, const std::string& fragment = "Shaders/triangle.fs", const std::string& vertex = "Shaders/triangle.vs")
 	{
 		renderer->init(parent, &transform, &mesh, &material);
 	}

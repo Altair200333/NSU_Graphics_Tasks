@@ -56,7 +56,6 @@
     </QtRcc>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CubeData.h" />
     <ClInclude Include="GLCamera.h" />
     <ClInclude Include="MouseInput.h">
       <Filter>Window\Input</Filter>
@@ -74,9 +73,6 @@
     <ClInclude Include="LightSource.h">
       <Filter>Object</Filter>
     </ClInclude>
-    <ClInclude Include="CubeGenerator.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
     <ClInclude Include="Mesh.h">
       <Filter>Object\Components</Filter>
     </ClInclude>
@@ -88,9 +84,6 @@
     </ClInclude>
     <ClInclude Include="Transform.h">
       <Filter>Object\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshLoader.h">
-      <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="SimpleMeshRenderer.h">
       <Filter>Object\Components</Filter>
@@ -113,9 +106,9 @@
     <ClInclude Include="GLWindow.h">
       <Filter>Window</Filter>
     </ClInclude>
-    <ClInclude Include="AloyApplication.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
+    <ClInclude Include="MeshLoader.h" />
+    <ClInclude Include="CubeGenerator.h" />
+    <ClInclude Include="AloyApplication.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

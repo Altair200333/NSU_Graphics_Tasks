@@ -16,7 +16,6 @@
 #include <QWindow>
 #include "Input.h"
 #include "MouseInput.h"
-#include "CubeData.h"
 #include "Vertex.h"
 #include "Mesh.h"
 #include "MeshRenderer.h"

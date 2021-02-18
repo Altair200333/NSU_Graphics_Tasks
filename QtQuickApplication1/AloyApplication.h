@@ -10,24 +10,22 @@ class AloyApplication final: public OnUpdateSubscriber
 {
 public:
 	Scene scene;
-	QColorDialog* colorDialog;
 	
-	QBoxLayout* layout;
-	GLWindow* viewport;
+	std::shared_ptr<QBoxLayout> layout;
+	std::shared_ptr<GLWindow> viewport;
 
 	bool initialized = false;
 	
 	AloyApplication(Window* window)
 	{
-		layout = new QBoxLayout(QBoxLayout::LeftToRight);
-		viewport = new GLWindow(window);
-		colorDialog = new QColorDialog();
-		layout->setContentsMargins(0, 0, 0, 0);
-		layout->addWidget(viewport);
-		layout->addWidget(colorDialog);
-		
-		window->setLayout(layout);
+		layout = std::make_shared<QBoxLayout>(QBoxLayout::TopToBottom);
+		viewport = std::make_shared<GLWindow>(window);
 
+		layout->setContentsMargins(0, 0, 0, 0);
+		layout->addWidget(viewport.get());
+		
+		window->setLayout(layout.get());
+		
 	}
 	
 	void onUpdate() override
@@ -38,6 +36,7 @@ public:
 			initialized = true;
 		}
 
+		scene.camera.aspectRatio = static_cast<float>(viewport->width()) / viewport->height();
 		render();
 	}
 	
@@ -45,8 +44,6 @@ public:
 	{
 		scene = Scene(viewport);
 	 	viewport->glEnable(GL_DEPTH_TEST);
-
-		colorDialog->setOption(QColorDialog::NoButtons);
 	}
 
 	void render()
@@ -56,8 +53,6 @@ public:
 
 		viewport->glClearColor(0.08f, 0.08f, 0.08f, 1);
 		viewport->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		scene.setColor(colorDialog->currentColor());
 
 		scene.onUpdate();
 		scene.onRender();

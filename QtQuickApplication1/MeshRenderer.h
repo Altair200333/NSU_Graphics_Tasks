@@ -35,11 +35,14 @@ public:
 		shader->setAttributeBuffer("colAttr", GL_FLOAT, 6 * sizeof(float), 3, sizeof(Vertex));
 	}
 
-	void createShader(QObject* parent, const std::string& fragment, const std::string& vertex)
+	void createShader(QObject* parent, const std::string& fragment, const std::string& vertex, const std::string& geometry)
 	{
 		shader = std::make_shared<QOpenGLShaderProgram>(parent);
 		shader->addShaderFromSourceFile(QOpenGLShader::Vertex, vertex.c_str());
 		shader->addShaderFromSourceFile(QOpenGLShader::Fragment, fragment.c_str());
+		
+		if(!geometry.empty())
+			shader->addShaderFromSourceFile(QOpenGLShader::Geometry, geometry.c_str());
 	}
 
 	void createVao(QObject* parent)
@@ -71,20 +74,20 @@ public:
 		ibo->allocate(mesh->indices.data(), mesh->indices.size() * sizeof(GLuint));
 	}
 	
-	void init(QObject* parent, Transform* _transform, Mesh* _mesh, Material* _material,
+	void init(std::shared_ptr<QObject> parent, Transform* _transform, Mesh* _mesh, Material* _material,
 		const std::string& fragment = "Shaders/triangle.fs",
-		const std::string& vertex = "Shaders/triangle.vs")
+		const std::string& vertex = "Shaders/triangle.vs", const std::string& geometry = "")
 	{
 		mesh = _mesh;
 		transform = _transform;
 		material = _material;
 
-		createShader(parent, fragment, vertex);
+		createShader(parent.get(), fragment, vertex, geometry);
 
 		auto s = shader->log();
 		shader->link();
 
-		createVao(parent);
+		createVao(parent.get());
 
 		createVbo();
 

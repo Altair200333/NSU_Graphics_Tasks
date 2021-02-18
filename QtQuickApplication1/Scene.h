@@ -1,9 +1,9 @@
 #pragma once
 #include <memory>
+#include <utility>
 #include <vector>
 #include <QObject>
 
-#include "CubeData.h"
 #include "Input.h"
 #include "MouseInput.h"
 #include "Object.h"
@@ -14,7 +14,7 @@
 
 class Scene final
 {
-	QObject* parent;
+	std::shared_ptr<QObject> parent;
 
 	void moveCamera()
 	{
@@ -39,7 +39,7 @@ class Scene final
 	void createLightSourceBlock()
 	{
 		lightSourceBlock = std::make_shared<Object>();
-		lightSourceBlock->mesh = Mesh(Cube::vertices, Cube::indices);
+		lightSourceBlock->mesh = MeshLoader().loadModel("Assets/Models/cube.obj")[0].mesh;
 		lightSourceBlock->renderer = std::make_shared<SimpleMeshRenderer>();
 		lightSourceBlock->initRenderer(parent);
 		lightSourceBlock->material.shadingMode = Material::materialColor;
@@ -66,10 +66,6 @@ public:
 	std::shared_ptr<Object> lightSourceBlock;
 	GLCamera camera;
 
-	bool cullFront = false;
-	bool depthTest = true;
-	bool useVertexColor = false;
-	bool useMultiSapling = true;
 	bool drawWireframe = false;
 
 	QVector2D angularVelocity = {0,0};
@@ -77,7 +73,7 @@ public:
 	Scene() = default;
 
 	
-	Scene(QObject* _parent): parent(_parent)
+	Scene(std::shared_ptr<QObject> _parent): parent(std::move(_parent))
 	{
 		const auto cubeModel = MeshLoader().loadModel("Assets/Models/cube.obj");
 		const auto suzModel = MeshLoader().loadModel("Assets/Models/suz.obj");
@@ -90,59 +86,16 @@ public:
 			addModel(suzModel, { 17.0f + i * 3.5f, 0,0 });
 		}
 		
-		addModel(MeshLoader().loadModel("Assets/Models/cont.obj"), { 5, 7,-4 });
-
 		createLightSourceBlock();
 		
 		lights.push_back(std::make_shared<LightSource>(QVector3D{0, 0, 7}));
 		lights.push_back(std::make_shared<LightSource>(QVector3D{50, 9, -7}, QColor{20, 20, 200}));
 	}
-	void setColor(const QColor& color)
-	{
-		for(auto& obj: objects)
-		{
-			obj->material.color = color;
-		}
-	}
-	void setShadingMode(Material::ShadingMode mode)
-	{
-		for (auto& obj : objects)
-		{
-			obj->material.shadingMode = mode;
-		}
-	}
-
-	void switchParams()
-	{
-		if(Input::keyJustPressed(Qt::Key_1))
-		{
-			if(useVertexColor)
-				setShadingMode(Material::materialColor);
-			else
-				setShadingMode(Material::vertexColor);
-			useVertexColor = !useVertexColor;
-		}
-		if (Input::keyJustPressed(Qt::Key_2))
-		{
-			cullFront = !cullFront;
-		}
-		if (Input::keyJustPressed(Qt::Key_3))
-		{
-			depthTest = !depthTest;
-		}
-		if (Input::keyJustPressed(Qt::Key_4))
-		{
-			useMultiSapling = !useMultiSapling;
-		}
-		if (Input::keyJustPressed(Qt::Key_Z))
-		{
-			drawWireframe = !drawWireframe;
-		}
-	}
 
 	void onUpdate()
 	{
-		switchParams();
+		if (Input::keyJustPressed(Qt::Key_Z))
+			drawWireframe = !drawWireframe;
 
 		angularVelocity *= 0.987f;
 		for (auto& object : objects)
@@ -176,35 +129,10 @@ public:
 		}
 	}
 
-	void enableParams()
-	{
-		if (cullFront)
-		{
-			glEnable(GL_CULL_FACE);
-			glCullFace(GL_FRONT);
-		}
-		else
-		{
-			glEnable(GL_CULL_FACE);
-			glCullFace(GL_BACK);
-
-		}
-		if (depthTest)
-			glEnable(GL_DEPTH_TEST);
-		else
-			glDisable(GL_DEPTH_TEST);
-		if (useMultiSapling)
-			glEnable(GL_MULTISAMPLE);
-		else
-			glDisable(GL_MULTISAMPLE);
-
-		glPolygonMode(GL_FRONT_AND_BACK, drawWireframe ? GL_LINE : GL_FILL);
-	}
-
 	void onRender()
 	{
-		enableParams();
-		
+		glPolygonMode(GL_FRONT_AND_BACK, drawWireframe ? GL_LINE : GL_FILL);
+
 		for(size_t i = 0; i < objects.size(); ++i)
 		{
 			objects[i]->renderer->render(camera, lights);

@@ -9,7 +9,8 @@ public:
 	float FOV = 60;
 	float yaw = -90.0f;
 	float pitch = 0.0f;
-
+	float aspectRatio = 4.0f / 3.0f;
+	
 	QVector3D front = { 0, 0, 1 };
 	QVector3D right = { 1, 0, 0 };
 	QVector3D up =	  { 0, 1, 0 };
@@ -22,7 +23,7 @@ public:
 	QMatrix4x4 getProjectionMatrix()
 	{
 		QMatrix4x4 projection;
-		projection.perspective(FOV, 4.0f / 3.0f, 0.1f, 100.0f);
+		projection.perspective(FOV, aspectRatio, 0.1f, 100.0f);
 		return projection;
 	}
 	QMatrix4x4 getViewMatrix()
