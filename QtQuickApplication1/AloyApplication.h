@@ -41,15 +41,9 @@ public:
 		window->setLayout(layout.get());
 		
 	}
-	
-	void onUpdate() override
+
+	void updateScene()
 	{
-		if (!initialized)//this has to ne
-		{
-			init();
-			initialized = true;
-		}
-		
 		for(auto& obj: scene.objects)
 		{
 			if (obj->tag == "modifiable")
@@ -84,6 +78,17 @@ public:
 		{
 			light->position = QQuaternion::fromAxisAndAngle({ 1,0,0 }, 0.2f) * light->position;
 		}
+	}
+
+	void onUpdate() override
+	{
+		if (!initialized)//this has to ne
+		{
+			init();
+			initialized = true;
+		}
+		
+		updateScene();
 		
 		render();
 	}

@@ -37,7 +37,8 @@ vec3 getBaseColor()
 
    return color.xyz;
 }
-
+//-----------------------------------------------------------------------------
+//from https://learnopengl.com/code_viewer_gh.php?code=src/2.lighting/6.multiple_lights/6.multiple_lights.fs
 // ----------------------------------------------------------------------------
 float DistributionGGX(vec3 N, vec3 H, float roughness)
 {
