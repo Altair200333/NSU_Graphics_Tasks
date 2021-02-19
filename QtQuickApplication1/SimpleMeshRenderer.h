@@ -16,7 +16,7 @@ public:
 		shader->setUniformValue("albedoCount", static_cast<int>(material->diffuse.size()));
 		if(!material->diffuse.empty())
 		{
-			shader->setUniformValue("texture_diffuse", 0);
+			//shader->setUniformValue("texture_diffuse", 0);
 			material->diffuse[0].texture->bind();
 		}
 		shader->setUniformValue("isLightSource", material->isLightSource);

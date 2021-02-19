@@ -38,19 +38,21 @@ void main()
     genVertex(gs_in[0].posAttr, gs_in[0].normalAttr);
     genVertex((gs_in[0].posAttr+gs_in[1].posAttr)*0.5f, gs_in[0].normalAttr);
     genVertex((gs_in[0].posAttr+gs_in[2].posAttr)*0.5f, gs_in[0].normalAttr);
+    EndPrimitive();
 
     genVertex(gs_in[1].posAttr, gs_in[1].normalAttr);
     genVertex((gs_in[0].posAttr+gs_in[1].posAttr)*0.5f, gs_in[0].normalAttr);
     genVertex((gs_in[2].posAttr+gs_in[1].posAttr)*0.5f, gs_in[0].normalAttr);
+    EndPrimitive();
 
     genVertex(gs_in[2].posAttr, gs_in[2].normalAttr);
     genVertex((gs_in[2].posAttr+gs_in[1].posAttr)*0.5f, gs_in[0].normalAttr);
     genVertex((gs_in[2].posAttr+gs_in[0].posAttr)*0.5f, gs_in[0].normalAttr);
+    EndPrimitive();
 
 
     genVertex((gs_in[0].posAttr+gs_in[1].posAttr)*0.5f, gs_in[0].normalAttr);
     genVertex((gs_in[1].posAttr+gs_in[2].posAttr)*0.5f, gs_in[0].normalAttr);
     genVertex((gs_in[2].posAttr+gs_in[0].posAttr)*0.5f, gs_in[0].normalAttr);
-
     EndPrimitive();
 }
