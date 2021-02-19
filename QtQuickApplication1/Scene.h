@@ -42,13 +42,13 @@ class Scene final
 		lightSourceBlock->renderer = std::make_shared<SimpleMeshRenderer>();
 		lightSourceBlock->initRenderer(parent);
 		lightSourceBlock->material.shadingMode = Material::materialColor;
-		lightSourceBlock->transform.transform.scale(0.5f);
 	}
-	void addModel(const std::vector<MeshLoader::LoadedModel>& models, const QVector3D& pos, bool useGeometry = false)
+	void addModel(const std::vector<MeshLoader::LoadedModel>& models, const QVector3D& pos, bool useGeometry = false, const std::string& tag = "")
 	{
 		for (const auto& model : models)
 		{
 			auto object = std::make_shared<Object>();
+			object->tag = tag;
 			object->mesh = model.mesh;
 			object->material = model.material;
 			object->renderer = std::make_shared<SimpleMeshRenderer>();
@@ -82,23 +82,24 @@ public:
 		const auto suzModel = MeshLoader().loadModel("Assets/Models/suz.obj");
 		for (int i = 0; i < 2; ++i)
 		{
-			addModel(cubeModel, { i * 3.5f, 0,0 });
+			addModel(cubeModel, { i * 3.5f, 0,0 }, false, "modifiable");
 		}
 		for (int i = 0; i < 2; ++i)
 		{
-			addModel(suzModel, { 7.0f + i * 3.5f, 0,0 });
+			addModel(suzModel, { 7.0f + i * 3.5f, 0,0 },false, "modifiable");
 		}
 		for (int i = 0; i < 2; ++i)
 		{
-			addModel(suzModel, { 7.0f + i * 3.5f, -5,0 }, true);
+			addModel(suzModel, { 7.0f + i * 3.5f, -5,0 }, true, "modifiable");
 		}
 		for (int i = 0; i < 2; ++i)
 		{
-			addModel(cubeModel, { i * 3.5f, -5,0 }, true);
+			addModel(cubeModel, { i * 3.5f, -5,0 }, true, "modifiable");
 		}
 		
-		addModel(MeshLoader().loadModel("Assets/Models/sam.obj"), {3.5f, 5, 0}, false);
-		addModel(MeshLoader().loadModel("Assets/Models/sam2.obj"), {7.5f, 5, 0}, false);
+		addModel(MeshLoader().loadModel("Assets/Models/sam2.obj"), {3.5f, 5, 0}, false, "modifiable");
+		addModel(MeshLoader().loadModel("Assets/Models/sam2.obj"), {7.5f, 5, 0}, false, "modifiable");
+		addModel(MeshLoader().loadModel("Assets/Models/plane.obj"), {0, -8, 0}, false);
 
 		createLightSourceBlock();
 		
@@ -114,8 +115,11 @@ public:
 		angularVelocity *= 0.987f;
 		for (auto& object : objects)
 		{
-			object->transform.rotate(QQuaternion::fromAxisAndAngle(camera.right, -angularVelocity.y()).normalized());
-			object->transform.rotate(QQuaternion::fromAxisAndAngle(camera.up, angularVelocity.x()).normalized());
+			if (object->tag == "modifiable")
+			{
+				object->transform.rotate(QQuaternion::fromAxisAndAngle(camera.right, -angularVelocity.y()).normalized());
+				object->transform.rotate(QQuaternion::fromAxisAndAngle(camera.up, angularVelocity.x()).normalized());
+			}
 		}
 		if(Input::keyPressed(Qt::RightButton))
 		{

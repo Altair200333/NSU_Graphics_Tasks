@@ -51,8 +51,11 @@ public:
 		
 		for(auto& obj: scene.objects)
 		{
-			obj->renderer->shader->bind();
-			obj->renderer->shader->setUniformValue("ratio", static_cast<float>(slider->value()) / 100.0f);
+			if (obj->tag == "modifiable")
+			{
+				obj->renderer->shader->bind();
+				obj->renderer->shader->setUniformValue("ratio", static_cast<float>(slider->value()) / 100.0f);
+			}
 		}
 		
 		scene.camera.aspectRatio = static_cast<float>(viewport->width()) / viewport->height();

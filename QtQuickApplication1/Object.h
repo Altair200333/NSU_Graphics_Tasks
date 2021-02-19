@@ -8,6 +8,7 @@
 class Object
 {
 public:
+	std::string tag;
 	Transform transform;
 	Mesh mesh;
 	std::shared_ptr<MeshRenderer> renderer;
