@@ -234,6 +234,7 @@
     <ClInclude Include="OnUpdateEvent.h" />
     <ClInclude Include="OnUpdateSubscriber.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="SceneRenderer.h" />
     <ClInclude Include="SimpleMeshRenderer.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Transform.h" />

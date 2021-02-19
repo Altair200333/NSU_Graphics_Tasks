@@ -6,6 +6,7 @@
 #include "GLWindow.h"
 #include "Window.h"
 #include <QSlider>
+#include "SceneRenderer.h"
 
 class AloyApplication final: public OnUpdateSubscriber
 {
@@ -17,7 +18,7 @@ public:
 	std::shared_ptr<GLWindow> viewport;
 
 	bool initialized = false;
-	
+	SceneRenderer renderer;
 	AloyApplication(Window* window)
 	{
 		layout = std::make_shared<QBoxLayout>(QBoxLayout::TopToBottom);
@@ -59,6 +60,31 @@ public:
 		}
 		
 		scene.camera.aspectRatio = static_cast<float>(viewport->width()) / viewport->height();
+
+		if (Input::keyJustPressed(Qt::Key_Z))
+			renderer.drawWireframe = !renderer.drawWireframe;
+
+		scene.angularVelocity *= 0.987f;
+		for (auto& object : scene.objects)
+		{
+			if (object->tag == "modifiable")
+			{
+				object->transform.rotate(QQuaternion::fromAxisAndAngle(scene.camera.right, -scene.angularVelocity.y()).normalized());
+				object->transform.rotate(QQuaternion::fromAxisAndAngle(scene.camera.up, scene.angularVelocity.x()).normalized());
+			}
+		}
+		if (Input::keyPressed(Qt::RightButton))
+		{
+			scene.angularVelocity += QVector2D(MouseInput::delta()) * 0.1f;
+		}
+
+		moveCamera();
+
+		for (auto& light : scene.lights)
+		{
+			light->position = QQuaternion::fromAxisAndAngle({ 1,0,0 }, 0.2f) * light->position;
+		}
+		
 		render();
 	}
 	
@@ -76,8 +102,27 @@ public:
 		viewport->glClearColor(0.08f, 0.08f, 0.08f, 1);
 		viewport->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		scene.onUpdate();
-		scene.onRender();
+		renderer.render(scene);
 	}
 
+	void moveCamera()
+	{
+		std::map<int, QVector3D> controls = {
+			{Qt::Key_W, {0,0,1}},
+			{Qt::Key_S, {0,0,-1}},
+			{Qt::Key_A, {-1,0,0}},
+			{Qt::Key_D, {1,0,0}},
+			{Qt::Key_E, {0,1,0}},
+			{Qt::Key_Q, {0,-1,0}} };
+
+		for (auto& [key, dir] : controls)
+		{
+			if (Input::keyPressed(key))
+			{
+				scene.camera.translate(dir * 0.1f);
+			}
+		}
+		if (Input::keyPressed(Qt::LeftButton))
+			scene.camera.look(MouseInput::delta().x() * 0.5f, MouseInput::delta().y() * 0.5f);
+	}
 };

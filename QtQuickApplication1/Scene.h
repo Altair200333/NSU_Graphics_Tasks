@@ -14,27 +14,7 @@
 class Scene final
 {
 	std::shared_ptr<QObject> parent;
-	
-	void moveCamera()
-	{
-		std::map<int, QVector3D> controls = {
-			{Qt::Key_W, {0,0,1}},
-			{Qt::Key_S, {0,0,-1}},
-			{Qt::Key_A, {-1,0,0}},
-			{Qt::Key_D, {1,0,0}},
-			{Qt::Key_E, {0,1,0}},
-			{Qt::Key_Q, {0,-1,0}} };
 
-		for (auto& [key, dir] : controls)
-		{
-			if (Input::keyPressed(key))
-			{
-				camera.translate(dir * 0.1f);
-			}
-		}
-		if (Input::keyPressed(Qt::LeftButton))
-			camera.look(MouseInput::delta().x() * 0.5f, MouseInput::delta().y() * 0.5f);
-	}
 	void createLightSourceBlock()
 	{
 		lightSourceBlock = std::make_shared<Object>();
@@ -107,55 +87,4 @@ public:
 		lights.push_back(std::make_shared<LightSource>(QVector3D{30, 9, -7}, QColor{255, 219, 102}));
 	}
 
-	void onUpdate()
-	{
-		if (Input::keyJustPressed(Qt::Key_Z))
-			drawWireframe = !drawWireframe;
-
-		angularVelocity *= 0.987f;
-		for (auto& object : objects)
-		{
-			if (object->tag == "modifiable")
-			{
-				object->transform.rotate(QQuaternion::fromAxisAndAngle(camera.right, -angularVelocity.y()).normalized());
-				object->transform.rotate(QQuaternion::fromAxisAndAngle(camera.up, angularVelocity.x()).normalized());
-			}
-		}
-		if(Input::keyPressed(Qt::RightButton))
-		{
-			angularVelocity += QVector2D(MouseInput::delta())*0.1f;
-		}
-
-		moveCamera();
-		
-		for (auto& light : lights)
-		{
-			light->position = QQuaternion::fromAxisAndAngle({1,0,0}, 0.2f) * light->position;
-		}
-	}
-
-	void renderLights()
-	{
-		for(auto& light: lights)
-		{
-			lightSourceBlock->transform.translate(-lightSourceBlock->transform.position);
-			lightSourceBlock->transform.translate(light->position);
-			lightSourceBlock->material.shadingMode = Material::materialColor;
-			lightSourceBlock->material.color = light->color;
-			lightSourceBlock->material.isLightSource = true;
-			lightSourceBlock->renderer->render(camera, lights);
-		}
-	}
-
-	void onRender()
-	{
-		glPolygonMode(GL_FRONT_AND_BACK, drawWireframe ? GL_LINE : GL_FILL);
-
-		for(size_t i = 0; i < objects.size(); ++i)
-		{
-			objects[i]->renderer->render(camera, lights);
-		}
-		
-		renderLights();
-	}
 };
