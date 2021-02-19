@@ -103,7 +103,7 @@ public:
 		createLightSourceBlock();
 		
 		lights.push_back(std::make_shared<LightSource>(QVector3D{-5, 0, 7}));
-		lights.push_back(std::make_shared<LightSource>(QVector3D{30, 9, -7}, QColor{20, 20, 200}));
+		lights.push_back(std::make_shared<LightSource>(QVector3D{30, 9, -7}, QColor{255, 219, 102}));
 	}
 
 	void onUpdate()
