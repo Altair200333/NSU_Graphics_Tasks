@@ -111,9 +111,7 @@
     <ClInclude Include="Texture.h">
       <Filter>Object\Components</Filter>
     </ClInclude>
-    <ClInclude Include="SceneRenderer.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
+    <ClInclude Include="SceneRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

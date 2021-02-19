@@ -154,7 +154,8 @@ public:
             if (!skip)
             {   // if texture hasn't been loaded already, load it
                 Texture texture;
-                texture.texture = new QOpenGLTexture(QImage(QString(str.C_Str())));
+                std::string path = std::string("Assets\\Models\\") + std::string(str.C_Str());
+                texture.texture = new QOpenGLTexture(QImage(QString(path.c_str())));
                 texture.type = typeName;
                 texture.path = str.C_Str();
                 textures.push_back(texture);
