@@ -16,18 +16,12 @@ uniform float aspectRatio;
 uniform int width;
 uniform int height;
 
-uniform int camWidth;
-uniform int camHeight;
-
 vec3 getDirection()
 {
-   float closeHeight = 2.0f * tan(fov * 0.5f * PI / 180.0f);
-	float scale = closeHeight / camHeight;
-
-	float dx = texcoord.x*camWidth - float(camWidth) * 0.5f;
-	float dy = texcoord.y*camHeight - float(camHeight) * 0.5f;
-
-   return (front + right * dx * scale + up * dy * scale);
+   float h = 2.0f * tan(fov * 0.5f * PI / 180.0f);
+   float x = (texcoord.x-0.5f)*aspectRatio*h;
+   float y = (texcoord.y-0.5f)*h;
+   return front+right*x+up*y;
 }
 
 vec2 SampleSphericalMap(vec3 direction)
