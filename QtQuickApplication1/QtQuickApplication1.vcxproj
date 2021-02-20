@@ -218,6 +218,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AloyApplication.h" />
+    <ClInclude Include="Background.h" />
     <ClInclude Include="GLWindow.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="EventDispatcher.h" />

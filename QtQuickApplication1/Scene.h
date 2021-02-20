@@ -9,12 +9,13 @@
 #include "Object.h"
 #include <QTransform>
 
+
+#include "Background.h"
 #include "MeshLoader.h"
 
 class Scene final
 {
 	std::shared_ptr<QObject> parent;
-
 	void createLightSourceBlock()
 	{
 		lightSourceBlock = std::make_shared<Object>();
@@ -46,6 +47,7 @@ class Scene final
 public:
 	std::vector<std::shared_ptr<Object>> objects;
 	std::vector<std::shared_ptr<LightSource>> lights;
+	Background backround;
 
 	std::shared_ptr<Object> lightSourceBlock;
 	GLCamera camera;
@@ -85,6 +87,8 @@ public:
 		
 		lights.push_back(std::make_shared<LightSource>(QVector3D{-5, 0, 7}));
 		lights.push_back(std::make_shared<LightSource>(QVector3D{30, 9, -7}, QColor{255, 219, 102}));
+
+		backround = Background(parent);
 	}
 
 };

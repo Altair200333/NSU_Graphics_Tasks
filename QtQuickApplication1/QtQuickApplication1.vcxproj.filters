@@ -112,6 +112,9 @@
       <Filter>Object\Components</Filter>
     </ClInclude>
     <ClInclude Include="SceneRenderer.h" />
+    <ClInclude Include="Background.h">
+      <Filter>Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
