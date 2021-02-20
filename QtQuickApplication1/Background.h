@@ -51,6 +51,9 @@ public:
 		shader->setUniformValue("width", image->width());
 		shader->setUniformValue("height", image->height());
 		
+		shader->setUniformValue("camWidth", camera.width);
+		shader->setUniformValue("camHeight", camera.height);
+		
 		vao->bind();
 
 		

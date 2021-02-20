@@ -16,6 +16,7 @@
 #include <QMainWindow>
 #include <QColorDialog>
 #include <QTimer>
+
 class Window : public QOpenGLWidget
 {
 Q_OBJECT

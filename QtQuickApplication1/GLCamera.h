@@ -10,6 +10,9 @@ public:
 	float yaw = -90.0f;
 	float pitch = 0.0f;
 	float aspectRatio = 4.0f / 3.0f;
+
+	int width;
+	int height;
 	
 	QVector3D front = { 0, 0, 1 };
 	QVector3D right = { 1, 0, 0 };

@@ -16,32 +16,33 @@ uniform float aspectRatio;
 uniform int width;
 uniform int height;
 
+uniform int camWidth;
+uniform int camHeight;
+
 vec3 getDirection()
 {
+   float closeHeight = 2.0f * tan(fov * 0.5f * PI / 180.0f);
+	float scale = closeHeight / camHeight;
 
-   float h = tan(fov/2 * PI / 180);
-   float l = h*aspectRatio;
+	float dx = texcoord.x*camWidth - float(camWidth) * 0.5f;
+	float dy = texcoord.y*camHeight - float(camHeight) * 0.5f;
 
-   vec3 r = right * (texcoord.x - 0.5)*l;
-   vec3 u = up * (texcoord.y - 0.5)*h;
-   
-   vec3 direction = front + r + u;
-   return direction;
+   return (front + right * dx * scale + up * dy * scale);
 }
 
-const vec2 invAtan = vec2(0.1591, 0.3183);
-vec2 SampleSphericalMap(vec3 v)
+vec2 SampleSphericalMap(vec3 direction)
 {
-    vec2 uv = vec2(atan(v.z, v.x), asin(-v.y));
-    uv *= invAtan;
-    uv += 0.5;
-    return uv;
+   float theta = atan(direction.z, direction.x) * 180 / PI + 180;
+   float alpha = atan(direction.y, sqrt(direction.x * direction.x + direction.z * direction.z)) * 180 / PI + 90;  
+   float x = theta / 360;
+   float y = alpha / 180;
+
+   return vec2(x, 1-y);
 }
 void main() 
 {
    vec3 direction = normalize(getDirection());
    vec2 uv = SampleSphericalMap(direction);
-   //uv = uv*vec2(2*PI, PI);
 
    vec3 color = texture(background, uv).rgb;
 

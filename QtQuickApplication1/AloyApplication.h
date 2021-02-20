@@ -56,6 +56,8 @@ public:
 		}
 		
 		scene.camera.aspectRatio = static_cast<float>(viewport->width()) / viewport->height();
+		scene.camera.width = viewport->width();
+		scene.camera.height = viewport->height();
 
 		if (Input::keyJustPressed(Qt::Key_Z))
 			renderer.drawWireframe = !renderer.drawWireframe;
