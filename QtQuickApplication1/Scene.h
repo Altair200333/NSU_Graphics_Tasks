@@ -24,7 +24,19 @@ class Scene final
 		lightSourceBlock->initRenderer(parent);
 		lightSourceBlock->material.shadingMode = Material::materialColor;
 	}
-	void addModel(const std::vector<MeshLoader::LoadedModel>& models, const QVector3D& pos, bool useGeometry = false, const std::string& tag = "")
+	std::shared_ptr<Object> createCloud(const QVector3D& pos)
+	{
+		auto cloud = std::make_shared<Object>();
+		auto model = MeshLoader().loadModel("Assets/Models/cube.obj")[0];
+		cloud->mesh = model.mesh;
+		cloud->material = model.material;
+		cloud->renderer = std::make_shared<SimpleMeshRenderer>();
+		cloud->initRenderer(parent, "Shaders/cloud.fs", "Shaders/cloud.vs");
+		cloud->transform.translate(pos);
+
+		return cloud;
+	}
+	void addModel(const std::vector<MeshLoader::LoadedModel>& models, const QVector3D& pos, int shaderType = 1, const std::string& tag = "")
 	{
 		for (const auto& model : models)
 		{
@@ -34,9 +46,9 @@ class Scene final
 			object->material = model.material;
 			object->renderer = std::make_shared<SimpleMeshRenderer>();
 			
-			if(useGeometry)
+			if(shaderType == 0)
 				object->initRenderer(parent, "Shaders/triangleG.fs", "Shaders/triangleG.vs", "Shaders/triangleG.gs");
-			else
+			else if(shaderType == 1)
 				object->initRenderer(parent, "Shaders/triangle.fs", "Shaders/triangle.vs");
 			
 			object->transform.translate(pos);
@@ -47,6 +59,8 @@ class Scene final
 public:
 	std::vector<std::shared_ptr<Object>> objects;
 	std::vector<std::shared_ptr<LightSource>> lights;
+	std::vector<std::shared_ptr<Object>> clouds;
+	
 	Background backround;
 
 	std::shared_ptr<Object> lightSourceBlock;
@@ -64,24 +78,26 @@ public:
 		const auto suzModel = MeshLoader().loadModel("Assets/Models/suz.obj");
 		for (int i = 0; i < 2; ++i)
 		{
-			addModel(cubeModel, { i * 3.5f, 0,0 }, false, "modifiable");
+			addModel(cubeModel, { i * 3.5f, 0,0 }, 1, "modifiable");
 		}
 		for (int i = 0; i < 2; ++i)
 		{
-			addModel(suzModel, { 7.0f + i * 3.5f, 0,0 },false, "modifiable");
+			addModel(suzModel, { 7.0f + i * 3.5f, 0,0 },1, "modifiable");
 		}
 		for (int i = 0; i < 2; ++i)
 		{
-			addModel(suzModel, { 7.0f + i * 3.5f, -5,0 }, true, "modifiable");
+			addModel(suzModel, { 7.0f + i * 3.5f, -5,0 }, 0, "modifiable");
 		}
 		for (int i = 0; i < 2; ++i)
 		{
-			addModel(cubeModel, { i * 3.5f, -5,0 }, true, "modifiable");
+			addModel(cubeModel, { i * 3.5f, -5,0 }, 0, "modifiable");
 		}
 		
-		addModel(MeshLoader().loadModel("Assets/Models/sam2.obj"), {3.5f, 5, 0}, false, "modifiable");
-		addModel(MeshLoader().loadModel("Assets/Models/sam2.obj"), {7.5f, 5, 0}, false, "modifiable");
-		addModel(MeshLoader().loadModel("Assets/Models/plane.obj"), {0, -8, 0}, false);
+		addModel(MeshLoader().loadModel("Assets/Models/sam2.obj"), {3.5f, 5, 0}, 1, "modifiable");
+		addModel(MeshLoader().loadModel("Assets/Models/sam2.obj"), {7.5f, 5, 0}, 1, "modifiable");
+		addModel(MeshLoader().loadModel("Assets/Models/plane.obj"), {0, -8, 0}, 1);
+
+		clouds.push_back(createCloud({0, 4, -12}));
 
 		createLightSourceBlock();
 		

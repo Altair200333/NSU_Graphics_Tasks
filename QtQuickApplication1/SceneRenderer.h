@@ -20,12 +20,22 @@ public:
 	void render(Scene& scene)
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, drawWireframe ? GL_LINE : GL_FILL);
-
+		// Enable blending
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+		
+		
 		for (size_t i = 0; i < scene.objects.size(); ++i)
 		{
 			scene.objects[i]->renderer->render(scene.camera, scene.lights);
 		}
-
+		
 		renderLights(scene);
+		scene.backround.render(scene.camera);
+
+		for (auto& cloud : scene.clouds)
+			cloud->renderer->render(scene.camera, scene.lights);
 	}
 };

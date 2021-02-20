@@ -30,8 +30,7 @@ Ray initRay(vec3 dir, vec3 orig)
 	return r;
 }
 
-
-void main() 
+vec3 getDirection()
 {
 
    float h = tan(fov/2 * PI / 180);
@@ -41,7 +40,10 @@ void main()
    vec3 u = up * (texcoord.y - 0.5)*h;
    
    vec3 direction = front + r + u;
-
+   return direction;
+}
+vec3 colorAt(vec3 direction)
+{
    float theta = atan(direction.z, direction.x) * 180 / PI + 180;
 	float alpha = atan(-direction.y, sqrt(direction.x * direction.x + direction.z * direction.z)) * 180 / PI + 90;
 
@@ -49,6 +51,28 @@ void main()
 	float y = alpha / 180;
 
    vec3 color = texture(background, vec2(x, y)).xyz;
+   return color;
+}
 
+vec3 bluredColor(float radius)
+{
+   vec3 color = vec3(0);
+   vec3 direction = getDirection();
+   int count = 0;
+   for(int i=0; i<5; ++i)
+   {
+      for(int j=0; j<5; ++j)
+      {
+         ++count;
+         vec3 dir = direction + right*radius*float(i)/5+up*radius*float(j)/5;
+         color+=colorAt(direction);
+      }
+   }
+   return color/count;
+}
+void main() 
+{
+
+   vec3 color = colorAt(getDirection());
    fragColor = vec4(color, 1.0f);
 }
