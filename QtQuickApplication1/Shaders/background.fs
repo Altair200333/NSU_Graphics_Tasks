@@ -16,20 +16,6 @@ uniform float aspectRatio;
 uniform int width;
 uniform int height;
 
-struct Ray
-{
-	vec3 orig, dir;
-};
-
-Ray initRay(vec3 dir, vec3 orig)
-{
-	Ray r;
-	r.dir = normalize(dir);
-	r.orig = orig;
-
-	return r;
-}
-
 vec3 getDirection()
 {
 
@@ -42,37 +28,20 @@ vec3 getDirection()
    vec3 direction = front + r + u;
    return direction;
 }
-vec3 colorAt(vec3 direction)
+
+const vec2 invAtan = vec2(0.1591, 0.3183);
+vec2 SampleSphericalMap(vec3 v)
 {
-   float theta = atan(direction.z, direction.x) * 180 / PI + 180;
-	float alpha = atan(-direction.y, sqrt(direction.x * direction.x + direction.z * direction.z)) * 180 / PI + 90;
-
-	float x = theta / 360;
-	float y = alpha / 180;
-
-   vec3 color = texture(background, vec2(x, y)).xyz;
-   return color;
-}
-
-vec3 bluredColor(float radius)
-{
-   vec3 color = vec3(0);
-   vec3 direction = getDirection();
-   int count = 0;
-   for(int i=0; i<5; ++i)
-   {
-      for(int j=0; j<5; ++j)
-      {
-         ++count;
-         vec3 dir = direction + right*radius*float(i)/5+up*radius*float(j)/5;
-         color+=colorAt(direction);
-      }
-   }
-   return color/count;
+    vec2 uv = vec2(atan(v.z, v.x), asin(-v.y));
+    uv *= invAtan;
+    uv += 0.5;
+    return uv;
 }
 void main() 
 {
+   vec3 direction = normalize(getDirection());
+   vec2 uv = SampleSphericalMap(direction);
+   vec3 color = texture(background, uv).rgb;
 
-   vec3 color = colorAt(getDirection());
    fragColor = vec4(color, 1.0f);
 }
