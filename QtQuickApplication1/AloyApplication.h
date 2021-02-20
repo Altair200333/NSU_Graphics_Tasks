@@ -30,9 +30,11 @@ public:
 		format.setProfile(QSurfaceFormat::CoreProfile);
 
 		viewport->setFormat(format);
-		
+
 		slider = new QSlider(Qt::Horizontal);
 		slider->setRange(0, 100);
+		slider->setStyleSheet("QSlider::groove:horizontal {background-color:gray;}"
+			"QSlider::handle:horizontal {background-color:white; height:16px; width: 16px;}");
 		
 		layout->setContentsMargins(0, 0, 0, 0);
 		layout->addWidget(viewport.get());

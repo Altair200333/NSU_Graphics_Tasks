@@ -41,6 +41,8 @@ void main()
 {
    vec3 direction = normalize(getDirection());
    vec2 uv = SampleSphericalMap(direction);
+   //uv = uv*vec2(2*PI, PI);
+
    vec3 color = texture(background, uv).rgb;
 
    fragColor = vec4(color, 1.0f);

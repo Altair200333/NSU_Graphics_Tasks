@@ -25,6 +25,7 @@
 #include <QHBoxLayout>
 #include "EventDispatcher.h"
 #include "OnUpdateEvent.h"
+
 class GLWindow final : public QOpenGLWidget, public QOpenGLFunctions
 {
 public:
