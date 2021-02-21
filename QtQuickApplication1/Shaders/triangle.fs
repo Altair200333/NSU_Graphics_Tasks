@@ -107,7 +107,7 @@ vec3 getLighting()
    vec3 result = vec3(0);
    vec3 albedo = getBaseColor();
    float metallic  = 0.01f;
-   float roughness = 0.3f;
+   float roughness = 0.1f;
    // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0 
    // of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)    
    vec3 F0 = vec3(0.04); 

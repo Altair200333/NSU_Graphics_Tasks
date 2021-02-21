@@ -97,7 +97,7 @@ public:
 	
 	void init()
 	{
-		scene = Scene(viewport, viewport);
+		scene = Scene(viewport);
 	 	viewport->glEnable(GL_DEPTH_TEST);
 	}
 

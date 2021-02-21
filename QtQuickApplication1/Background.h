@@ -14,11 +14,11 @@ public:
 	QOpenGLTexture* image = nullptr;
 	std::shared_ptr<QOpenGLFunctions> functions;
 	Background() = default;
-	Background(std::shared_ptr<QObject> parent, std::shared_ptr<QOpenGLFunctions> _functions, const std::string& imagePath = "Assets\\Models\\textures\\background.jpg",
+	Background(std::shared_ptr<QOpenGLFunctions> _functions, const std::string& imagePath = "Assets\\Models\\textures\\background.jpg",
 		const std::string& vertex = "Shaders/background.vs", const std::string& fragment = "Shaders/background.fs", const std::string& geometry = "Shaders/background.gs")
 	{
 		functions = _functions;
-		shader = std::make_shared<QOpenGLShaderProgram>(parent.get());
+		shader = std::make_shared<QOpenGLShaderProgram>();
 		
 		shader->addShaderFromSourceFile(QOpenGLShader::Vertex, vertex.c_str());
 		shader->addShaderFromSourceFile(QOpenGLShader::Fragment, fragment.c_str());
@@ -27,7 +27,7 @@ public:
 		shader->link();
 		auto s = shader->log();
 
-		vao = new QOpenGLVertexArrayObject(parent.get());
+		vao = new QOpenGLVertexArrayObject();
 		vao->create();
 		vao->bind();
 
