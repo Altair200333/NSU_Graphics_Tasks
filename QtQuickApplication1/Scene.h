@@ -92,7 +92,7 @@ public:
 		
 		addModel(MeshLoader().loadModel("Assets/Models/sam2.obj"), {3.5f, 5, 0}, ShaderCollection::shaders["pbr"], "modifiable");
 		addModel(MeshLoader().loadModel("Assets/Models/sam2.obj"), {7.5f, 5, 0}, ShaderCollection::shaders["pbr"], "modifiable");
-		addModel(MeshLoader().loadModel("Assets/Models/plane.obj"), {0, -8, 0}, ShaderCollection::shaders["pbr"]);
+		addModel(MeshLoader().loadModel("Assets/Models/plane.obj"), {0, -8, 0}, ShaderCollection::shaders["fractal"]);
 
 		addTransparent(MeshLoader().loadModel("Assets/Models/cube.obj"), { 0, 4, -12 }, ShaderCollection::shaders["cubicCloud"]);
 
