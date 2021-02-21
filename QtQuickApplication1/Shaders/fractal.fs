@@ -4,6 +4,7 @@ out vec4 fragColor;
 in vec3 col;
 
 in vec3 FragPos;
+in vec3 LocalPos;
 in vec3 Normal;
 in vec2 TexCoords;
 
@@ -130,7 +131,7 @@ void main()
    vec3 N = normalize(Normal);
 
    //tracing the ray (getting the distance of the closest object in the ray direction)
-	vec2 depth = trace(FragPos, reflect(V, N));
+	vec2 depth = trace(LocalPos - reflect(V, N)*5, reflect(V, N));
 	
     //rendering with a fog calculation (further is darker)
 	float fog = 1.0 / (1.0 + depth.x * depth.x * 0.01);

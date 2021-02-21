@@ -9,6 +9,7 @@ in vec3 aBitangent;
 
 out vec3 col;
 out vec3 FragPos;
+out vec3 LocalPos;
 out vec3 Normal;
 out vec2 TexCoords;
 
@@ -21,7 +22,7 @@ void main()
     col = colAttr;
 
     FragPos = vec3(model * vec4(posAttr, 1.0));
-
+    LocalPos = posAttr;
     Normal = mat3(transpose(inverse(model))) * normalAttr;  
     
     TexCoords = aTexCoords;
