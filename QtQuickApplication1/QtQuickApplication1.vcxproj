@@ -240,6 +240,7 @@
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Vertex.h" />
+    <ClInclude Include="VolumetricCubeMeshRenderer.h" />
     <QtMoc Include="Window.h" />
   </ItemGroup>
   <ItemGroup>

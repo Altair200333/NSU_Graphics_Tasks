@@ -8,6 +8,7 @@ in vec3 Normal;
 in vec2 TexCoords;
 
 uniform vec3 cameraPos;
+uniform vec3 position;
 
 uniform vec4 color;
 uniform int mode;
@@ -78,10 +79,56 @@ float noise(vec3 x) {
                mix(mix( hash(n + dot(step, vec3(0, 0, 1))), hash(n + dot(step, vec3(1, 0, 1))), u.x),
                    mix( hash(n + dot(step, vec3(0, 1, 1))), hash(n + dot(step, vec3(1, 1, 1))), u.x), u.y), u.z);
 }
+float hit_sphere(vec3 center, float radius, vec3 dir, vec3 origin)
+{
+    vec3 oc = origin - center;
+    float a = dot(dir, dir);
+    float b = 2.0 * dot(oc, dir);
+    float c = dot(oc,oc) - radius*radius;
+    float discriminant = b*b - 4*a*c;
+    if(discriminant < 0)
+	{
+        return -1.0;
+    }
+    else
+	{
+		float numerator = -b - sqrt(discriminant);
+		if (numerator > 0.0)
+		{
+			return numerator / (2.0 * a);
+		}
 
+		numerator = -b + sqrt(discriminant);
+		if( numerator > 0.0 )
+		{
+			return numerator / (2.0 * a);
+		}
+		else 
+		{
+			return -1;
+		}
+
+	}
+}
 void main() 
 {
-   vec3 viewDir = normalize(FragPos - cameraPos);
-   float alpha = noise(FragPos.xy);
-   fragColor = vec4(1,1,1, alpha);
+	vec3 viewDir = normalize(FragPos - cameraPos);
+
+	float radius = 1;
+	float t = hit_sphere(position, radius, viewDir, FragPos);
+	if(t > 0)
+	{
+		vec3 contact = FragPos+viewDir * t;
+		float alpha = noise(contact.xyz);
+
+		float t2 = hit_sphere(position, radius, viewDir, contact+viewDir*0.001f);	
+		vec3 contact2 = contact + viewDir*t2;
+
+		float ratio = length(contact-contact2)/(2*radius);
+		fragColor = vec4(1,1,1, ratio*ratio);	
+	}
+	else
+	{
+		fragColor = vec4(1,1,1, 0);
+	}
 }

@@ -12,6 +12,7 @@
 
 #include "Background.h"
 #include "MeshLoader.h"
+#include "VolumetricCubeMeshRenderer.h"
 
 class Scene final
 {
@@ -30,7 +31,7 @@ class Scene final
 		auto model = MeshLoader().loadModel("Assets/Models/cube.obj")[0];
 		cloud->mesh = model.mesh;
 		cloud->material = model.material;
-		cloud->renderer = std::make_shared<SimpleMeshRenderer>();
+		cloud->renderer = std::make_shared<VolumetricCubeMeshRenderer>();
 		cloud->initRenderer(parent, "Shaders/cloud.fs", "Shaders/cloud.vs");
 		cloud->transform.translate(pos);
 
