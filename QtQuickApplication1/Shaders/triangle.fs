@@ -25,6 +25,9 @@ uniform bool isLightSource;
 uniform int albedoCount;
 uniform sampler2D texture_diffuse;
 
+uniform sampler2D texture_background;
+uniform bool useBackground;
+
 const float PI = 3.14159265359;
 
 vec3 getBaseColor()
@@ -82,9 +85,20 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0)
 
 float lAttenuation(float dist)
 {
-   return 1;
+   return 1.0f;
    return 1.0f / (1.0f + 0.004f * dist*dist);
 }
+
+vec2 SampleSphericalMap(vec3 direction)
+{
+   float theta = atan(direction.z, direction.x) * 180 / PI + 180;
+   float alpha = atan(direction.y, sqrt(direction.x * direction.x + direction.z * direction.z)) * 180 / PI + 90;  
+   float x = theta / 360;
+   float y = alpha / 180;
+
+   return vec2(x, 1-y);
+}
+
 vec3 getLighting()
 {
    vec3 V = normalize(cameraPos - FragPos);
@@ -142,9 +156,14 @@ vec3 getLighting()
    }
    vec3 ambient = vec3(0.03) * albedo;
 
+   if(useBackground)
+   {
+      Lo = Lo*(1-roughness)+roughness*texture(texture_background, SampleSphericalMap(reflect(-V, N))).xyz;
+   }
    result = ambient + Lo;
    result = result / (result + vec3(1.0));
    result = pow(result, vec3(1.0/2.2)); 
+
    return result;
 }
 void main() 

@@ -17,12 +17,13 @@
 class Scene final
 {
 	std::shared_ptr<QObject> parent;
+	std::shared_ptr<QOpenGLFunctions> funcions;
 	void createLightSourceBlock()
 	{
 		lightSourceBlock = std::make_shared<Object>();
 		lightSourceBlock->mesh = MeshLoader().loadModel("Assets/Models/cube.obj")[0].mesh;
 		lightSourceBlock->renderer = std::make_shared<SimpleMeshRenderer>();
-		lightSourceBlock->initRenderer(parent);
+		lightSourceBlock->initRenderer(parent, funcions);
 		lightSourceBlock->material.shadingMode = Material::materialColor;
 	}
 	std::shared_ptr<Object> createCloud(const QVector3D& pos)
@@ -32,7 +33,7 @@ class Scene final
 		cloud->mesh = model.mesh;
 		cloud->material = model.material;
 		cloud->renderer = std::make_shared<VolumetricCubeMeshRenderer>();
-		cloud->initRenderer(parent, "Shaders/cloud.fs", "Shaders/cloud.vs");
+		cloud->initRenderer(parent, funcions, "Shaders/cloud.fs", "Shaders/cloud.vs");
 		cloud->transform.translate(pos);
 
 		return cloud;
@@ -48,9 +49,9 @@ class Scene final
 			object->renderer = std::make_shared<SimpleMeshRenderer>();
 			
 			if(shaderType == 0)
-				object->initRenderer(parent, "Shaders/triangleG.fs", "Shaders/triangleG.vs", "Shaders/triangleG.gs");
+				object->initRenderer(parent, funcions, "Shaders/triangleG.fs", "Shaders/triangleG.vs", "Shaders/triangleG.gs");
 			else if(shaderType == 1)
-				object->initRenderer(parent, "Shaders/triangle.fs", "Shaders/triangle.vs");
+				object->initRenderer(parent, funcions, "Shaders/triangle.fs", "Shaders/triangle.vs");
 			
 			object->transform.translate(pos);
 			objects.push_back(object);
@@ -73,7 +74,7 @@ public:
 	
 	Scene() = default;
 
-	Scene(std::shared_ptr<QObject> _parent): parent(std::move(_parent))
+	Scene(std::shared_ptr<QObject> _parent, std::shared_ptr<QOpenGLFunctions> _functions): parent(std::move(_parent)), funcions(_functions)
 	{
 		const auto cubeModel = MeshLoader().loadModel("Assets/Models/hcube.obj");
 		const auto suzModel = MeshLoader().loadModel("Assets/Models/suz.obj");
@@ -105,7 +106,7 @@ public:
 		lights.push_back(std::make_shared<LightSource>(QVector3D{-5, 0, 7}));
 		lights.push_back(std::make_shared<LightSource>(QVector3D{30, 9, -7}, QColor{255, 219, 102}));
 
-		backround = Background(parent);
+		backround = Background(parent, funcions);
 	}
 
 };

@@ -3,6 +3,8 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLFunctions>
+
+#include "Background.h"
 #include "Mesh.h"
 #include "GLCamera.h"
 #include "LightSource.h"
@@ -21,6 +23,7 @@ public:
 	Mesh* mesh = nullptr;
 	Material* material = nullptr;
 
+	std::shared_ptr<QOpenGLFunctions> functions;
 	MeshRenderer() = default;
 
 	void enableAttributes() const
@@ -83,10 +86,11 @@ public:
 		ibo->allocate(mesh->indices.data(), mesh->indices.size() * sizeof(GLuint));
 	}
 	
-	void init(std::shared_ptr<QObject> parent, Transform* _transform, Mesh* _mesh, Material* _material,
+	void init(std::shared_ptr<QObject> parent, std::shared_ptr<QOpenGLFunctions> _functions, Transform* _transform, Mesh* _mesh, Material* _material,
 		const std::string& fragment = "Shaders/triangle.fs",
 		const std::string& vertex = "Shaders/triangle.vs", const std::string& geometry = "")
 	{
+		functions = _functions;
 		mesh = _mesh;
 		transform = _transform;
 		material = _material;
@@ -116,5 +120,5 @@ public:
 		shader->setUniformValue(shader->uniformLocation("cameraPos"), camera.position);
 	}
 
-	virtual void render(GLCamera& camera, const std::vector<std::shared_ptr<LightSource>>& lights = std::vector<std::shared_ptr<LightSource>>{}) = 0;
+	virtual void render(GLCamera& camera, const std::vector<std::shared_ptr<LightSource>>& lights = std::vector<std::shared_ptr<LightSource>>{}, Background* background = nullptr) = 0;
 };

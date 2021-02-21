@@ -1,6 +1,7 @@
 #pragma once
 #include <QOpenGLShaderProgram>
 #include <QOpenGLVertexArrayObject>
+#include <QOpenGLTexture>
 
 
 #include "GLCamera.h"
@@ -11,11 +12,12 @@ public:
 	std::shared_ptr<QOpenGLShaderProgram> shader = nullptr;
 	QOpenGLVertexArrayObject* vao = nullptr;
 	QOpenGLTexture* image = nullptr;
-	
+	std::shared_ptr<QOpenGLFunctions> functions;
 	Background() = default;
-	Background(std::shared_ptr<QObject> parent, const std::string& imagePath = "Assets\\Models\\textures\\background.jpg",
+	Background(std::shared_ptr<QObject> parent, std::shared_ptr<QOpenGLFunctions> _functions, const std::string& imagePath = "Assets\\Models\\textures\\background.jpg",
 		const std::string& vertex = "Shaders/background.vs", const std::string& fragment = "Shaders/background.fs", const std::string& geometry = "Shaders/background.gs")
 	{
+		functions = _functions;
 		shader = std::make_shared<QOpenGLShaderProgram>(parent.get());
 		
 		shader->addShaderFromSourceFile(QOpenGLShader::Vertex, vertex.c_str());
@@ -39,6 +41,7 @@ public:
 		shader->bind();
 
 		shader->setUniformValue("background", 0);
+		functions->glActiveTexture(GL_TEXTURE0 + 0);
 		image->bind();
 
 		shader->setUniformValue("origin", camera.position);

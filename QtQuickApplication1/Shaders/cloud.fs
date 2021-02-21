@@ -125,7 +125,7 @@ void main()
 		vec3 contact2 = contact + viewDir*t2;
 
 		float ratio = length(contact-contact2)/(2*radius);
-		fragColor = vec4(1,1,1, ratio*ratio);	
+		fragColor = vec4(alpha,1,1, ratio*ratio);	
 	}
 	else
 	{

@@ -39,7 +39,7 @@ public:
 
 		for (size_t i = 0; i < scene.objects.size(); ++i)
 		{
-			scene.objects[i]->renderer->render(scene.camera, scene.lights);
+			scene.objects[i]->renderer->render(scene.camera, scene.lights, &scene.backround);
 		}
 		
 		renderLights(scene);
