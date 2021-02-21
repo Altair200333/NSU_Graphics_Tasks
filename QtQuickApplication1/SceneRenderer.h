@@ -22,10 +22,10 @@ public:
 	{
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
-		for (auto& cloud : scene.clouds)
+		for (auto& cloud : scene.transparentObjects)
 			cloud->renderer->render(scene.camera, scene.lights);
 		glCullFace(GL_BACK);
-		for (auto& cloud : scene.clouds)
+		for (auto& cloud : scene.transparentObjects)
 			cloud->renderer->render(scene.camera, scene.lights);
 	}
 

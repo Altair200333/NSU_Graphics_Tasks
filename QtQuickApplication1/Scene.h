@@ -12,6 +12,8 @@
 
 #include "Background.h"
 #include "MeshLoader.h"
+#include "ShaderCollection.h"
+#include "ShaderData.h"
 #include "VolumetricCubeMeshRenderer.h"
 
 class Scene final
@@ -25,42 +27,36 @@ class Scene final
 		lightSourceBlock->initRenderer(funcions);
 		lightSourceBlock->material.shadingMode = Material::materialColor;
 	}
-	std::shared_ptr<Object> createCloud(const QVector3D& pos)
+	std::shared_ptr<Object> createObject(const MeshLoader::LoadedModel& model, const QVector3D& pos, const ShaderData& data, const std::string& tag = "")
 	{
-		auto cloud = std::make_shared<Object>();
-		auto model = MeshLoader().loadModel("Assets/Models/cube.obj")[0];
-		cloud->mesh = model.mesh;
-		cloud->material = model.material;
-		cloud->renderer = std::make_shared<VolumetricCubeMeshRenderer>();
-		cloud->initRenderer( funcions, "Shaders/cloud.fs", "Shaders/cloud.vs");
-		cloud->transform.translate(pos);
+		auto object = std::make_shared<Object>();
+		object->tag = tag;
+		object->mesh = model.mesh;
+		object->material = model.material;
+		object->renderer = data.renderer->getRenderer();
+		object->initRenderer(funcions, data.fragment, data.vertex, data.geometry);
 
-		return cloud;
+		object->transform.translate(pos);
+		return object;
 	}
-	void addModel(const std::vector<MeshLoader::LoadedModel>& models, const QVector3D& pos, int shaderType = 1, const std::string& tag = "")
+	void addTransparent(const std::vector<MeshLoader::LoadedModel>& models, const QVector3D& pos, const ShaderData& data, const std::string& tag = "")
 	{
 		for (const auto& model : models)
 		{
-			auto object = std::make_shared<Object>();
-			object->tag = tag;
-			object->mesh = model.mesh;
-			object->material = model.material;
-			object->renderer = std::make_shared<SimpleMeshRenderer>();
-			
-			if(shaderType == 0)
-				object->initRenderer(funcions, "Shaders/triangleG.fs", "Shaders/triangleG.vs", "Shaders/triangleG.gs");
-			else if(shaderType == 1)
-				object->initRenderer(funcions, "Shaders/triangle.fs", "Shaders/triangle.vs");
-			
-			object->transform.translate(pos);
-			objects.push_back(object);
+			transparentObjects.push_back(createObject(model, pos, data, tag));
 		}
-
+	}
+	void addModel(const std::vector<MeshLoader::LoadedModel>& models, const QVector3D& pos, const ShaderData& data, const std::string& tag = "")
+	{
+		for (const auto& model : models)
+		{
+			objects.push_back(createObject(model, pos, data, tag));
+		}
 	}
 public:
 	std::vector<std::shared_ptr<Object>> objects;
 	std::vector<std::shared_ptr<LightSource>> lights;
-	std::vector<std::shared_ptr<Object>> clouds;
+	std::vector<std::shared_ptr<Object>> transparentObjects;
 	
 	Background backround;
 
@@ -79,26 +75,26 @@ public:
 		const auto suzModel = MeshLoader().loadModel("Assets/Models/suz.obj");
 		for (int i = 0; i < 2; ++i)
 		{
-			addModel(cubeModel, { i * 3.5f, 0,0 }, 1, "modifiable");
+			addModel(cubeModel, { i * 3.5f, 0,0 }, ShaderCollection::shaders["pbr"], "modifiable");
 		}
 		for (int i = 0; i < 2; ++i)
 		{
-			addModel(suzModel, { 7.0f + i * 3.5f, 0,0 },1, "modifiable");
+			addModel(suzModel, { 7.0f + i * 3.5f, 0,0 }, ShaderCollection::shaders["pbr"], "modifiable");
 		}
 		for (int i = 0; i < 2; ++i)
 		{
-			addModel(suzModel, { 7.0f + i * 3.5f, -5,0 }, 0, "modifiable");
+			addModel(suzModel, { 7.0f + i * 3.5f, -5,0 }, ShaderCollection::shaders["basic_geometry"], "modifiable");
 		}
 		for (int i = 0; i < 2; ++i)
 		{
-			addModel(cubeModel, { i * 3.5f, -5,0 }, 0, "modifiable");
+			addModel(cubeModel, { i * 3.5f, -5,0 }, ShaderCollection::shaders["basic_geometry"], "modifiable");
 		}
 		
-		addModel(MeshLoader().loadModel("Assets/Models/sam2.obj"), {3.5f, 5, 0}, 1, "modifiable");
-		addModel(MeshLoader().loadModel("Assets/Models/sam2.obj"), {7.5f, 5, 0}, 1, "modifiable");
-		addModel(MeshLoader().loadModel("Assets/Models/plane.obj"), {0, -8, 0}, 1);
+		addModel(MeshLoader().loadModel("Assets/Models/sam2.obj"), {3.5f, 5, 0}, ShaderCollection::shaders["pbr"], "modifiable");
+		addModel(MeshLoader().loadModel("Assets/Models/sam2.obj"), {7.5f, 5, 0}, ShaderCollection::shaders["pbr"], "modifiable");
+		addModel(MeshLoader().loadModel("Assets/Models/plane.obj"), {0, -8, 0}, ShaderCollection::shaders["pbr"]);
 
-		clouds.push_back(createCloud({0, 4, -12}));
+		addTransparent(MeshLoader().loadModel("Assets/Models/cube.obj"), { 0, 4, -12 }, ShaderCollection::shaders["cubicCloud"]);
 
 		createLightSourceBlock();
 		

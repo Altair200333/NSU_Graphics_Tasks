@@ -38,6 +38,9 @@
     <Filter Include="Events">
       <UniqueIdentifier>{1d2b3b5c-c8b9-414f-a395-9b16a6806923}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader">
+      <UniqueIdentifier>{8eba2e41-daaa-4047-be23-b64086601563}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="debug\moc_predefs.h.cbt">
@@ -117,6 +120,15 @@
     </ClInclude>
     <ClInclude Include="VolumetricCubeMeshRenderer.h">
       <Filter>Object\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderData.h">
+      <Filter>Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderCollection.h">
+      <Filter>Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshRendererGenerator.h">
+      <Filter>Shader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

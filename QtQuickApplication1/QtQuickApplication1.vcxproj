@@ -230,12 +230,15 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshLoader.h" />
     <ClInclude Include="MeshRenderer.h" />
+    <ClInclude Include="MeshRendererGenerator.h" />
     <ClInclude Include="MouseInput.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="OnUpdateEvent.h" />
     <ClInclude Include="OnUpdateSubscriber.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneRenderer.h" />
+    <ClInclude Include="ShaderCollection.h" />
+    <ClInclude Include="ShaderData.h" />
     <ClInclude Include="SimpleMeshRenderer.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Transform.h" />
