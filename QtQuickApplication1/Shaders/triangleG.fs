@@ -10,6 +10,11 @@ uniform vec3 cameraPos;
 uniform vec4 color;
 uniform int mode;
 
+uniform sampler2D texture_background;
+uniform bool useBackground;
+
+const float PI = 3.14159265359;
+
 struct LightSource
 {
    vec3 position;
@@ -18,6 +23,16 @@ struct LightSource
 
 uniform LightSource lights[10];
 uniform int lightsCount;
+
+vec2 SampleSphericalMap(vec3 direction)
+{
+   float theta = atan(direction.z, direction.x) * 180 / PI + 180;
+   float alpha = atan(direction.y, sqrt(direction.x * direction.x + direction.z * direction.z)) * 180 / PI + 90;  
+   float x = theta / 360;
+   float y = alpha / 180;
+
+   return vec2(x, 1-y);
+}
 
 vec3 getBaseColor()
 {
@@ -35,6 +50,7 @@ vec3 getLighting()
    vec3 result = vec3(0);
    vec3 baseColor = getBaseColor();
  
+   float roughness = 0.08f;
    for(int i=0; i < lightsCount; ++i)
    {
       vec3 dirToLight = lights[i].position - FragPos;
@@ -42,6 +58,8 @@ vec3 getLighting()
       vec3 mColor = baseColor * vec3(lights[i].color);
       result = result + mColor * max(dot(dirToLight, norm), 0.05f) * attenuation(length(dirToLight));
    }
+   vec3 color = texture(texture_background, SampleSphericalMap(reflect(dirToFrag, norm))).xyz;
+   result = roughness * color + (1-roughness)*result;
    return result;
 }
 void main() 

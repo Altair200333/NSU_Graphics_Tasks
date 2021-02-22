@@ -69,7 +69,7 @@ public:
 	
 	Scene() = default;
 
-	Scene(std::shared_ptr<QOpenGLFunctions> _functions): funcions(_functions)
+	Scene(std::shared_ptr<QOpenGLFunctions> _functions): funcions(std::move(_functions))
 	{
 		const auto cubeModel = MeshLoader().loadModel("Assets/Models/hcube.obj");
 		const auto suzModel = MeshLoader().loadModel("Assets/Models/suz.obj");

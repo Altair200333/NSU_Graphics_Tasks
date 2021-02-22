@@ -23,7 +23,11 @@ vec3 getDirection()
    float y = (texcoord.y-0.5f)*h;
    return front+right*x+up*y;
 }
-
+float atan2(vec2 dir)
+{
+    float angle = asin(dir.x) > 0 ? acos(dir.y) : -acos(dir.y);
+    return angle;
+}
 vec2 SampleSphericalMap(vec3 direction)
 {
    float theta = atan(direction.z, direction.x) * 180 / PI + 180;
