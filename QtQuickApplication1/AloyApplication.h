@@ -12,7 +12,8 @@ class AloyApplication final: public OnUpdateSubscriber
 {
 public:
 	Scene scene;
-	QSlider* slider;
+	QSlider* transformRatio;
+	QSlider* subdivisionLevel;
 
 	std::shared_ptr<QBoxLayout> layout;
 	std::shared_ptr<GLWindow> viewport;
@@ -30,15 +31,21 @@ public:
 		format.setProfile(QSurfaceFormat::CoreProfile);
 
 		viewport->setFormat(format);
-
-		slider = new QSlider(Qt::Horizontal);
-		slider->setRange(0, 100);
-		slider->setStyleSheet("QSlider::groove:horizontal {background-color:gray;}"
+		
+		transformRatio = new QSlider(Qt::Horizontal);
+		transformRatio->setRange(0, 100);
+		transformRatio->setStyleSheet("QSlider::groove:horizontal {background-color:gray;}"
 			"QSlider::handle:horizontal {background-color:white; height:16px; width: 16px;}");
+
+		subdivisionLevel = new QSlider(Qt::Horizontal);
+		subdivisionLevel->setRange(0, 2);
+		subdivisionLevel->setStyleSheet("QSlider::groove:horizontal {background-color:gray;}"
+			"QSlider::handle:horizontal {background-color:white; height:10px; width: 16px;}");
 		
 		layout->setContentsMargins(0, 0, 0, 0);
 		layout->addWidget(viewport.get());
-		layout->addWidget(slider);
+		layout->addWidget(transformRatio);
+		layout->addWidget(subdivisionLevel);
 
 		window->setLayout(layout.get());
 		
@@ -51,7 +58,8 @@ public:
 			if (obj->tag == "modifiable")
 			{
 				obj->renderer->shader->bind();
-				obj->renderer->shader->setUniformValue("ratio", static_cast<float>(slider->value()) / 100.0f);
+				obj->renderer->shader->setUniformValue("ratio", static_cast<float>(transformRatio->value()) / 100.0f);
+				obj->renderer->shader->setUniformValue("subdivLevel", subdivisionLevel->value());
 			}
 		}
 		

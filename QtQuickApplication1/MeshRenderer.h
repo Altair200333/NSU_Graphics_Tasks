@@ -96,14 +96,12 @@ public:
 		material = _material;
 
 		createShader(fragment, vertex, geometry);
-
-		auto s = shader->log();
 		shader->link();
 
+		auto s = shader->log();
+
 		createVao();
-
 		createVbo();
-
 		createIbo();
 
 		enableAttributes();
