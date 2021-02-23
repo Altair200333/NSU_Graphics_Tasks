@@ -30,6 +30,8 @@ uniform bool useBackground;
 
 const float PI = 3.14159265359;
 
+uniform bool wireframe;
+
 vec3 getBaseColor()
 {
    if(mode == 1)
@@ -168,5 +170,12 @@ vec3 getLighting()
 }
 void main() 
 {
-   fragColor = vec4(getLighting(), 1.0f);
+   if(wireframe)
+   {
+      fragColor = vec4(1, 0.682, 0, 1.0f);
+   }
+   else
+   {
+      fragColor = vec4(getLighting(), 1.0f);
+   }
 }

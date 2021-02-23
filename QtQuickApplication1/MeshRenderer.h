@@ -25,7 +25,7 @@ public:
 
 	std::shared_ptr<QOpenGLFunctions> functions;
 	MeshRenderer() = default;
-
+	
 	void enableAttributes() const
 	{
 		shader->enableAttributeArray("posAttr");
@@ -119,6 +119,16 @@ public:
 		shader->setUniformValue(shader->uniformLocation("projection"), camera.getProjectionMatrix());
 		shader->setUniformValue(shader->uniformLocation("cameraPos"), camera.position);
 	}
+	void renderWireframe(GLCamera& camera) const
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+		shader->bind();
+		uploadCameraDetails(camera);
+		shader->setUniformValue("wireframe", true);
+		vao->bind();
+		glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0);
+		vao->release();
+	}
 	virtual void render(GLCamera& camera, const std::vector<std::shared_ptr<LightSource>>& lights = std::vector<std::shared_ptr<LightSource>>{}, Background* background = nullptr) = 0;
 };

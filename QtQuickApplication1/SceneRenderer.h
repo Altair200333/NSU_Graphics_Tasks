@@ -4,7 +4,12 @@
 class SceneRenderer final
 {
 public:
-	bool drawWireframe = false;
+	int drawMode = 0;
+
+	void nextDrawMode()
+	{
+		drawMode = drawMode == 2 ? 0 : drawMode + 1;
+	}
 	void renderLights(Scene& scene)
 	{
 		for (auto& light : scene.lights)
@@ -31,7 +36,6 @@ public:
 
 	void render(Scene& scene)
 	{
-		glPolygonMode(GL_FRONT_AND_BACK, drawWireframe ? GL_LINE : GL_FILL);
 		// Enable blending
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -39,7 +43,23 @@ public:
 
 		for (size_t i = 0; i < scene.objects.size(); ++i)
 		{
-			scene.objects[i]->renderer->render(scene.camera, scene.lights, &scene.backround);
+			if(drawMode == 0)
+				scene.objects[i]->renderer->render(scene.camera, scene.lights, &scene.backround);
+			else if(drawMode == 1)
+			{
+				scene.objects[i]->renderer->render(scene.camera, scene.lights, &scene.backround);
+
+				glEnable(GL_POLYGON_OFFSET_LINE);
+				glPolygonOffset(-1, -1);
+
+				scene.objects[i]->renderer->renderWireframe(scene.camera);
+
+				glDisable(GL_POLYGON_OFFSET_LINE);
+			}
+			else if(drawMode == 2)
+			{
+				scene.objects[i]->renderer->renderWireframe(scene.camera);
+			}
 		}
 		
 		renderLights(scene);

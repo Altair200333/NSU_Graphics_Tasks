@@ -27,7 +27,7 @@ class Scene final
 		lightSourceBlock->initRenderer(funcions);
 		lightSourceBlock->material.shadingMode = Material::materialColor;
 	}
-	std::shared_ptr<Object> createObject(const MeshLoader::LoadedModel& model, const QVector3D& pos, const ShaderData& data, const std::string& tag = "")
+	std::shared_ptr<Object> createObject(const MeshLoader::LoadedModel& model, const QVector3D& pos, const ShaderData& data, const std::string& tag = "") const
 	{
 		auto object = std::make_shared<Object>();
 		object->tag = tag;

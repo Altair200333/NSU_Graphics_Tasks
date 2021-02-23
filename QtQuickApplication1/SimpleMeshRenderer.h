@@ -15,11 +15,12 @@ public:
 			material->diffuse[0].texture->bind();
 		}
 	}
-
+	
 	void render(GLCamera& camera, const std::vector<std::shared_ptr<LightSource>>& lights = std::vector<std::shared_ptr<LightSource>>{}, Background* background = nullptr) override
 	{
-		shader->bind();
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
+		shader->bind();
 		material->uploadToShader(shader);
 		uploadCameraDetails(camera);
 		uploadLights(lights);
@@ -36,8 +37,7 @@ public:
 		shader->setUniformValue("useBackground", background != nullptr);
 		shader->setUniformValue("isLightSource", material->isLightSource);
 
-		
-		
+		shader->setUniformValue("wireframe", false);
 		vao->bind();
 		glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0);
 		vao->release();

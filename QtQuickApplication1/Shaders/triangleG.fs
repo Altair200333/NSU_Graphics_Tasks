@@ -24,6 +24,8 @@ struct LightSource
 uniform LightSource lights[10];
 uniform int lightsCount;
 
+uniform bool wireframe;
+
 vec2 SampleSphericalMap(vec3 direction)
 {
    float theta = atan(direction.z, direction.x) * 180 / PI + 180;
@@ -64,5 +66,12 @@ vec3 getLighting()
 }
 void main() 
 {
-   fragColor = vec4(getLighting(), 1.0f);
+   if(wireframe)
+   {
+      fragColor = vec4(1, 0.682, 0, 1.0f);
+   }
+   else
+   {
+      fragColor = vec4(getLighting(), 1.0f);
+   }
 }

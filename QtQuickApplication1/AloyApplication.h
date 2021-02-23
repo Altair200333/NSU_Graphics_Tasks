@@ -58,7 +58,7 @@ public:
 		scene.camera.aspectRatio = static_cast<float>(viewport->width()) / viewport->height();
 
 		if (Input::keyJustPressed(Qt::Key_Z))
-			renderer.drawWireframe = !renderer.drawWireframe;
+			renderer.nextDrawMode();
 
 		scene.angularVelocity *= 0.987f;
 		for (auto& object : scene.objects)
