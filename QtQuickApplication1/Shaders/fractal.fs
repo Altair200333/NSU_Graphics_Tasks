@@ -26,6 +26,8 @@ uniform bool isLightSource;
 uniform sampler2D texture_background;
 uniform bool useBackground;
 
+uniform bool wireframe;
+
 const float PI = 3.14159265359;
 
 vec3 getBaseColor()
@@ -142,7 +144,10 @@ void main()
    vec3 color = palette(depth.y)*fog;
    if(color.x+color.y+color.z<0.01f)
    {
-      fragColor = vec4(texture(texture_background, SampleSphericalMap(V)).xyz, 1.0f);
+      if(wireframe)
+         fragColor = vec4(1, 0.682, 0, 1.0f);
+      else
+         fragColor = vec4(texture(texture_background, SampleSphericalMap(V)).xyz, 1.0f);
    }
    else
    {
