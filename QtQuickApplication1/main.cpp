@@ -2,6 +2,7 @@
 #include <QApplication>
 #include "GLWindow.h"
 #include <QLabel>
+#include <QStyleFactory>
 
 #include "AloyApplication.h"
 #include "QColorDialog"

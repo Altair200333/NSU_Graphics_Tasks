@@ -39,7 +39,7 @@ struct Triangle
     vec3 vertices[3];
     vec3 normals[3];
 };
-Triangle triangles[100];
+Triangle triangles[50];
 int bottom = 0;
 int top = 0;
 

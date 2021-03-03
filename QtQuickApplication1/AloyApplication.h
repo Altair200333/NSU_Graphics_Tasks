@@ -6,20 +6,26 @@
 #include "GLWindow.h"
 #include "Window.h"
 #include <QSlider>
+#include <QLabel>
 #include "SceneRenderer.h"
+#include <chrono>
+#include <ctime>
 
 class AloyApplication final: public OnUpdateSubscriber
 {
 public:
 	Scene scene;
-	QSlider* transformRatio;
-	QSlider* subdivisionLevel;
-
+	QLabel* label;
+	QSlider* mixFactor;
+	
 	std::shared_ptr<QBoxLayout> layout;
 	std::shared_ptr<GLWindow> viewport;
 
 	bool initialized = false;
 	SceneRenderer renderer;
+
+	std::chrono::time_point<std::chrono::system_clock> lastFrameTime;
+	
 	AloyApplication(Window* window)
 	{
 		layout = std::make_shared<QBoxLayout>(QBoxLayout::TopToBottom);
@@ -31,21 +37,22 @@ public:
 		format.setProfile(QSurfaceFormat::CoreProfile);
 
 		viewport->setFormat(format);
-		
-		transformRatio = new QSlider(Qt::Horizontal);
-		transformRatio->setRange(0, 100);
-		transformRatio->setStyleSheet("QSlider::groove:horizontal {background-color:gray;}"
-			"QSlider::handle:horizontal {background-color:white; height:16px; width: 16px;}");
 
-		subdivisionLevel = new QSlider(Qt::Horizontal);
-		subdivisionLevel->setRange(0, 2);
-		subdivisionLevel->setStyleSheet("QSlider::groove:horizontal {background-color:gray;}"
-			"QSlider::handle:horizontal {background-color:white; height:10px; width: 16px;}");
-		
+		//---
+		label = new QLabel("framerate: xx");
+		QFont f("Arial", 16, QFont::Bold);
+		label->setFont(f);
+		label->setStyleSheet("color: blue; background-color : white;");
+		label->setMaximumHeight(20);
+		//---
+		mixFactor = new QSlider(Qt::Horizontal);
+		mixFactor->setRange(0, 100);
+		mixFactor->setSliderPosition(10);
+		//---
 		layout->setContentsMargins(0, 0, 0, 0);
 		layout->addWidget(viewport.get());
-		layout->addWidget(transformRatio);
-		layout->addWidget(subdivisionLevel);
+		layout->addWidget(label);
+		layout->addWidget(mixFactor);
 
 		window->setLayout(layout.get());
 		
@@ -53,24 +60,16 @@ public:
 
 	void updateScene()
 	{
-		for(auto& obj: scene.objects)
-		{
-			if (obj->tag == "modifiable")
-			{
-				obj->renderer->shader->bind();
-				obj->renderer->shader->setUniformValue("ratio", static_cast<float>(transformRatio->value()) / 100.0f);
-				obj->renderer->shader->setUniformValue("subdivLevel", subdivisionLevel->value());
-			}
-		}
-		
 		scene.camera.aspectRatio = static_cast<float>(viewport->width()) / viewport->height();
 
 		if (Input::keyJustPressed(Qt::Key_Z))
 			renderer.nextDrawMode();
 
 		scene.angularVelocity *= 0.987f;
+		
 		for (auto& object : scene.objects)
 		{
+			object->material.roughness = static_cast<float>(mixFactor->value()) / 100.0f;
 			if (object->tag == "modifiable")
 			{
 				object->transform.rotate(QQuaternion::fromAxisAndAngle(scene.camera.right, -scene.angularVelocity.y()).normalized());
@@ -92,11 +91,17 @@ public:
 
 	void onUpdate() override
 	{
-		if (!initialized)//this has to ne
+		if (!initialized)
 		{
 			init();
 			initialized = true;
 		}
+
+		const auto current = std::chrono::system_clock::now();
+		const std::chrono::duration<double> elapsedSeconds = current - lastFrameTime;
+		lastFrameTime = current;
+		const std::string text = "framerate: " + std::to_string(1.0f/ elapsedSeconds.count());
+		label->setText(QString(text.c_str()));
 		
 		updateScene();
 		

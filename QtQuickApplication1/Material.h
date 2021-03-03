@@ -11,6 +11,7 @@ public:
 	std::vector<Texture> normal;
 	
 	QColor color;
+	float roughness = 0.02f;
 	bool isLightSource = false;
 	
 	enum ShadingMode : int
@@ -25,6 +26,7 @@ public:
 	void uploadToShader(std::shared_ptr<QOpenGLShaderProgram>& shader)
 	{
 		shader->setUniformValue("mode", shadingMode);
+		shader->setUniformValue("roughness", roughness);
 
 		if(shadingMode == materialColor)
 		{

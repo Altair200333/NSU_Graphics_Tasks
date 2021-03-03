@@ -72,27 +72,18 @@ public:
 	Scene(std::shared_ptr<QOpenGLFunctions> _functions): funcions(std::move(_functions))
 	{
 		const auto cubeModel = MeshLoader().loadModel("Assets/Models/hcube.obj");
-		const auto suzModel = MeshLoader().loadModel("Assets/Models/suz.obj");
-		for (int i = 0; i < 2; ++i)
+		const auto suzaneModel = MeshLoader().loadModel("Assets/Models/suz.obj");
+		
+		for (int i = 0; i < 20; ++i)
 		{
-			addModel(cubeModel, { i * 3.5f, 0,0 }, ShaderCollection::shaders["pbr"], "modifiable");
-		}
-		for (int i = 0; i < 2; ++i)
-		{
-			addModel(suzModel, { 7.0f + i * 3.5f, 0,0 }, ShaderCollection::shaders["pbr"], "modifiable");
-		}
-		for (int i = 0; i < 2; ++i)
-		{
-			addModel(suzModel, { 7.0f + i * 3.5f, -5,0 }, ShaderCollection::shaders["basic_geometry"], "modifiable");
-		}
-		for (int i = 0; i < 2; ++i)
-		{
-			addModel(cubeModel, { i * 3.5f, -5,0 }, ShaderCollection::shaders["basic_geometry"], "modifiable");
+			for (int j = 0; j < 20; ++j)
+			{
+				addModel((i + j) % 2 == 0?cubeModel: suzaneModel, { i * 3.5f-10, 0,j*3.5f-10 }, ShaderCollection::shaders["simple"], "modifiable");
+			}
 		}
 		
 		addModel(MeshLoader().loadModel("Assets/Models/sam2.obj"), {3.5f, 5, 0}, ShaderCollection::shaders["pbr"], "modifiable");
 		addModel(MeshLoader().loadModel("Assets/Models/sam2.obj"), {7.5f, 5, 0}, ShaderCollection::shaders["pbr"], "modifiable");
-		addModel(MeshLoader().loadModel("Assets/Models/plane.obj"), {0, -8, 0}, ShaderCollection::shaders["fractal"]);
 
 		addTransparent(MeshLoader().loadModel("Assets/Models/cube.obj"), { 0, 4, -12 }, ShaderCollection::shaders["cubicCloud"]);
 
