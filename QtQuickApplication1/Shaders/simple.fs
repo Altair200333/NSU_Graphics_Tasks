@@ -37,7 +37,7 @@ vec2 SampleSphericalMap(vec3 direction)
    return vec2(x, 1-y);
 }
 
-vec3 getBaseColor()
+vec3 getDiffuseColor()
 {
    return color.xyz;
 }
@@ -51,17 +51,22 @@ vec3 getLighting()
    vec3 norm = normalize(Normal);
    
    vec3 result = vec3(0);
-   vec3 baseColor = getBaseColor();
-   vec3 color = texture(texture_background, SampleSphericalMap(reflect(dirToFrag, norm))).xyz;
-
+   vec3 baseColor = getDiffuseColor();
+   vec3 envColor = texture(texture_background, SampleSphericalMap(reflect(dirToFrag, norm))).xyz;
+   
    for(int i=0; i < lightsCount; ++i)
    {
       vec3 dirToLight = lights[i].position - FragPos;
       dirToLight = normalize(dirToLight);
-      vec3 mColor = baseColor * vec3(lights[i].color);
-      result +=  ((1-roughness)*mColor + roughness * color) * max(dot(dirToLight, norm), 0.05f) * attenuation(length(dirToLight));
+      vec3 diffuse = baseColor * vec3(lights[i].color);
+
+      vec3 reflectDir = reflect(-dirToLight, norm);
+      float spec = pow(max(dot(-dirToFrag, reflectDir), 0.0), 8.0);
+      vec3 specular = vec3(lights[i].color) * spec; 
+      result +=  (diffuse + specular) * max(dot(dirToLight, norm), 0.0f) * attenuation(length(dirToLight));
    }
 
+   result = (1-roughness)*result + roughness*envColor;
    return result;
 }
 void main() 
