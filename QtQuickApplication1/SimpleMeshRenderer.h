@@ -7,12 +7,12 @@ public:
 
 	void bindAlbedo()
 	{
-		shader->setUniformValue("albedoCount", static_cast<int>(material->diffuse.size()));
-		if(!material->diffuse.empty())
+		shader->setUniformValue("albedoCount", static_cast<int>(material->textures.size()));
+		if(!material->textures.empty())
 		{
 			shader->setUniformValue("texture_diffuse", 0);
 			functions->glActiveTexture(GL_TEXTURE0 + 0);
-			material->diffuse[0].texture->bind();
+			material->textures[0].texture->bind();
 		}
 	}
 	

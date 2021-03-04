@@ -16,8 +16,7 @@ public:
 		{
 			scene.lightSourceBlock->transform.translate(-scene.lightSourceBlock->transform.position);
 			scene.lightSourceBlock->transform.translate(light->position);
-			scene.lightSourceBlock->material.shadingMode = Material::materialColor;
-			scene.lightSourceBlock->material.color = light->color;
+			scene.lightSourceBlock->material.diffuse = light->color;
 			scene.lightSourceBlock->material.isLightSource = true;
 			scene.lightSourceBlock->renderer->render(scene.camera, scene.lights);
 		}

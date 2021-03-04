@@ -119,7 +119,7 @@ public:
         material->Get(AI_MATKEY_COLOR_DIFFUSE, color);
         const QColor albedo = { static_cast<int>(color.r * 255), static_cast<int>(color.g * 255), static_cast<int>(color.b * 255)};
 
-        // 1. diffuse maps
+        // 1. textures maps
         std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
         // 2. specular maps
         std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
@@ -129,7 +129,7 @@ public:
         std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
 
         Material mat(albedo);
-        mat.diffuse = diffuseMaps;
+        mat.textures = diffuseMaps;
         mat.normal = normalMaps;
         return { Mesh(vertices, indices), mat };
     }

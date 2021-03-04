@@ -4,15 +4,21 @@ out vec4 fragColor;
 
 in vec3 FragPos;
 in vec3 Normal;
+in vec2 TexCoords;
 
 uniform vec3 cameraPos;
 
 uniform vec4 color;
-uniform int mode;
+uniform vec4 ambient;
+uniform vec4 specular;
+
 uniform float roughness;
 
 uniform sampler2D texture_background;
 uniform bool useBackground;
+
+uniform int albedoCount;
+uniform sampler2D texture_diffuse;
 
 const float PI = 3.14159265359;
 
@@ -39,6 +45,8 @@ vec2 SampleSphericalMap(vec3 direction)
 
 vec3 getDiffuseColor()
 {
+   if(albedoCount != 0)
+     return texture(texture_diffuse, TexCoords).xyz;
    return color.xyz;
 }
 float attenuation(float dist)
@@ -62,11 +70,11 @@ vec3 getLighting()
 
       vec3 reflectDir = reflect(-dirToLight, norm);
       float spec = pow(max(dot(-dirToFrag, reflectDir), 0.0), 8.0);
-      vec3 specular = vec3(lights[i].color) * spec; 
-      result +=  (diffuse + specular) * max(dot(dirToLight, norm), 0.0f) * attenuation(length(dirToLight));
+      vec3 lightSpecular = specular.rgb * spec; 
+      result +=  (diffuse + lightSpecular) * max(dot(dirToLight, norm), 0.0f) * attenuation(length(dirToLight));
    }
 
-   result = (1-roughness)*result + roughness*envColor;
+   result = (1-roughness)*(result + ambient.rgb*0.089f) + roughness*envColor;
    return result;
 }
 void main() 

@@ -7,30 +7,23 @@
 class Material final
 {
 public:
-	std::vector<Texture> diffuse;
+	std::vector<Texture> textures;
 	std::vector<Texture> normal;
 	
-	QColor color;
+	QColor diffuse;
+	QColor ambient = QColor(20, 200, 100);
+	QColor specular = QColor(50, 149, 240);
 	float roughness = 0.02f;
 	bool isLightSource = false;
 	
-	enum ShadingMode : int
-	{
-		vertexColor = 1,
-		materialColor = 2
-	};
-	ShadingMode shadingMode = materialColor;
 
-	Material(QColor _color = QColor(255, 149, 100)):color(_color)
+	Material(QColor _diffuse = QColor(255, 149, 100)):diffuse(_diffuse)
 	{}
 	void uploadToShader(std::shared_ptr<QOpenGLShaderProgram>& shader)
 	{
-		shader->setUniformValue("mode", shadingMode);
 		shader->setUniformValue("roughness", roughness);
-
-		if(shadingMode == materialColor)
-		{
-			shader->setUniformValue("color", color);
-		}
+		shader->setUniformValue("color", diffuse);
+		shader->setUniformValue("ambient", ambient);
+		shader->setUniformValue("specular", specular);
 	}
 };

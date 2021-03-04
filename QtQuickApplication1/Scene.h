@@ -21,11 +21,8 @@ class Scene final
 	std::shared_ptr<QOpenGLFunctions> funcions;
 	void createLightSourceBlock()
 	{
-		lightSourceBlock = std::make_shared<Object>();
-		lightSourceBlock->mesh = MeshLoader().loadModel("Assets/Models/cube.obj")[0].mesh;
-		lightSourceBlock->renderer = std::make_shared<SimpleMeshRenderer>();
-		lightSourceBlock->initRenderer(funcions);
-		lightSourceBlock->material.shadingMode = Material::materialColor;
+		lightSourceBlock = createObject(MeshLoader().loadModel("Assets/Models/cube.obj")[0], QVector3D(0, 0, 0),
+			ShaderCollection::shaders["lightSource"]);
 	}
 	std::shared_ptr<Object> createObject(const MeshLoader::LoadedModel& model, const QVector3D& pos, const ShaderData& data, const std::string& tag = "") const
 	{
@@ -82,8 +79,8 @@ public:
 			}
 		}
 		
-		addModel(MeshLoader().loadModel("Assets/Models/sam2.obj"), {3.5f, 5, 0}, ShaderCollection::shaders["pbr"], "modifiable");
-		addModel(MeshLoader().loadModel("Assets/Models/sam2.obj"), {7.5f, 5, 0}, ShaderCollection::shaders["pbr"], "modifiable");
+		addModel(MeshLoader().loadModel("Assets/Models/sam2.obj"), {3.5f, 5, 0}, ShaderCollection::shaders["simple"], "modifiable");
+		addModel(MeshLoader().loadModel("Assets/Models/sam2.obj"), {7.5f, 5, 0}, ShaderCollection::shaders["simple"], "modifiable");
 
 		addTransparent(MeshLoader().loadModel("Assets/Models/cube.obj"), { 0, 4, -12 }, ShaderCollection::shaders["cubicCloud"]);
 

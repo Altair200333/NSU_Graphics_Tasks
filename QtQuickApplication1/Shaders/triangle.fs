@@ -10,7 +10,6 @@ in vec2 TexCoords;
 uniform vec3 cameraPos;
 
 uniform vec4 color;
-uniform int mode;
 
 struct LightSource
 {
@@ -35,9 +34,6 @@ uniform float roughness;
 
 vec3 getBaseColor()
 {
-   if(mode == 1)
-      return col;
-
    if(albedoCount != 0)
      return texture(texture_diffuse, TexCoords).xyz;
 
