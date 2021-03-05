@@ -89,6 +89,15 @@ public:
 		}
 	}
 
+	void updateFrameRate()
+	{
+		const auto current = std::chrono::system_clock::now();
+		const std::chrono::duration<double> elapsedSeconds = current - lastFrameTime;
+		lastFrameTime = current;
+		const std::string text = "framerate: " + std::to_string(1.0f/ elapsedSeconds.count());
+		label->setText(QString(text.c_str()));
+	}
+
 	void onUpdate() override
 	{
 		if (!initialized)
@@ -97,11 +106,7 @@ public:
 			initialized = true;
 		}
 
-		const auto current = std::chrono::system_clock::now();
-		const std::chrono::duration<double> elapsedSeconds = current - lastFrameTime;
-		lastFrameTime = current;
-		const std::string text = "framerate: " + std::to_string(1.0f/ elapsedSeconds.count());
-		label->setText(QString(text.c_str()));
+		updateFrameRate();
 		
 		updateScene();
 		

@@ -40,7 +40,7 @@ public:
 		setMouseTracking(true);   //without this command input goes insane if mouse pointer is outside the window
 		setFocusPolicy(Qt::ClickFocus);//allow widget to be focused
 	}
-
+	
 	void initializeGL() override
 	{
 		initializeOpenGLFunctions();

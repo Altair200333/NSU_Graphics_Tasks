@@ -24,26 +24,26 @@ class Scene final
 		lightSourceBlock = createObject(MeshLoader().loadModel("Assets/Models/cube.obj")[0], QVector3D(0, 0, 0),
 			ShaderCollection::shaders["lightSource"]);
 	}
-	std::shared_ptr<Object> createObject(const MeshLoader::LoadedModel& model, const QVector3D& pos, const ShaderData& data, const std::string& tag = "") const
+	std::shared_ptr<Object> createObject(const MeshLoader::LoadedModel& model, const QVector3D& pos, ShaderData& data, const std::string& tag = "") const
 	{
 		auto object = std::make_shared<Object>();
 		object->tag = tag;
 		object->mesh = model.mesh;
 		object->material = model.material;
 		object->renderer = data.renderer->getRenderer();
-		object->initRenderer(funcions, data.fragment, data.vertex, data.geometry);
+		object->initRenderer(funcions, data.getShader());
 
 		object->transform.translate(pos);
 		return object;
 	}
-	void addTransparent(const std::vector<MeshLoader::LoadedModel>& models, const QVector3D& pos, const ShaderData& data, const std::string& tag = "")
+	void addTransparent(const std::vector<MeshLoader::LoadedModel>& models, const QVector3D& pos, ShaderData& data, const std::string& tag = "")
 	{
 		for (const auto& model : models)
 		{
 			transparentObjects.push_back(createObject(model, pos, data, tag));
 		}
 	}
-	void addModel(const std::vector<MeshLoader::LoadedModel>& models, const QVector3D& pos, const ShaderData& data, const std::string& tag = "")
+	void addModel(const std::vector<MeshLoader::LoadedModel>& models, const QVector3D& pos, ShaderData& data, const std::string& tag = "")
 	{
 		for (const auto& model : models)
 		{
@@ -54,10 +54,10 @@ public:
 	std::vector<std::shared_ptr<Object>> objects;
 	std::vector<std::shared_ptr<LightSource>> lights;
 	std::vector<std::shared_ptr<Object>> transparentObjects;
+	std::shared_ptr<Object> lightSourceBlock;
 	
 	Background backround;
 
-	std::shared_ptr<Object> lightSourceBlock;
 	GLCamera camera;
 
 	bool drawWireframe = false;
@@ -68,7 +68,7 @@ public:
 
 	Scene(std::shared_ptr<QOpenGLFunctions> _functions): funcions(std::move(_functions))
 	{
-		const auto cubeModel = MeshLoader().loadModel("Assets/Models/hcube.obj");
+		const auto cubeModel = MeshLoader().loadModel("Assets/Models/cube.obj");
 		const auto suzaneModel = MeshLoader().loadModel("Assets/Models/suz.obj");
 		
 		for (int i = 0; i < 20; ++i)

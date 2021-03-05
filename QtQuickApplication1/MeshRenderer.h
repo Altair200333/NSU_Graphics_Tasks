@@ -3,6 +3,7 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLFunctions>
+#include <utility>
 
 #include "Background.h"
 #include "Mesh.h"
@@ -14,18 +15,20 @@
 class MeshRenderer
 {
 public:
-	virtual ~MeshRenderer() = default;
 	QOpenGLBuffer* vbo = nullptr;
 	QOpenGLBuffer* ibo = nullptr;
 	QOpenGLVertexArrayObject* vao = nullptr;
+	
 	std::shared_ptr<QOpenGLShaderProgram> shader = nullptr;
 	Transform* transform = nullptr;
 	Mesh* mesh = nullptr;
 	Material* material = nullptr;
 
 	std::shared_ptr<QOpenGLFunctions> functions;
-	MeshRenderer() = default;
 	
+	MeshRenderer() = default;
+	virtual ~MeshRenderer() = default;
+
 	void enableAttributes() const
 	{
 		shader->enableAttributeArray("posAttr");
@@ -86,19 +89,12 @@ public:
 		ibo->allocate(mesh->indices.data(), mesh->indices.size() * sizeof(GLuint));
 	}
 	
-	void init( std::shared_ptr<QOpenGLFunctions> _functions, Transform* _transform, Mesh* _mesh, Material* _material,
-		const std::string& fragment = "Shaders/triangle.fs",
-		const std::string& vertex = "Shaders/triangle.vs", const std::string& geometry = "")
+	void init(std::shared_ptr<QOpenGLFunctions> _functions, Transform* _transform, Mesh* _mesh, Material* _material)
 	{
-		functions = _functions;
+		functions = std::move(_functions);
 		mesh = _mesh;
 		transform = _transform;
 		material = _material;
-
-		createShader(fragment, vertex, geometry);
-		shader->link();
-
-		auto s = shader->log();
 
 		createVao();
 		createVbo();
@@ -107,9 +103,24 @@ public:
 		enableAttributes();
 
 		vao->release();
-		shader->release();
 	}
 	
+	void initMeshRenderer( std::shared_ptr<QOpenGLFunctions> _functions, Transform* _transform, Mesh* _mesh, Material* _material,
+		const std::string& fragment = "Shaders/triangle.fs",
+		const std::string& vertex = "Shaders/triangle.vs", const std::string& geometry = "")
+	{
+		createShader(fragment, vertex, geometry);
+		shader->link();
+		init(std::move(_functions), _transform, _mesh, _material);
+	}
+
+	void initMeshRenderer(std::shared_ptr<QOpenGLFunctions> _functions, Transform* _transform, Mesh* _mesh, Material* _material,
+	                      std::shared_ptr<QOpenGLShaderProgram> _shader)
+	{
+		shader = std::move(_shader);
+
+		init(std::move(_functions), _transform, _mesh, _material);
+	}
 	void uploadCameraDetails(GLCamera& camera) const
 	{
 		shader->setUniformValue(shader->uniformLocation("model"), transform->transform);
@@ -117,6 +128,7 @@ public:
 		shader->setUniformValue(shader->uniformLocation("projection"), camera.getProjectionMatrix());
 		shader->setUniformValue(shader->uniformLocation("cameraPos"), camera.position);
 	}
+	
 	void renderWireframe(GLCamera& camera) const
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -128,5 +140,6 @@ public:
 		glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0);
 		vao->release();
 	}
+	
 	virtual void render(GLCamera& camera, const std::vector<std::shared_ptr<LightSource>>& lights = std::vector<std::shared_ptr<LightSource>>{}, Background* background = nullptr) = 0;
 };

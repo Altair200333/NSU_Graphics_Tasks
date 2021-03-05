@@ -26,7 +26,6 @@ class ShaderCollection final
 public:
 	inline static std::map<std::string, ShaderData> shaders = 
 	{
-		{{"ImageBackground"}, {"Shaders\\background.vs","Shaders\\background.fs","Shaders\\background.gs"}},
 		{{"pbr"}, {"Shaders\\triangle.vs","Shaders\\triangle.fs", "", std::make_shared<SimpleMeshRendererGenerator>()}},
 		{{"simple"}, {"Shaders\\simple.vs","Shaders\\simple.fs", "", std::make_shared<SimpleMeshRendererGenerator>()}},
 		{{"lightSource"}, {"Shaders\\lightSource.vs","Shaders\\lightSource.fs", "", std::make_shared<SimpleMeshRendererGenerator>()}},
