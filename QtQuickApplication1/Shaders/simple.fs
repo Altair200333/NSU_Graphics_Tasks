@@ -51,7 +51,7 @@ vec3 getDiffuseColor()
 }
 float attenuation(float dist)
 {
-   return 1.0f / (1.0f + 0.1f * dist + 0.35f * dist*dist);
+   return 1.0f / (1.0f + 0.01f * dist + 0.01f * dist*dist);
 }
 vec3 getLighting()
 {
@@ -64,14 +64,14 @@ vec3 getLighting()
    
    for(int i=0; i < lightsCount; ++i)
    {
-      vec3 dirToLight = lights[i].position - FragPos;
-      dirToLight = normalize(dirToLight);
+      vec3 dirToLight = normalize(lights[i].position - FragPos);
+
       vec3 diffuse = baseColor * vec3(lights[i].color);
 
       vec3 reflectDir = reflect(-dirToLight, norm);
       float spec = pow(max(dot(-dirToFrag, reflectDir), 0.0), 8.0);
       vec3 lightSpecular = specular.rgb * spec; 
-      result +=  (diffuse + lightSpecular) * max(dot(dirToLight, norm), 0.0f) * attenuation(length(dirToLight));
+      result +=  (diffuse + lightSpecular) * max(dot(dirToLight, norm), 0.0f) * attenuation(length(lights[i].position - FragPos));
    }
 
    result = (1-roughness)*(result + ambient.rgb*0.089f) + roughness*envColor;

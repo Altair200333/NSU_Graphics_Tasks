@@ -219,6 +219,7 @@
   <ItemGroup>
     <ClInclude Include="AloyApplication.h" />
     <ClInclude Include="Background.h" />
+    <ClInclude Include="FPSCounter.h" />
     <ClInclude Include="GLWindow.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="EventDispatcher.h" />
@@ -242,6 +243,7 @@
     <ClInclude Include="SimpleMeshRenderer.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Transform.h" />
+    <ClInclude Include="UIManager.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="VolumetricCubeMeshRenderer.h" />
     <QtMoc Include="Window.h" />

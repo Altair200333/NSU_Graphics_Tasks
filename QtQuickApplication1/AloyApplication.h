@@ -10,57 +10,32 @@
 #include "SceneRenderer.h"
 #include <chrono>
 #include <ctime>
+#include <iomanip>
+#include <sstream>
+#include "FPSCounter.h"
+#include "UIManager.h"
 
 class AloyApplication final: public OnUpdateSubscriber
 {
 public:
 	Scene scene;
-	QLabel* label;
-	QSlider* mixFactor;
 	
-	std::shared_ptr<QBoxLayout> layout;
-	std::shared_ptr<GLWindow> viewport;
+	UIManager manager;
 
 	bool initialized = false;
 	SceneRenderer renderer;
 
-	std::chrono::time_point<std::chrono::system_clock> lastFrameTime;
+	FPSCounter fpsCounter;
 	
 	AloyApplication(Window* window)
 	{
-		layout = std::make_shared<QBoxLayout>(QBoxLayout::TopToBottom);
-		viewport = std::make_shared<GLWindow>(window);
-		
-		QSurfaceFormat format;
-		format.setSamples(16);
-		format.setVersion(3, 3);
-		format.setProfile(QSurfaceFormat::CoreProfile);
-
-		viewport->setFormat(format);
-
-		//---
-		label = new QLabel("framerate: xx");
-		QFont f("Arial", 16, QFont::Bold);
-		label->setFont(f);
-		label->setStyleSheet("color: blue; background-color : white;");
-		label->setMaximumHeight(20);
-		//---
-		mixFactor = new QSlider(Qt::Horizontal);
-		mixFactor->setRange(0, 100);
-		mixFactor->setSliderPosition(10);
-		//---
-		layout->setContentsMargins(0, 0, 0, 0);
-		layout->addWidget(viewport.get());
-		layout->addWidget(label);
-		layout->addWidget(mixFactor);
-
-		window->setLayout(layout.get());
-		
+		manager.setWindow(window);
+		manager.init();
 	}
 
 	void updateScene()
 	{
-		scene.camera.aspectRatio = static_cast<float>(viewport->width()) / viewport->height();
+		scene.camera.aspectRatio = static_cast<float>(manager.viewport->width()) / manager.viewport->height();
 
 		if (Input::keyJustPressed(Qt::Key_Z))
 			renderer.nextDrawMode();
@@ -69,7 +44,7 @@ public:
 		
 		for (auto& object : scene.objects)
 		{
-			object->material.roughness = static_cast<float>(mixFactor->value()) / 100.0f;
+			object->material.roughness = static_cast<float>(manager.mixFactor->value()) / 100.0f;
 			if (object->tag == "modifiable")
 			{
 				object->transform.rotate(QQuaternion::fromAxisAndAngle(scene.camera.right, -scene.angularVelocity.y()).normalized());
@@ -85,17 +60,15 @@ public:
 
 		for (auto& light : scene.lights)
 		{
-			light->position = QQuaternion::fromAxisAndAngle({ 1,0,0 }, 0.2f) * light->position;
+			light->position = QQuaternion::fromAxisAndAngle({ 0,1,0 }, 0.2f) * light->position;
 		}
 	}
 
 	void updateFrameRate()
 	{
-		const auto current = std::chrono::system_clock::now();
-		const std::chrono::duration<double> elapsedSeconds = current - lastFrameTime;
-		lastFrameTime = current;
-		const std::string text = "framerate: " + std::to_string(1.0f/ elapsedSeconds.count());
-		label->setText(QString(text.c_str()));
+		std::stringstream ss;
+		ss << "framerate: " << std::fixed << std::setprecision(2) << 1.0f / fpsCounter.getFPS();
+		manager.label->setText(QString(ss.str().c_str()));
 	}
 
 	void onUpdate() override
@@ -115,17 +88,17 @@ public:
 	
 	void init()
 	{
-		scene = Scene(viewport);
-	 	viewport->glEnable(GL_DEPTH_TEST);
+		scene = Scene(manager.viewport);
+		manager.viewport->glEnable(GL_DEPTH_TEST);
 	}
 
 	void render()
 	{
-		const auto retinaScale = viewport->devicePixelRatio();
-		viewport->glViewport(0, 0, viewport->width() * retinaScale, viewport->height() * retinaScale);
+		const auto retinaScale = manager.viewport->devicePixelRatio();
+		manager.viewport->glViewport(0, 0, manager.viewport->width() * retinaScale, manager.viewport->height() * retinaScale);
 
-		viewport->glClearColor(0.08f, 0.08f, 0.08f, 1);
-		viewport->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		manager.viewport->glClearColor(0.08f, 0.08f, 0.08f, 1);
+		manager.viewport->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		renderer.render(scene);
 	}

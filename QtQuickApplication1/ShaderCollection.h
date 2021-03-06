@@ -23,8 +23,9 @@ class ShaderCollection final
 			return std::make_shared<VolumetricCubeMeshRenderer>();
 		}
 	};
+
 public:
-	inline static std::map<std::string, ShaderData> shaders = 
+	inline static std::map<std::string, ShaderData> shaders =
 	{
 		{{"pbr"}, {"Shaders\\triangle.vs","Shaders\\triangle.fs", "", std::make_shared<SimpleMeshRendererGenerator>()}},
 		{{"simple"}, {"Shaders\\simple.vs","Shaders\\simple.fs", "", std::make_shared<SimpleMeshRendererGenerator>()}},

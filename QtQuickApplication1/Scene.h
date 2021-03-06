@@ -75,19 +75,19 @@ public:
 		{
 			for (int j = 0; j < 20; ++j)
 			{
-				addModel((i + j) % 2 == 0?cubeModel: suzaneModel, { i * 3.5f-10, 0,j*3.5f-10 }, ShaderCollection::shaders["simple"], "modifiable");
+				addModel((i + j) % 2 == 0?cubeModel: suzaneModel, { i * 3.5f-30, 0,j*3.5f-30 }, ShaderCollection::shaders["simple"], "modifiable");
 			}
 		}
 		
-		addModel(MeshLoader().loadModel("Assets/Models/sam2.obj"), {3.5f, 5, 0}, ShaderCollection::shaders["simple"], "modifiable");
-		addModel(MeshLoader().loadModel("Assets/Models/sam2.obj"), {7.5f, 5, 0}, ShaderCollection::shaders["simple"], "modifiable");
+		addModel(MeshLoader().loadModel("Assets/Models/sam2.obj"), {3.5f, 6, 0}, ShaderCollection::shaders["simple"], "modifiable");
+		addModel(MeshLoader().loadModel("Assets/Models/sam2.obj"), {7.5f, 6, 0}, ShaderCollection::shaders["simple"], "modifiable");
 
 		addTransparent(MeshLoader().loadModel("Assets/Models/cube.obj"), { 0, 4, -12 }, ShaderCollection::shaders["cubicCloud"]);
 
 		createLightSourceBlock();
 		
-		lights.push_back(std::make_shared<LightSource>(QVector3D{-5, 0, 7}));
-		lights.push_back(std::make_shared<LightSource>(QVector3D{30, 9, -7}, QColor{255, 219, 102}));
+		lights.push_back(std::make_shared<LightSource>(QVector3D{-5, 4, 7}));
+		lights.push_back(std::make_shared<LightSource>(QVector3D{30, 3, -7}, QColor{255, 23, 12}));
 
 		backround = Background(funcions);
 	}

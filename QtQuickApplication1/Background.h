@@ -13,6 +13,7 @@ public:
 	QOpenGLVertexArrayObject* vao = nullptr;
 	QOpenGLTexture* image = nullptr;
 	std::shared_ptr<QOpenGLFunctions> functions;
+	
 	Background() = default;
 	Background(std::shared_ptr<QOpenGLFunctions> _functions, const std::string& imagePath = "Assets\\Models\\textures\\background.jpg",
 		const std::string& vertex = "Shaders/background.vs", const std::string& fragment = "Shaders/background.fs", const std::string& geometry = "Shaders/background.gs")
@@ -36,6 +37,7 @@ public:
 
 		image = new QOpenGLTexture(QImage(QString(imagePath.c_str())));
 	}
+	
 	void render(GLCamera& camera)
 	{
 		shader->bind();

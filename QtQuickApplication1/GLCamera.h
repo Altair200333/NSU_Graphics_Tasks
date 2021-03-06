@@ -26,7 +26,7 @@ public:
 		projection.perspective(FOV, aspectRatio, 0.1f, 100.0f);
 		return projection;
 	}
-	QMatrix4x4 getViewMatrix()
+	QMatrix4x4 getViewMatrix() const
 	{
 		QMatrix4x4 view;
 		view.lookAt(position, (position + front), up);
