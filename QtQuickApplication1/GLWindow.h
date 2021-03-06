@@ -31,7 +31,7 @@ class GLWindow final : public QOpenGLWidget, public QOpenGLFunctions
 public:
 	QTimer* timer = nullptr;
 
-	GLWindow(QOpenGLWidget* parent = nullptr): QOpenGLWidget(parent)
+	GLWindow(QWidget* parent = nullptr): QOpenGLWidget(parent)
 	{
 		timer = new QTimer(this);
 		connect(timer, SIGNAL(timeout()), this, SLOT(update()));
