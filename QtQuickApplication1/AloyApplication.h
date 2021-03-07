@@ -65,6 +65,14 @@ public:
 		{
 			light->position = QQuaternion::fromAxisAndAngle({ 0,1,0 }, 20.0*fpsCounter.frameTime) * light->position;
 		}
+		
+		auto spot = std::dynamic_pointer_cast<SpotLight>(scene.lights.back());
+		spot->position = scene.camera.position;
+		spot->direction = scene.camera.front;
+		if(Input::keyJustPressed(Qt::Key_F))
+		{
+			spot->intensity = spot->intensity > 0 ? 0 : 1;
+		}
 	}
 
 	void updateFrameRate()

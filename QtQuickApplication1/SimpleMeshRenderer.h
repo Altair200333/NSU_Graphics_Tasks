@@ -1,5 +1,6 @@
 #pragma once
 #include "MeshRenderer.h"
+#include <SpotLight.h>
 
 class SimpleMeshRenderer final: public MeshRenderer
 {
@@ -45,11 +46,25 @@ public:
 	}
 	void uploadLights(const std::vector<std::shared_ptr<LightSource>>& lights) const
 	{
-		shader->setUniformValue("lightsCount", static_cast<int>(lights.size()));
+		size_t pointLights = 0;
+		size_t spotLights = 0;
 		for (int i = 0; i < lights.size(); ++i)
-		{
-			shader->setUniformValue(("lights[" + std::to_string(i) + "].position").c_str(), lights[i]->position);
-			shader->setUniformValue(("lights[" + std::to_string(i) + "].color").c_str(), lights[i]->color);
+		{	
+			int id = 0;
+			if (std::dynamic_pointer_cast<PointLight>(lights[i]) != nullptr)
+			{
+				id = pointLights++;
+			}
+			else if (std::dynamic_pointer_cast<SpotLight>(lights[i]) != nullptr)
+			{
+				id = spotLights++;
+			}
+			lights[i]->uploadToShader(shader, id);
+
 		}
+		
+		shader->setUniformValue("lightsCount", static_cast<int>(pointLights));
+		shader->setUniformValue("spotLightsCount", static_cast<int>(spotLights));
+
 	}
 };

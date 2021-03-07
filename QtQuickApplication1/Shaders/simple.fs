@@ -31,6 +31,20 @@ struct LightSource
 uniform LightSource lights[10];
 uniform int lightsCount;
 
+
+struct SpotLightSource
+{
+   vec3 position;
+   vec3 direction;
+   vec4 color;
+   float cutOff;
+   float outerCutOff;
+   float intensity;
+};
+
+uniform SpotLightSource spotLights[10];
+uniform int spotLightsCount;
+
 uniform bool wireframe;
 
 vec2 SampleSphericalMap(vec3 direction)
@@ -67,13 +81,31 @@ vec3 getLighting()
       vec3 dirToLight = normalize(lights[i].position - FragPos);
 
       vec3 diffuse = baseColor * vec3(lights[i].color);
+      diffuse = diffuse * max(dot(dirToLight, norm), 0.0f);
 
       vec3 reflectDir = reflect(-dirToLight, norm);
       float spec = pow(max(dot(-dirToFrag, reflectDir), 0.0), 8.0);
       vec3 lightSpecular = specular.rgb * spec; 
-      result +=  (diffuse + lightSpecular) * max(dot(dirToLight, norm), 0.0f) * attenuation(length(lights[i].position - FragPos));
+      result +=  (diffuse + lightSpecular) * attenuation(length(lights[i].position - FragPos));
    }
+   for(int i=0; i < spotLightsCount; ++i)
+   {
+      vec3 dirToLight = normalize(spotLights[i].position - FragPos);
+      vec3 diffuse = baseColor * spotLights[i].color.rgb;
+      diffuse = diffuse * max(dot(dirToLight, norm), 0.0f);
+         
+      vec3 reflectDir = reflect(-dirToLight, norm);  
+      float spec = pow(max(dot(-dirToFrag, reflectDir), 0.0), 32.0f);
+      vec3 lightSpecular = specular.rgb * spec;
 
+      float theta = dot(dirToLight, normalize(-spotLights[i].direction)); 
+      float epsilon = (spotLights[i].cutOff - spotLights[i].outerCutOff);
+      float intensity = clamp((theta - spotLights[i].outerCutOff) / epsilon, 0.0, 1.0);
+      diffuse  *= intensity;
+      lightSpecular *= intensity;
+
+      result += (diffuse + lightSpecular) * attenuation(length(spotLights[i].position - FragPos))*spotLights[i].intensity;
+   }
    result = (1-roughness)*(result + ambient.rgb*0.089f) + roughness*envColor;
    return result;
 }

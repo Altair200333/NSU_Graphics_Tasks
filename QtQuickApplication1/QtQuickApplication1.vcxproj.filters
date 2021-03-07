@@ -44,6 +44,9 @@
     <Filter Include="Objects\Components">
       <UniqueIdentifier>{22650892-27d7-4492-81fc-f2149a68e3f8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\Lights">
+      <UniqueIdentifier>{ec221767-53c8-45a3-b278-befaa5f4297f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="debug\moc_predefs.h.cbt">
@@ -75,9 +78,6 @@
       <Filter>Objects</Filter>
     </ClInclude>
     <ClInclude Include="Scene.h" />
-    <ClInclude Include="LightSource.h">
-      <Filter>Objects</Filter>
-    </ClInclude>
     <ClInclude Include="Mesh.h">
       <Filter>Objects\Components</Filter>
     </ClInclude>
@@ -142,6 +142,15 @@
     </ClInclude>
     <ClInclude Include="FPSCounter.h">
       <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="LightSource.h">
+      <Filter>Objects\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLight.h">
+      <Filter>Objects\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="SpotLight.h">
+      <Filter>Objects\Lights</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

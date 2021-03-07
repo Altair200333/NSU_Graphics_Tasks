@@ -8,7 +8,7 @@
 #include "Background.h"
 #include "Mesh.h"
 #include "GLCamera.h"
-#include "LightSource.h"
+#include "PointLight.h"
 #include "Material.h"
 #include "Transform.h"
 

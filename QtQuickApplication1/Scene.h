@@ -86,8 +86,11 @@ public:
 
 		createLightSourceBlock();
 		
-		lights.push_back(std::make_shared<LightSource>(QVector3D{-5, 4, 7}));
-		lights.push_back(std::make_shared<LightSource>(QVector3D{30, 3, -7}, QColor{255, 23, 12}));
+		lights.push_back(std::make_shared<PointLight>(QVector3D{-5, 4, 7}));
+		lights.push_back(std::make_shared<PointLight>(QVector3D{30, 3, -7}, QColor{255, 23, 12}));
+		lights.push_back(std::make_shared<SpotLight>(QVector3D{-30, 7, 7}, QColor{20, 23, 230}, QVector3D{ 0, -1, 0 }));
+		
+		lights.push_back(std::make_shared<SpotLight>(QVector3D{10, 2, 10}, QColor{200, 200, 200 }));
 
 		backround = Background(funcions);
 	}

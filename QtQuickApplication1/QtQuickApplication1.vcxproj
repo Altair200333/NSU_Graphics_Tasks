@@ -227,6 +227,7 @@
     <ClInclude Include="GLCamera.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="LightSource.h" />
+    <ClInclude Include="PointLight.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshLoader.h" />
@@ -241,6 +242,7 @@
     <ClInclude Include="ShaderCollection.h" />
     <ClInclude Include="ShaderData.h" />
     <ClInclude Include="SimpleMeshRenderer.h" />
+    <ClInclude Include="SpotLight.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="UIManager.h" />
