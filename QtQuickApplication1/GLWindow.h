@@ -22,6 +22,7 @@
 #include "Object.h"
 #include "Scene.h"
 #include <QMenuBar>
+#include <QPushButton>
 #include <QHBoxLayout>
 #include "EventDispatcher.h"
 #include "OnUpdateEvent.h"
@@ -30,12 +31,11 @@ class GLWindow final : public QOpenGLWidget, public QOpenGLFunctions
 {
 public:
 	QTimer* timer = nullptr;
-
 	GLWindow(QWidget* parent = nullptr): QOpenGLWidget(parent)
 	{
 		timer = new QTimer(this);
 		connect(timer, SIGNAL(timeout()), this, SLOT(update()));
-		timer->start(10);
+		timer->start(0);
 		
 		setMouseTracking(true);   //without this command input goes insane if mouse pointer is outside the window
 		setFocusPolicy(Qt::ClickFocus);//allow widget to be focused
@@ -53,9 +53,9 @@ public:
 		Input::reset();
 		MouseInput::reset();
 	}
+	virtual void onClose() {}
 
 protected:
-	virtual void onClose() {}
 	bool event(QEvent* event) override
 	{
 		assert(event);

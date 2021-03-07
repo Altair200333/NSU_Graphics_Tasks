@@ -5,8 +5,9 @@
 #include <QBoxLayout>
 #include <QColorDialog>
 #include <QPushButton>
+#include <QFont>
 
-class UIManager final
+class UIManager final: public QObject
 {
 public:
 	QLabel* label;
@@ -15,12 +16,18 @@ public:
 	std::shared_ptr<QBoxLayout> verticalBox;
 	std::shared_ptr<QBoxLayout> horizontalBox;
 	std::shared_ptr<GLWindow> viewport;
+	
 	QPushButton* button;
 	QPushButton* button1;
 	QPushButton* button2;
-	QWidget* child;
+
+	QWidget* buttonLayoutGroup;
 	Window* window;
 
+	QColorDialog diffuseColorDialog;
+	QColorDialog ambientColorDialog;
+	QColorDialog specularColorDialog;
+	
 	void setWindow(Window* _window)
 	{
 		window = _window;
@@ -57,21 +64,38 @@ public:
 		verticalBox->addWidget(mixFactor);
 
 		//----
-		horizontalBox = std::make_shared<QBoxLayout>(QBoxLayout::RightToLeft);
-		button = new QPushButton("PRESS ME");
-		button1 = new QPushButton("PRESS ME 1");
-		button2 = new QPushButton("PRESS ME 2");
+		horizontalBox = std::make_shared<QBoxLayout>(QBoxLayout::LeftToRight);
 		
+		button = new QPushButton("Diffuse");
+		button1 = new QPushButton("Ambient");
+		button2 = new QPushButton("Specular");
+		
+		connect(button, &QPushButton::released, this, &UIManager::showDiffuseColorDialog);
+		connect(button1, &QPushButton::released, this, &UIManager::showAmbientColorDialog);
+		connect(button2, &QPushButton::released, this, &UIManager::showSpecularColorDialog);
+
 		horizontalBox->addWidget(button);
 		horizontalBox->addWidget(button1);
 		horizontalBox->addWidget(button2);
-		child = new QWidget();
-		child->setLayout(horizontalBox.get());
+		buttonLayoutGroup = new QWidget();
+		buttonLayoutGroup->setLayout(horizontalBox.get());
 		//----
-		child->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+		buttonLayoutGroup->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
-		verticalBox->addWidget(child);
+		verticalBox->addWidget(buttonLayoutGroup);
 		
 		window->setLayout(verticalBox.get());
+	}
+	void showDiffuseColorDialog()
+	{
+		diffuseColorDialog.show();
+	}
+	void showAmbientColorDialog()
+	{
+		ambientColorDialog.show();
+	}
+	void showSpecularColorDialog()
+	{
+		specularColorDialog.show();
 	}
 };

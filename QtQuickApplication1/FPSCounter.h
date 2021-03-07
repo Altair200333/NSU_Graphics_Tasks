@@ -12,13 +12,14 @@ public:
 
 	float lastFPS = 0;
 	float elapsedFrameTime = 0;
+	float frameTime = 0;
 	float getFPS()
 	{
 		
 		const auto current = std::chrono::system_clock::now();
 		const std::chrono::duration<float> elapsedSeconds = current - lastFrameTime;
 		lastFrameTime = current;
-		const float frameTime = elapsedSeconds.count();
+		frameTime = elapsedSeconds.count();
 		
 		times.push_back(frameTime);
 		

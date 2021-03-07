@@ -45,6 +45,9 @@ public:
 		for (auto& object : scene.objects)
 		{
 			object->material.roughness = static_cast<float>(manager.mixFactor->value()) / 100.0f;
+			object->material.diffuse = manager.diffuseColorDialog.currentColor();
+			object->material.ambient = manager.ambientColorDialog.currentColor();
+			object->material.specular = manager.specularColorDialog.currentColor();
 			if (object->tag == "modifiable")
 			{
 				object->transform.rotate(QQuaternion::fromAxisAndAngle(scene.camera.right, -scene.angularVelocity.y()).normalized());
@@ -60,7 +63,7 @@ public:
 
 		for (auto& light : scene.lights)
 		{
-			light->position = QQuaternion::fromAxisAndAngle({ 0,1,0 }, 0.2f) * light->position;
+			light->position = QQuaternion::fromAxisAndAngle({ 0,1,0 }, 20.0*fpsCounter.frameTime) * light->position;
 		}
 	}
 
