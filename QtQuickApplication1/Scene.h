@@ -43,13 +43,7 @@ class Scene final
 			transparentObjects.push_back(createObject(model, pos, data, tag));
 		}
 	}
-	void addModel(const std::vector<MeshLoader::LoadedModel>& models, const QVector3D& pos, ShaderData& data, const std::string& tag = "")
-	{
-		for (const auto& model : models)
-		{
-			objects.push_back(createObject(model, pos, data, tag));
-		}
-	}
+	
 public:
 	std::vector<std::shared_ptr<Object>> objects;
 	std::vector<std::shared_ptr<LightSource>> lights;
@@ -71,28 +65,32 @@ public:
 		const auto cubeModel = MeshLoader().loadModel("Assets/Models/cube.obj");
 		const auto suzaneModel = MeshLoader().loadModel("Assets/Models/suz.obj");
 		
-		for (int i = 0; i < 20; ++i)
+		for (int i = 0; i < 4; ++i)
 		{
-			for (int j = 0; j < 20; ++j)
+			for (int j = 0; j < 4; ++j)
 			{
-				addModel((i + j) % 2 == 0?cubeModel: suzaneModel, { i * 3.5f-30, 0,j*3.5f-30 }, ShaderCollection::shaders["simple"], "modifiable");
+				addModel((i + j) % 2 == 0?cubeModel: suzaneModel, { i * 3.5f-10, 0,j*3.5f-10 }, ShaderCollection::shaders["normals"], "modifiable");
 			}
 		}
 		
-		addModel(MeshLoader().loadModel("Assets/Models/sam2.obj"), {3.5f, 6, 0}, ShaderCollection::shaders["simple"], "modifiable");
-		addModel(MeshLoader().loadModel("Assets/Models/sam2.obj"), {7.5f, 6, 0}, ShaderCollection::shaders["simple"], "modifiable");
+		addModel(MeshLoader().loadModel("Assets/Models/sam2.obj"), {3.5f, 6, 0}, ShaderCollection::shaders["normals"], "modifiable");
 
 		addTransparent(MeshLoader().loadModel("Assets/Models/cube.obj"), { 0, 4, -12 }, ShaderCollection::shaders["cubicCloud"]);
 
 		createLightSourceBlock();
 		
-		lights.push_back(std::make_shared<PointLight>(QVector3D{-5, 4, 7}));
-		lights.push_back(std::make_shared<PointLight>(QVector3D{30, 3, -7}, QColor{255, 23, 12}));
-		lights.push_back(std::make_shared<SpotLight>(QVector3D{-30, 7, 7}, QColor{20, 23, 230}, QVector3D{ 0, -1, 0 }));
+		//lights.push_back(std::make_shared<PointLight>(QVector3D{-5, 4, 7}));
+		//lights.push_back(std::make_shared<PointLight>(QVector3D{30, 3, -7}, QColor{255, 23, 12}));
 		
 		lights.push_back(std::make_shared<SpotLight>(QVector3D{10, 2, 10}, QColor{200, 200, 200 }));
 
 		backround = Background(funcions);
 	}
-
+	void addModel(const std::vector<MeshLoader::LoadedModel>& models, const QVector3D& pos, ShaderData& data, const std::string& tag = "")
+	{
+		for (const auto& model : models)
+		{
+			objects.push_back(createObject(model, pos, data, tag));
+		}
+	}
 };

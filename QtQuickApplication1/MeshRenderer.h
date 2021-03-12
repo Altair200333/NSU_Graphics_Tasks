@@ -44,10 +44,10 @@ public:
 		shader->setAttributeBuffer("aTexCoords", GL_FLOAT, offsetof(Vertex, TexCoords), 2, sizeof(Vertex));
 
 		shader->enableAttributeArray("aTangent");
-		shader->setAttributeBuffer("aTangent", GL_FLOAT, offsetof(Vertex, TexCoords), 3, sizeof(Vertex));
+		shader->setAttributeBuffer("aTangent", GL_FLOAT, offsetof(Vertex, Tangent), 3, sizeof(Vertex));
 
 		shader->enableAttributeArray("aBitangent");
-		shader->setAttributeBuffer("aBitangent", GL_FLOAT, offsetof(Vertex, TexCoords), 3, sizeof(Vertex));
+		shader->setAttributeBuffer("aBitangent", GL_FLOAT, offsetof(Vertex, Bitangent), 3, sizeof(Vertex));
 	}
 
 	void createShader(const std::string& fragment, const std::string& vertex, const std::string& geometry)

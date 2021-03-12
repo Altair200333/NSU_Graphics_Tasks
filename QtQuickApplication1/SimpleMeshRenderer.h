@@ -11,12 +11,21 @@ public:
 		shader->setUniformValue("albedoCount", static_cast<int>(material->textures.size()));
 		if(!material->textures.empty())
 		{
-			shader->setUniformValue("texture_diffuse", 0);
 			functions->glActiveTexture(GL_TEXTURE0 + 0);
 			material->textures[0].texture->bind();
+			shader->setUniformValue("texture_diffuse", 0);
 		}
 	}
-	
+	void bindNormals()
+	{
+		shader->setUniformValue("normalCount", static_cast<int>(material->normal.size()));
+		if (!material->normal.empty())
+		{
+			functions->glActiveTexture(GL_TEXTURE1);
+			material->normal[0].texture->bind();
+			shader->setUniformValue("texture_normal", 1);
+		}
+	}
 	void render(GLCamera& camera, const std::vector<std::shared_ptr<LightSource>>& lights = std::vector<std::shared_ptr<LightSource>>{}, Background* background = nullptr) override
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -27,11 +36,12 @@ public:
 		uploadLights(lights);
 
 		bindAlbedo();
-
+		bindNormals();
+		
 		if(background!=nullptr)
 		{
-			shader->setUniformValue("texture_background", 1);
-			functions->glActiveTexture(GL_TEXTURE0 + 1);
+			shader->setUniformValue("texture_background", 2);
+			functions->glActiveTexture(GL_TEXTURE0 + 2);
 			background->image->bind();
 		}
 		
@@ -43,6 +53,7 @@ public:
 		glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0);
 		vao->release();
 
+		functions->glActiveTexture(GL_TEXTURE0);
 	}
 	void uploadLights(const std::vector<std::shared_ptr<LightSource>>& lights) const
 	{

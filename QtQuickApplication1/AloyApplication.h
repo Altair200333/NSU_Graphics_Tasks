@@ -26,7 +26,7 @@ public:
 	SceneRenderer renderer;
 
 	FPSCounter fpsCounter;
-	
+	float height = -5;
 	AloyApplication(Window* window)
 	{
 		manager.setWindow(window);
@@ -55,11 +55,6 @@ public:
 		
 		for (auto& object : scene.objects)
 		{
-			object->material.roughness = static_cast<float>(manager.mixFactor->value()) / 100.0f;
-			object->material.diffuse = manager.diffuseColorDialog.currentColor();
-			object->material.ambient = manager.ambientColorDialog.currentColor();
-			object->material.specular = manager.specularColorDialog.currentColor();
-			
 			if (object->tag == "modifiable")
 			{
 				object->transform.rotate(QQuaternion::fromAxisAndAngle(scene.camera.right, -scene.angularVelocity.y()).normalized());
@@ -70,7 +65,7 @@ public:
 		{
 			scene.angularVelocity += QVector2D(MouseInput::delta()) * 0.1f;
 		}
-
+		
 		moveCamera();
 
 		for (auto& light : scene.lights)
