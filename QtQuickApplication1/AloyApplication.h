@@ -17,6 +17,8 @@
 
 class AloyApplication final: public OnUpdateSubscriber
 {
+	std::shared_ptr<LightSource> flashLight;
+	std::shared_ptr<Object> moon;
 public:
 	Scene scene;
 	
@@ -26,16 +28,16 @@ public:
 	SceneRenderer renderer;
 
 	FPSCounter fpsCounter;
-	float height = -5;
+	
 	AloyApplication(Window* window)
 	{
 		manager.setWindow(window);
 		manager.init();
 	}
 
-	void updateFlashLight()
+	void updateFlashLight() const
 	{
-		auto spot = std::dynamic_pointer_cast<SpotLight>(scene.lights.back());
+		auto spot = std::dynamic_pointer_cast<SpotLight>(flashLight);
 		spot->position = scene.camera.position;
 		spot->direction = scene.camera.front;
 		if(Input::keyJustPressed(Qt::Key_F))
@@ -74,6 +76,8 @@ public:
 		}
 		
 		updateFlashLight();
+
+		moon->transform.rotateAround(20.0 * fpsCounter.frameTime, { 0,1,0 }, { 0,0,0 });
 	}
 
 	void updateFrameRate()
@@ -107,7 +111,8 @@ public:
 		scene.addModel(MeshLoader().loadModel("Assets/Models/sam2.obj"), { 3.5f, 3, 0 }, ShaderCollection::shaders["normals"]);
 		scene.addModel(MeshLoader().loadModel("Assets/Models/earth.obj"), { -3.5f, 3, 0 }, ShaderCollection::shaders["normals"], "modifiable");
 		scene.addModel(MeshLoader().loadModel("Assets/Models/moon.obj"), { -3.5f, 3, 12 }, ShaderCollection::shaders["normals"], "modifiable");
-
+		moon = scene.objects.back();
+		
 		scene.addTransparent(MeshLoader().loadModel("Assets/Models/cube.obj"), { 0, 4, -12 }, ShaderCollection::shaders["cubicCloud"]);
 
 
@@ -115,6 +120,7 @@ public:
 		scene.addLight(std::make_shared<PointLight>(QVector3D{ 30, 3, -7 }, QColor{ 255, 23, 12 }, 2));
 
 		scene.addLight(std::make_shared<SpotLight>(QVector3D{ 10, 2, 10 }, QColor{ 200, 200, 200 }));
+		flashLight = scene.lights.back();
 	}
 
 	void render()

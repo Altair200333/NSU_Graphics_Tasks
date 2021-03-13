@@ -25,6 +25,15 @@ public:
 
 		transform = m * transform;
 	}
+	void rotateAround(float angle, const QVector3D& axis, const QVector3D& point)
+	{
+		const QQuaternion rotation = QQuaternion::fromAxisAndAngle(axis, angle);
+
+		QMatrix4x4 m;
+		m.rotate(rotation);
+		position = rotation * position;
+		transform = m*transform;
+	}
 	void reset()
 	{
 		position = QVector3D(0, 0, 0);
