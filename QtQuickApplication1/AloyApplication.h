@@ -19,6 +19,7 @@ class AloyApplication final: public OnUpdateSubscriber
 {
 	std::shared_ptr<LightSource> flashLight;
 	std::shared_ptr<Object> moon;
+	std::shared_ptr<Object> mars;
 public:
 	Scene scene;
 	
@@ -77,7 +78,8 @@ public:
 		
 		updateFlashLight();
 
-		moon->transform.rotateAround(20.0 * fpsCounter.frameTime, { 0,1,0 }, { 0,0,0 });
+		moon->transform.rotateAround(30.0 * fpsCounter.frameTime, { 0,1,0 }, { 0,0,0 });
+		mars->transform.rotateAround(10.0 * fpsCounter.frameTime, { 1,0,0 }, { 0,0,0 });
 	}
 
 	void updateFrameRate()
@@ -108,16 +110,18 @@ public:
 		manager.viewport->glEnable(GL_DEPTH_TEST);
 
 
-		scene.addModel(MeshLoader().loadModel("Assets/Models/sam2.obj"), { 3.5f, 3, 0 }, ShaderCollection::shaders["normals"]);
-		scene.addModel(MeshLoader().loadModel("Assets/Models/earth.obj"), { -3.5f, 3, 0 }, ShaderCollection::shaders["normals"], "modifiable");
+		scene.addModel(MeshLoader().loadModel("Assets/Models/sam2.obj"), { 6.5f, 3, 0 }, ShaderCollection::shaders["normals"]);
+		scene.addModel(MeshLoader().loadModel("Assets/Models/earth.obj"), { 0, 3, 0 }, ShaderCollection::shaders["normals"], "modifiable");
 		scene.addModel(MeshLoader().loadModel("Assets/Models/moon.obj"), { -3.5f, 3, 12 }, ShaderCollection::shaders["normals"], "modifiable");
 		moon = scene.objects.back();
 		
-		scene.addTransparent(MeshLoader().loadModel("Assets/Models/cube.obj"), { 0, 4, -12 }, ShaderCollection::shaders["cubicCloud"]);
-
+		scene.addTransparent(MeshLoader().loadModel("Assets/Models/cube.obj"), { 0, 7, -12 }, ShaderCollection::shaders["cubicCloud"]);
+		scene.addModel(MeshLoader().loadModel("Assets/Models/starship.obj"), { 7, 3, 12 }, ShaderCollection::shaders["normals"], "modifiable");
+		scene.addModel(MeshLoader().loadModel("Assets/Models/mars.obj"), { 0, 3, -18 }, ShaderCollection::shaders["normals"], "modifiable");
+		mars = scene.objects.back();
 
 		scene.addLight(std::make_shared<PointLight>(QVector3D{ -8, 4, 7 }, QColor{ 255, 255, 255 }, 2.5));
-		scene.addLight(std::make_shared<PointLight>(QVector3D{ 30, 3, -7 }, QColor{ 255, 23, 12 }, 2));
+		scene.addLight(std::make_shared<PointLight>(QVector3D{ 30, 3, -7 }, QColor{ 255, 23, 12 }, 3));
 
 		scene.addLight(std::make_shared<SpotLight>(QVector3D{ 10, 2, 10 }, QColor{ 200, 200, 200 }));
 		flashLight = scene.lights.back();
