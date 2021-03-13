@@ -7,9 +7,8 @@ class SpotLight final: public LightSource
 {
 public:
 	QVector3D direction;
-	float intensity = 1;
-	SpotLight(QVector3D _position = { 0,0,0 }, QColor _color = { 250,250,250 }, QVector3D _direction = QVector3D(0, -1, 0))
-	: LightSource(_position, _color), direction(_direction)
+	SpotLight(QVector3D _position = { 0,0,0 }, QColor _color = { 250,250,250 }, QVector3D _direction = QVector3D(0, -1, 0), float _intensity = 1)
+	: LightSource(_position, _color, _intensity), direction(_direction)
 	{
 	}
 

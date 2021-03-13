@@ -9,10 +9,11 @@ class Material final
 public:
 	std::vector<Texture> textures;
 	std::vector<Texture> normal;
+	std::vector<Texture> specular;
 	
 	QColor diffuse;
 	QColor ambient = QColor(20, 200, 100);
-	QColor specular = QColor(50, 149, 240);
+
 	float roughness = 0.02f;
 	bool isLightSource = false;
 	
@@ -24,6 +25,5 @@ public:
 		shader->setUniformValue("roughness", roughness);
 		shader->setUniformValue("color", diffuse);
 		shader->setUniformValue("ambient", ambient);
-		shader->setUniformValue("specular", specular);
 	}
 };

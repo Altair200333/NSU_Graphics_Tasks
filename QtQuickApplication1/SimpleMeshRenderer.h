@@ -26,6 +26,16 @@ public:
 			shader->setUniformValue("texture_normal", 1);
 		}
 	}
+	void bindSpecular()
+	{
+		shader->setUniformValue("specularCount", static_cast<int>(material->specular.size()));
+		if (!material->specular.empty())
+		{
+			functions->glActiveTexture(GL_TEXTURE2);
+			material->specular[0].texture->bind();
+			shader->setUniformValue("texture_specular", 2);
+		}
+	}
 	void render(GLCamera& camera, const std::vector<std::shared_ptr<LightSource>>& lights = std::vector<std::shared_ptr<LightSource>>{}, Background* background = nullptr) override
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -37,11 +47,12 @@ public:
 
 		bindAlbedo();
 		bindNormals();
+		bindSpecular();
 		
 		if(background!=nullptr)
 		{
-			shader->setUniformValue("texture_background", 2);
-			functions->glActiveTexture(GL_TEXTURE0 + 2);
+			shader->setUniformValue("texture_background", 3);
+			functions->glActiveTexture(GL_TEXTURE0 + 3);
 			background->image->bind();
 		}
 		

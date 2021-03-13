@@ -127,10 +127,14 @@ public:
         std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
         // 4. height maps
         std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
+    	
+        //std::vector<Texture> roughnessMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE_ROUGHNESS, "texture_roughness");
 
         Material mat(albedo);
         mat.textures = diffuseMaps;
         mat.normal = normalMaps;
+        mat.specular = specularMaps;
+
         return { Mesh(vertices, indices), mat };
     }
     std::vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& typeName)

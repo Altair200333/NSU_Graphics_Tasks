@@ -102,6 +102,19 @@ public:
 	{
 		scene = Scene(manager.viewport);
 		manager.viewport->glEnable(GL_DEPTH_TEST);
+
+
+		scene.addModel(MeshLoader().loadModel("Assets/Models/sam2.obj"), { 3.5f, 3, 0 }, ShaderCollection::shaders["normals"]);
+		scene.addModel(MeshLoader().loadModel("Assets/Models/earth.obj"), { -3.5f, 3, 0 }, ShaderCollection::shaders["normals"], "modifiable");
+		scene.addModel(MeshLoader().loadModel("Assets/Models/moon.obj"), { -3.5f, 3, 12 }, ShaderCollection::shaders["normals"], "modifiable");
+
+		scene.addTransparent(MeshLoader().loadModel("Assets/Models/cube.obj"), { 0, 4, -12 }, ShaderCollection::shaders["cubicCloud"]);
+
+
+		scene.addLight(std::make_shared<PointLight>(QVector3D{ -8, 4, 7 }, QColor{ 255, 255, 255 }, 2.5));
+		scene.addLight(std::make_shared<PointLight>(QVector3D{ 30, 3, -7 }, QColor{ 255, 23, 12 }, 2));
+
+		scene.addLight(std::make_shared<SpotLight>(QVector3D{ 10, 2, 10 }, QColor{ 200, 200, 200 }));
 	}
 
 	void render()

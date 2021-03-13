@@ -20,6 +20,9 @@ uniform bool useBackground;
 uniform int albedoCount;
 uniform sampler2D texture_diffuse;
 
+uniform int specularCount;
+uniform sampler2D texture_specular;
+
 uniform int normalCount;
 uniform sampler2D texture_normal;
 
@@ -29,6 +32,7 @@ struct LightSource
 {
    vec3 position;
    vec4 color;
+   float intensity;
 };
 
 uniform LightSource lights[10];
@@ -77,7 +81,18 @@ vec3 getNormal()
     normal_rgb = normalize(TBN * normal_rgb); 
     return normal_rgb; 
 }
-
+float getSpecular()
+{
+   if(specularCount == 0)
+      return 1.0f;
+   return texture(texture_specular, TexCoords).r;
+}
+float getRoughness()
+{
+   if(specularCount == 0)
+      return roughness;
+   return texture(texture_specular, TexCoords).r/2;
+}
 float attenuation(float dist)
 {
    return 1.0f / (1.0f + 0.01f * dist + 0.01f * dist*dist);
@@ -100,8 +115,8 @@ vec3 getLighting()
 
       vec3 reflectDir = reflect(-dirToLight, norm);
       float spec = pow(max(dot(-dirToFrag, reflectDir), 0.0), 8.0);
-      vec3 lightSpecular = lights[i].color.rgb * spec; 
-      result +=  (diffuse + lightSpecular) * attenuation(length(lights[i].position - FragPos));
+      vec3 lightSpecular = lights[i].color.rgb * spec*getSpecular(); 
+      result +=  ((diffuse + lightSpecular) * attenuation(length(lights[i].position - FragPos)))*lights[i].intensity;
    }
 
    for(int i=0; i < spotLightsCount; ++i)
@@ -112,7 +127,7 @@ vec3 getLighting()
          
       vec3 reflectDir = reflect(-dirToLight, norm);  
       float spec = pow(max(dot(-dirToFrag, reflectDir), 0.0), 32.0f);
-      vec3 lightSpecular = spotLights[i].color.rgb * spec;
+      vec3 lightSpecular = spotLights[i].color.rgb * spec*getSpecular();
 
       float theta = dot(dirToLight, normalize(-spotLights[i].direction)); 
       float epsilon = (spotLights[i].cutOff - spotLights[i].outerCutOff);
@@ -122,7 +137,7 @@ vec3 getLighting()
 
       result += (diffuse + lightSpecular) * attenuation(length(spotLights[i].position - FragPos))*spotLights[i].intensity;
    }
-   result = (1-roughness)*(result + ambient.rgb*0.089f) + roughness*envColor;
+   result = (1-getRoughness())*(result + ambient.rgb*0.089f) + getRoughness()*envColor;
    return result;
 }
 void main() 
