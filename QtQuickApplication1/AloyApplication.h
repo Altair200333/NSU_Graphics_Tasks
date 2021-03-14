@@ -20,6 +20,7 @@ class AloyApplication final: public OnUpdateSubscriber
 	std::shared_ptr<LightSource> flashLight;
 	std::shared_ptr<Object> moon;
 	std::shared_ptr<Object> mars;
+	std::shared_ptr<Object> atmosphere;
 public:
 	Scene scene;
 	
@@ -53,6 +54,9 @@ public:
 
 		if (Input::keyJustPressed(Qt::Key_Z))
 			renderer.nextDrawMode();
+		
+		if (Input::keyJustPressed(Qt::Key_R))
+			atmosphere->renderer->enabled = !atmosphere->renderer->enabled;
 
 		scene.angularVelocity *= 0.987f;
 		
@@ -115,7 +119,9 @@ public:
 		scene.addModel(MeshLoader().loadModel("Assets/Models/moon.obj"), { -3.5f, 3, 12 }, ShaderCollection::shaders["normals"], "modifiable");
 		moon = scene.objects.back();
 		
-		scene.addTransparent(MeshLoader().loadModel("Assets/Models/cube.obj"), { 0, 7, -12 }, ShaderCollection::shaders["cubicCloud"]);
+		scene.addTransparent(MeshLoader().loadModel("Assets/Models/earthAtmo.obj"), { 0, 3, 0 }, ShaderCollection::shaders["cubicCloud"]);
+		atmosphere = scene.transparentObjects.back();
+
 		scene.addModel(MeshLoader().loadModel("Assets/Models/starship.obj"), { 7, 3, 12 }, ShaderCollection::shaders["normals"], "modifiable");
 		scene.addModel(MeshLoader().loadModel("Assets/Models/mars.obj"), { 0, 3, -18 }, ShaderCollection::shaders["normals"], "modifiable");
 		mars = scene.objects.back();

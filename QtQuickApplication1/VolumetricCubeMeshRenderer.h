@@ -7,6 +7,8 @@ public:
 	void render(GLCamera& camera, 
 		const std::vector<std::shared_ptr<LightSource>>& lights = std::vector<std::shared_ptr<LightSource>>{}, Background* background = nullptr) override
 	{
+		if(!enabled)
+			return;
 		shader->bind();
 
 		material->uploadToShader(shader);

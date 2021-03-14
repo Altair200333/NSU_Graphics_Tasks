@@ -21,7 +21,7 @@ class Scene final
 	std::shared_ptr<QOpenGLFunctions> funcions;
 	void createLightSourceBlock()
 	{
-		lightSourceBlock = createObject(MeshLoader().loadModel("Assets/Models/cube.obj")[0], QVector3D(0, 0, 0),
+		lightSourceBlock = createObject(MeshLoader().loadModel("Assets/Models/ico.obj")[0], QVector3D(0, 0, 0),
 			ShaderCollection::shaders["lightSource"]);
 	}
 	std::shared_ptr<Object> createObject(const MeshLoader::LoadedModel& model, const QVector3D& pos, ShaderData& data, const std::string& tag = "") const

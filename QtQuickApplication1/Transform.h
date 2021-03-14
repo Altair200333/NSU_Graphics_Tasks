@@ -30,8 +30,14 @@ public:
 		const QQuaternion rotation = QQuaternion::fromAxisAndAngle(axis, angle);
 
 		QMatrix4x4 m;
+		m.translate(point);
 		m.rotate(rotation);
+		m.translate(-point);
+
+		position -= point;
 		position = rotation * position;
+		position += point;
+
 		transform = m*transform;
 	}
 	void reset()

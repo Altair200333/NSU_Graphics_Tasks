@@ -105,7 +105,7 @@ float hit_sphere(vec3 center, float radius, vec3 dir, vec3 origin)
 		}
 		else 
 		{
-			return -1;
+			return -1.0f;
 		}
 
 	}
@@ -114,18 +114,30 @@ void main()
 {
 	vec3 viewDir = normalize(FragPos - cameraPos);
 
-	float radius = 1;
+	float radius = 4.1;
+	float planetRadius = 3;
+
 	float t = hit_sphere(position, radius, viewDir, FragPos);
 	if(t > 0)
 	{
-		vec3 contact = FragPos+viewDir * t;
-		float alpha = noise(contact.xyz);
+		vec3 atmoEntry = FragPos+viewDir * t;
+		//float alpha = noise(contact.xyz);
 
-		float t2 = hit_sphere(position, radius, viewDir, contact+viewDir*0.001f);	
-		vec3 contact2 = contact + viewDir*t2;
+		float t2 = hit_sphere(position, radius, viewDir, atmoEntry + viewDir*0.001f);	
+		vec3 atmoExit = atmoEntry + viewDir*t2;
+		
+		float t3 = hit_sphere(position, planetRadius, viewDir, FragPos);
+		vec3 planetEntry = FragPos+viewDir * t3;
 
-		float ratio = length(contact-contact2)/(2*radius);
-		fragColor = vec4(alpha,1,1, ratio*ratio);	
+		vec3 closest = atmoExit;
+		if(t3>0 && length(FragPos - planetEntry) < length(FragPos - atmoExit))
+		{
+			closest = planetEntry;
+		}
+		
+		float ratio = length(atmoEntry-closest)/(2*radius);
+
+		fragColor = vec4(0.5,0.5,1, ratio*ratio*ratio);	
 	}
 	else
 	{

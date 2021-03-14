@@ -25,6 +25,9 @@ public:
 	Material* material = nullptr;
 
 	std::shared_ptr<QOpenGLFunctions> functions;
+
+
+	bool enabled = true;
 	
 	MeshRenderer() = default;
 	virtual ~MeshRenderer() = default;
